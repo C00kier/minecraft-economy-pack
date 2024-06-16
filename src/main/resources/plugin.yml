@@ -1,0 +1,33 @@
+name: EconomyPack
+version: '${project.version}'
+main: pawel.cookier.ignaczak.economypack.EconomyPack
+api-version: '1.20'
+commands:
+  gamble:
+    description: Play gamble game
+    permission: EconomyPack.gamble
+  slots:
+    description: Play slots game
+    permission: EconomyPack.slots
+  balance:
+    description: Check your balance
+    permission: EconomyPack.balance
+  exchange:
+    description: Exchange gold ingots to money
+    permission: EconomyPack.exchange
+  pay:
+    description: Pay player
+    permission: EconomyPack.pay
+  new_money_user:
+    description: Testing only. Add new user to money database.
+    permission: EconomyPack.money_new
+  translation:
+    description: Changes the language of the plugin.
+    permission: EconomyPack.translation
+  permissions:
+    EconomyPack.translation:
+      description: Allows the player to change the plugin language.
+      default: op
+    EconomyPack.money_new:
+      description: Allows to add player to database manually.
+      default: op
