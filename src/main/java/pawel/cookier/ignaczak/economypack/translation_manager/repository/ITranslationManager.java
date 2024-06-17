@@ -1,4 +1,4 @@
-package pawel.cookier.ignaczak.economypack.managers;
+package pawel.cookier.ignaczak.economypack.translation_manager.repository;
 
 import java.util.Locale;
 

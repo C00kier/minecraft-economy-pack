@@ -1,4 +1,4 @@
-package pawel.cookier.ignaczak.economypack.managers;
+package pawel.cookier.ignaczak.economypack.scoreboard.repository;
 
 import org.bukkit.entity.Player;
 

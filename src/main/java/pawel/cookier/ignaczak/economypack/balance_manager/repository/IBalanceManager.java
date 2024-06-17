@@ -1,4 +1,4 @@
-package pawel.cookier.ignaczak.economypack.managers;
+package pawel.cookier.ignaczak.economypack.balance_manager.repository;
 
 public interface IBalanceManager {
     void loadBalances();

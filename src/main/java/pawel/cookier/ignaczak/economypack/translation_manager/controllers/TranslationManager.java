@@ -1,4 +1,6 @@
-package pawel.cookier.ignaczak.economypack.managers;
+package pawel.cookier.ignaczak.economypack.translation_manager.controllers;
+
+import pawel.cookier.ignaczak.economypack.translation_manager.repository.ITranslationManager;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

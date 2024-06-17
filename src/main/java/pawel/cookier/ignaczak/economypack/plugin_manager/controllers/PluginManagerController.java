@@ -1,9 +1,10 @@
-package pawel.cookier.ignaczak.economypack.controllers;
+package pawel.cookier.ignaczak.economypack.plugin_manager.controllers;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
-import pawel.cookier.ignaczak.economypack.managers.TranslationManager;
+import pawel.cookier.ignaczak.economypack.translation_manager.controllers.TranslationManager;
+import pawel.cookier.ignaczak.economypack.plugin_manager.repository.IPluginManagerController;
 
 import java.util.Locale;
 

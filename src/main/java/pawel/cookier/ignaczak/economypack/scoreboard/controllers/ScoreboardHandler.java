@@ -1,9 +1,11 @@
-package pawel.cookier.ignaczak.economypack.managers;
+package pawel.cookier.ignaczak.economypack.scoreboard.controllers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
+import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceManager;
+import pawel.cookier.ignaczak.economypack.scoreboard.repository.IScoreboardHandler;
 
 public class ScoreboardHandler implements IScoreboardHandler {
     private final Scoreboard board;

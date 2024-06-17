@@ -1,4 +1,4 @@
-package pawel.cookier.ignaczak.economypack.controllers;
+package pawel.cookier.ignaczak.economypack.gambling.repository;
 
 import org.bukkit.entity.Player;
 

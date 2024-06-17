@@ -1,4 +1,4 @@
-package pawel.cookier.ignaczak.economypack.controllers;
+package pawel.cookier.ignaczak.economypack.plugin_manager.repository;
 
 import org.bukkit.command.CommandSender;
 

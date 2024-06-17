@@ -1,6 +1,6 @@
 package pawel.cookier.ignaczak.economypack.config;
 
-import pawel.cookier.ignaczak.economypack.models.GameType;
+import pawel.cookier.ignaczak.economypack.gambling.models.GameType;
 
 public final class PluginConfig {
     //commands

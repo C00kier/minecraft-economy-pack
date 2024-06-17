@@ -1,4 +1,4 @@
-package pawel.cookier.ignaczak.economypack.controllers;
+package pawel.cookier.ignaczak.economypack.money_manager.controllers;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -6,11 +6,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
-import pawel.cookier.ignaczak.economypack.managers.BalanceManager;
-import pawel.cookier.ignaczak.economypack.managers.ScoreboardHandler;
-import pawel.cookier.ignaczak.economypack.managers.TranslationManager;
+import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceManager;
+import pawel.cookier.ignaczak.economypack.scoreboard.controllers.ScoreboardHandler;
+import pawel.cookier.ignaczak.economypack.translation_manager.controllers.TranslationManager;
+import pawel.cookier.ignaczak.economypack.money_manager.repository.IMoneyManagerController;
 
-public class MoneyManagerController implements IMoneyManagerController{
+public class MoneyManagerController implements IMoneyManagerController {
     private final BalanceManager balanceManager;
     private final ScoreboardHandler scoreboardHandler;
     private final TranslationManager translationManager;

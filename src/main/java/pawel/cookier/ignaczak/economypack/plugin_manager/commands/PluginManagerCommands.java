@@ -1,4 +1,4 @@
-package pawel.cookier.ignaczak.economypack.commands;
+package pawel.cookier.ignaczak.economypack.plugin_manager.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
-import pawel.cookier.ignaczak.economypack.controllers.PluginManagerController;
+import pawel.cookier.ignaczak.economypack.plugin_manager.controllers.PluginManagerController;
 
 import java.util.ArrayList;
 import java.util.List;

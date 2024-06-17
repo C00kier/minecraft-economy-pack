@@ -1,14 +1,15 @@
-package pawel.cookier.ignaczak.economypack.managers;
+package pawel.cookier.ignaczak.economypack.balance_manager.controllers;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import pawel.cookier.ignaczak.economypack.balance_manager.repository.IBalanceManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class BalanceManager implements IBalanceManager{
+public class BalanceManager implements IBalanceManager {
     private final File configFile;
     private final FileConfiguration config;
     private final Map<String,Long> userBalance;

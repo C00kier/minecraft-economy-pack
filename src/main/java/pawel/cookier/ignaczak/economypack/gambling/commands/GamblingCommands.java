@@ -1,4 +1,4 @@
-package pawel.cookier.ignaczak.economypack.commands;
+package pawel.cookier.ignaczak.economypack.gambling.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
-import pawel.cookier.ignaczak.economypack.controllers.GamblingController;
+import pawel.cookier.ignaczak.economypack.gambling.controllers.GamblingController;
 
 import java.util.List;
 

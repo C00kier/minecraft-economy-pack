@@ -1,16 +1,17 @@
-package pawel.cookier.ignaczak.economypack.controllers;
+package pawel.cookier.ignaczak.economypack.gambling.controllers;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
-import pawel.cookier.ignaczak.economypack.managers.BalanceManager;
-import pawel.cookier.ignaczak.economypack.managers.ScoreboardHandler;
-import pawel.cookier.ignaczak.economypack.managers.TranslationManager;
-import pawel.cookier.ignaczak.economypack.models.Game;
-import pawel.cookier.ignaczak.economypack.models.GameType;
+import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceManager;
+import pawel.cookier.ignaczak.economypack.gambling.repository.IGamblingController;
+import pawel.cookier.ignaczak.economypack.scoreboard.controllers.ScoreboardHandler;
+import pawel.cookier.ignaczak.economypack.translation_manager.controllers.TranslationManager;
+import pawel.cookier.ignaczak.economypack.gambling.models.Game;
+import pawel.cookier.ignaczak.economypack.gambling.models.GameType;
 import pawel.cookier.ignaczak.economypack.utility.RandomUtility;
 
-public class GamblingController implements IGamblingController{
+public class GamblingController implements IGamblingController {
     private final RandomUtility randomUtility;
     private final BalanceManager balanceManager;
     private final ScoreboardHandler scoreboardHandler;

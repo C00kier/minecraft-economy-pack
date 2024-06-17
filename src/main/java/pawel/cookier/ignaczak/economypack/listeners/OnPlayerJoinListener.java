@@ -3,8 +3,8 @@ package pawel.cookier.ignaczak.economypack.listeners;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import pawel.cookier.ignaczak.economypack.managers.BalanceManager;
-import pawel.cookier.ignaczak.economypack.managers.ScoreboardHandler;
+import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceManager;
+import pawel.cookier.ignaczak.economypack.scoreboard.controllers.ScoreboardHandler;
 
 public class OnPlayerJoinListener implements Listener {
 
