@@ -59,6 +59,7 @@ public class CheckManagerController implements ICheckManagerController {
         //
     }
 
+    @Override
     public long getCheckValue(ItemStack item, JavaPlugin plugin) {
         if (item != null && item.hasItemMeta()) {
             ItemMeta meta = item.getItemMeta();
