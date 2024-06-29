@@ -123,7 +123,11 @@ public class CheckManagerController implements ICheckManagerController {
         long checkValue = Long.parseLong(args[0]);
         long accountValue = balanceManager.getBalance(player.getName());
 
-        return (accountValue >= checkValue);
+        if(accountValue < checkValue){
+            player.sendMessage(ChatColor.RED + "Nie masz wystarczającej ilości pieniędzy");
+            return false;
+        }
+        return true;
     }
     //
 
