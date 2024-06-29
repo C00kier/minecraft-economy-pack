@@ -31,3 +31,7 @@ commands:
     EconomyPack.money_new:
       description: Allows to add player to database manually.
       default: op
+  create_check:
+    EconomyPack.create_check:
+      description: Create checks
+      permission: EconomyPack.create_check

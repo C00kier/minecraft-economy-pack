@@ -3,6 +3,9 @@ package pawel.cookier.ignaczak.economypack;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
+import pawel.cookier.ignaczak.economypack.check_manager.commands.CheckManagerCommands;
+import pawel.cookier.ignaczak.economypack.check_manager.controller.CheckManagerController;
+import pawel.cookier.ignaczak.economypack.check_manager.events.CheckEvents;
 import pawel.cookier.ignaczak.economypack.gambling.commands.GamblingCommands;
 import pawel.cookier.ignaczak.economypack.money_manager.commands.MoneyManagerCommands;
 import pawel.cookier.ignaczak.economypack.plugin_manager.commands.PluginManagerCommands;
@@ -29,6 +32,7 @@ public final class EconomyPack extends JavaPlugin {
     private MoneyManagerCommands moneyManagerCommands;
     private GamblingCommands gamblingCommands;
     private PluginManagerCommands pluginManagerCommands;
+    private CheckManagerCommands checkManagerCommands;
 
     @Override
     public void onEnable() {
@@ -41,10 +45,6 @@ public final class EconomyPack extends JavaPlugin {
 
         // Initialize utilities
         RandomUtility randomUtility = new RandomUtility(random);
-
-        // Initialize listeners
-        OnPlayerJoinListener onPlayerJoinListener = new OnPlayerJoinListener(balanceManager, scoreboardHandler);
-        getServer().getPluginManager().registerEvents(onPlayerJoinListener, this);
 
         //Initialize controllers
         GamblingController gamblingController = new GamblingController(
@@ -61,11 +61,20 @@ public final class EconomyPack extends JavaPlugin {
         PluginManagerController pluginManagerController = new PluginManagerController(
                 translationManager
         );
+        CheckManagerController checkManagerController = new CheckManagerController(balanceManager, scoreboardHandler);
+
+        // Initialize listeners
+        OnPlayerJoinListener onPlayerJoinListener = new OnPlayerJoinListener(balanceManager, scoreboardHandler);
+        CheckEvents checkEvents = new CheckEvents(checkManagerController, this);
+
+        getServer().getPluginManager().registerEvents(onPlayerJoinListener, this);
+        getServer().getPluginManager().registerEvents(checkEvents, this);
 
         // Initialize commands
         this.moneyManagerCommands = new MoneyManagerCommands(moneyManagerController);
         this.gamblingCommands = new GamblingCommands(gamblingController);
         this.pluginManagerCommands = new PluginManagerCommands(pluginManagerController);
+        this.checkManagerCommands = new CheckManagerCommands(checkManagerController, this);
 
         // Register commands
         registerCommands();
@@ -78,17 +87,20 @@ public final class EconomyPack extends JavaPlugin {
 
     private void registerCommands() {
         // MONEY_MANAGER
-        registerCommand("balance", moneyManagerCommands);
-        registerCommand("exchange", moneyManagerCommands);
-        registerCommand("pay", moneyManagerCommands);
-        registerCommand("new_money_user", moneyManagerCommands);
+        registerCommand(PluginConfig.BALANCE_COMMAND, moneyManagerCommands);
+        registerCommand(PluginConfig.EXCHANGE_COMMAND, moneyManagerCommands);
+        registerCommand(PluginConfig.PAY_COMMAND, moneyManagerCommands);
+        registerCommand(PluginConfig.ADD_USER_MANUALLY_COMMAND, moneyManagerCommands);
 
         // GAMBLING
-        registerCommand("gamble", gamblingCommands);
-        registerCommand("slots", gamblingCommands);
+        registerCommand(PluginConfig.GAMBLE_COMMAND, gamblingCommands);
+        registerCommand(PluginConfig.SLOTS_COMMAND, gamblingCommands);
 
         //TRANSLATION
-        registerCommand("translation", pluginManagerCommands);
+        registerCommand(PluginConfig.TRANSLATION_COMMAND, pluginManagerCommands);
+
+        //CHECKS
+        registerCommand(PluginConfig.CHECK_COMMAND, checkManagerCommands);
     }
 
     private void registerCommand(String commandName, CommandExecutor executor) {

@@ -12,16 +12,20 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceManager;
 import pawel.cookier.ignaczak.economypack.check_manager.repository.ICheckManagerController;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
+import pawel.cookier.ignaczak.economypack.scoreboard.controllers.ScoreboardHandler;
 
 
 public class CheckManagerController implements ICheckManagerController {
 
     //Part to integrate with your money system
     private final BalanceManager balanceManager;
+    private final ScoreboardHandler scoreboardHandler;
 
-    public CheckManagerController(BalanceManager balanceManager) {
+    public CheckManagerController(BalanceManager balanceManager, ScoreboardHandler scoreboardHandler) {
         this.balanceManager = balanceManager;
+        this.scoreboardHandler = scoreboardHandler;
     }
+
     //
 
     @Override
@@ -33,18 +37,42 @@ public class CheckManagerController implements ICheckManagerController {
             ItemStack checkItem = createCheckItem(plugin, checkValue);
             player.getInventory().addItem(checkItem);
             player.sendMessage(ChatColor.GREEN + "Dodano czek o wartości %s$ do ekwipunku".formatted(checkValue));
+
+            //remove money from account
+            String playerName = player.getName();
+            Long playerBalance = balanceManager.getBalance(playerName);
+            balanceManager.setBalance(playerName,playerBalance - checkValue);
+            scoreboardHandler.updateMoney(player);
+            //
         }
 
     }
 
     @Override
-    public void exchangeCheckForMoney(Player player, JavaPlugin plugin, ItemStack item) {
-        long valueToAddToAccount = getCheckValue(item, plugin);
+    public void exchangeCheckForMoney(Player player, Long checkValue) {
         // your logic to add money to account
         String playerName = player.getName();
         long currentBalance = balanceManager.getBalance(playerName);
-        balanceManager.setBalance(playerName, currentBalance + valueToAddToAccount);
+        balanceManager.setBalance(playerName, currentBalance + checkValue);
+        scoreboardHandler.updateMoney(player);
+        player.sendMessage(ChatColor.GREEN + "Wymieniono czek na %s$".formatted(checkValue));
         //
+    }
+
+    public long getCheckValue(ItemStack item, JavaPlugin plugin) {
+        if (item != null && item.hasItemMeta()) {
+            ItemMeta meta = item.getItemMeta();
+            if (meta != null) {
+                NamespacedKey key = new NamespacedKey(plugin, "check_value");
+                if (meta.getPersistentDataContainer().has(key, PersistentDataType.LONG)) {
+                    Long checkValue = meta.getPersistentDataContainer().get(key, PersistentDataType.LONG);
+                    if (checkValue != null) {
+                        return checkValue;
+                    }
+                }
+            }
+        }
+        return 0L;
     }
 
     private boolean createCheckValidation(Player player, String[] args) {
@@ -110,22 +138,6 @@ public class CheckManagerController implements ICheckManagerController {
         }
 
         return checkItem;
-    }
-
-    private long getCheckValue(ItemStack item, JavaPlugin plugin) {
-        if (item != null && item.hasItemMeta()) {
-            ItemMeta meta = item.getItemMeta();
-            if (meta != null) {
-                NamespacedKey key = new NamespacedKey(plugin, "check_value");
-                if (meta.getPersistentDataContainer().has(key, PersistentDataType.LONG)) {
-                    Long checkValue = meta.getPersistentDataContainer().get(key, PersistentDataType.LONG);
-                    if (checkValue != null) {
-                        return checkValue;
-                    }
-                }
-            }
-        }
-        return 0L;
     }
 
 }
