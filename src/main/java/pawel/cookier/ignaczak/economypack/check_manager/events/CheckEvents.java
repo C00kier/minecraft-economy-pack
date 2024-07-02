@@ -1,14 +1,18 @@
 package pawel.cookier.ignaczak.economypack.check_manager.events;
 
-import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import pawel.cookier.ignaczak.economypack.check_manager.controller.CheckManagerController;
+
+import java.util.Objects;
 
 public class CheckEvents implements Listener {
 
@@ -22,18 +26,30 @@ public class CheckEvents implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        Action action = event.getAction();
+        if (event.getHand() != null && event.getHand().equals(EquipmentSlot.OFF_HAND)) {
+            return;
+        }
 
-        if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-            ItemStack item = event.getItem();
+        Player player = event.getPlayer();
+        ItemStack item = event.getItem();
 
-            if (item != null && item.hasItemMeta()) {
-                long checkValue = checkManagerController.getCheckValue(item, plugin);
+        if (item == null || item.getType() != Material.PAPER) {
+            return;
+        }
 
-                if (checkValue != 0L) {
-                    checkManagerController.exchangeCheckForMoney(event.getPlayer(), checkValue);
-                    item.setAmount(item.getAmount() - 1);
-                }
+        if (item.hasItemMeta()
+                && Objects.requireNonNull(item.getItemMeta())
+                .getPersistentDataContainer()
+                .has(new NamespacedKey(plugin, "check_value"), PersistentDataType.LONG)) {
+            event.setCancelled(true);
+            checkManagerController.exchangeCheckForMoney(player, item, plugin);
+
+            int newAmount = item.getAmount() - 1;
+            if (newAmount > 0) {
+                item.setAmount(newAmount);
+            } else {
+                item.setAmount(0);
+                player.getInventory().remove(item);
             }
         }
     }

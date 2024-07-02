@@ -41,4 +41,7 @@ public final class PluginConfig {
     public static final GameType SLOTS_GAME_TYPE = GameType.SLOTS_GAME;
     public static final int SLOTS_MIN_NUMBER_VALUE = 1;
     public static final int SLOTS_MAX_NUMBER_VALUE = 5;
+
+    //inventory config
+    public static int BASIC_BACKPACKSIZE = 36;
 }

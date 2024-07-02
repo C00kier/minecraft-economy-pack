@@ -6,6 +6,5 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public interface ICheckManagerController {
     void addCheckToPlayerInventory(Player player, JavaPlugin plugin, String[] args);
-    void exchangeCheckForMoney(Player player, Long checkValue);
-    long getCheckValue(ItemStack item, JavaPlugin plugin);
+    void exchangeCheckForMoney(Player player, ItemStack item, JavaPlugin plugin);
 }

@@ -36,6 +36,7 @@ public final class EconomyPack extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
         // Initialize managers
         Locale userLocale = Locale.forLanguageTag(PluginConfig.CURRENT_PLUGIN_LANGUAGE_TAG);
         TranslationManager translationManager = new TranslationManager(userLocale);
@@ -61,7 +62,9 @@ public final class EconomyPack extends JavaPlugin {
         PluginManagerController pluginManagerController = new PluginManagerController(
                 translationManager
         );
-        CheckManagerController checkManagerController = new CheckManagerController(balanceManager, scoreboardHandler);
+        CheckManagerController checkManagerController = new CheckManagerController(
+                balanceManager,
+                scoreboardHandler);
 
         // Initialize listeners
         OnPlayerJoinListener onPlayerJoinListener = new OnPlayerJoinListener(balanceManager, scoreboardHandler);

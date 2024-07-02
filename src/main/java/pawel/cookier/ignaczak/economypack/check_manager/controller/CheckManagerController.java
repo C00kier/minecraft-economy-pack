@@ -14,10 +14,10 @@ import pawel.cookier.ignaczak.economypack.check_manager.repository.ICheckManager
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.scoreboard.controllers.ScoreboardHandler;
 
+import java.util.Objects;
 
 public class CheckManagerController implements ICheckManagerController {
 
-    //Part to integrate with your money system
     private final BalanceManager balanceManager;
     private final ScoreboardHandler scoreboardHandler;
 
@@ -26,8 +26,6 @@ public class CheckManagerController implements ICheckManagerController {
         this.scoreboardHandler = scoreboardHandler;
     }
 
-    //
-
     @Override
     public void addCheckToPlayerInventory(Player player, JavaPlugin plugin, String[] args) {
         boolean isValid = createCheckValidation(player, args);
@@ -35,22 +33,23 @@ public class CheckManagerController implements ICheckManagerController {
         if (isValid) {
             long checkValue = Long.parseLong(args[0]);
             ItemStack checkItem = createCheckItem(plugin, checkValue);
-            player.getInventory().addItem(checkItem);
-            player.sendMessage(ChatColor.GREEN + "Dodano czek o wartości %s$ do ekwipunku".formatted(checkValue));
 
-            //remove money from account
-            String playerName = player.getName();
-            Long playerBalance = balanceManager.getBalance(playerName);
-            balanceManager.setBalance(playerName,playerBalance - checkValue);
-            scoreboardHandler.updateMoney(player);
-            //
+            if (validateInventorySpace(player, checkItem, plugin)) {
+                player.getInventory().addItem(checkItem);
+                player.sendMessage(ChatColor.GREEN + "Dodano czek o wartości %s$ do ekwipunku".formatted(checkValue));
+
+                // Remove money from account
+                String playerName = player.getName();
+                Long playerBalance = balanceManager.getBalance(playerName);
+                balanceManager.setBalance(playerName, playerBalance - checkValue);
+                scoreboardHandler.updateMoney(player);
+            }
         }
-
     }
 
-    @Override
-    public void exchangeCheckForMoney(Player player, Long checkValue) {
-        // your logic to add money to account
+    public void exchangeCheckForMoney(Player player, ItemStack item, JavaPlugin plugin) {
+        long checkValue = getCheckValue(item, plugin);
+        // Your logic to add money to account
         String playerName = player.getName();
         long currentBalance = balanceManager.getBalance(playerName);
         balanceManager.setBalance(playerName, currentBalance + checkValue);
@@ -59,8 +58,7 @@ public class CheckManagerController implements ICheckManagerController {
         //
     }
 
-    @Override
-    public long getCheckValue(ItemStack item, JavaPlugin plugin) {
+    private long getCheckValue(ItemStack item, JavaPlugin plugin) {
         if (item != null && item.hasItemMeta()) {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
@@ -79,7 +77,6 @@ public class CheckManagerController implements ICheckManagerController {
     private boolean createCheckValidation(Player player, String[] args) {
         return validateArgsLength(player, args)
                 && validateArgsValue(player, args)
-                && validateInventorySpace(player)
                 && validatePlayerAccount(player, args);
     }
 
@@ -108,28 +105,55 @@ public class CheckManagerController implements ICheckManagerController {
         return true;
     }
 
-    private boolean validateInventorySpace(Player player) {
+    private boolean validateInventorySpace(Player player, ItemStack itemToAdd, JavaPlugin plugin) {
         Inventory playerInventory = player.getInventory();
+        int totalAmount = itemToAdd.getAmount();
+        ItemMeta itemMeta = itemToAdd.getItemMeta();
+        int maxStackSize = itemToAdd.getMaxStackSize();
 
-        if (playerInventory.firstEmpty() == -1) {
-            player.sendMessage(ChatColor.RED + "Nie masz wystarczająco dużo miejsca w ekwipunku");
-            return false;
+        for (int i = 0; i < PluginConfig.BASIC_BACKPACKSIZE; i++) {
+            ItemStack item = playerInventory.getItem(i);
+            if (item == null) {
+                return true;
+            }
+
+            ItemMeta currentMeta = item.getItemMeta();
+            if (compareItemMeta(currentMeta, itemMeta, plugin) && item.getAmount() < maxStackSize) {
+                int availableSpace = maxStackSize - item.getAmount();
+                totalAmount -= availableSpace;
+
+                if (totalAmount <= 0) {
+                    return true;
+                }
+            }
         }
-        return true;
+
+        player.sendMessage(ChatColor.RED + "Nie masz wystarczająco dużo miejsca w ekwipunku");
+        return false;
     }
 
-    //Part to integrate with your money system
-    private boolean validatePlayerAccount(Player player, String[] args){
+    private boolean compareItemMeta(ItemMeta meta1, ItemMeta meta2, JavaPlugin plugin) {
+        if (meta1 == null || meta2 == null) {
+            return false;
+        }
+
+        NamespacedKey key = new NamespacedKey(plugin, "check_value");
+        Long value1 = meta1.getPersistentDataContainer().get(key, PersistentDataType.LONG);
+        Long value2 = meta2.getPersistentDataContainer().get(key, PersistentDataType.LONG);
+
+        return Objects.equals(value1, value2);
+    }
+
+    private boolean validatePlayerAccount(Player player, String[] args) {
         long checkValue = Long.parseLong(args[0]);
         long accountValue = balanceManager.getBalance(player.getName());
 
-        if(accountValue < checkValue){
+        if (accountValue < checkValue) {
             player.sendMessage(ChatColor.RED + "Nie masz wystarczającej ilości pieniędzy");
             return false;
         }
         return true;
     }
-    //
 
     private ItemStack createCheckItem(JavaPlugin plugin, Long value) {
         ItemStack checkItem = new ItemStack(Material.PAPER);
@@ -144,5 +168,4 @@ public class CheckManagerController implements ICheckManagerController {
 
         return checkItem;
     }
-
 }
