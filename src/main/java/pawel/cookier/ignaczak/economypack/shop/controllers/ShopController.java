@@ -7,10 +7,15 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.config.ShopConfig;
 import pawel.cookier.ignaczak.economypack.shop.repository.IShopController;
 import pawel.cookier.ignaczak.economypack.utility.IShopUtility;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 public class ShopController implements IShopController {
     private final Inventory shopMain;
@@ -25,14 +30,14 @@ public class ShopController implements IShopController {
     }
 
     @Override
-    public boolean isShiftMouseClick(InventoryClickEvent event){
+    public boolean isShiftMouseClick(InventoryClickEvent event) {
         return event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.SHIFT_RIGHT;
     }
 
     @Override
     public void addShopCategory(Player player, Inventory inventory, String[] args) {
-        if(player.isOp()){
-            if(isAddShopCategoryValid(player, inventory, args)){
+        if (player.isOp()) {
+            if (isAddShopCategoryValid(player, inventory, args)) {
                 int emptyIndex = inventory.firstEmpty();
                 String displayName = args[0];
                 Material material = Material.getMaterial(args[1]);
@@ -45,13 +50,14 @@ public class ShopController implements IShopController {
         }
     }
 
-    private boolean isAddShopCategoryValid(Player player, Inventory inventory, String[] args){
-        return hasEnoughSpaceInShop(player, inventory)
-                && hasCorrectNumberOfArgs(player, args)
-                && areArgsCorrectType(player, args);
+    private boolean isAddShopCategoryValid(Player player, Inventory inventory, String[] args) {
+        return hasCorrectNumberOfArgs(player, args)
+                && areArgsCorrectType(player, args)
+                && doesCategoryNotExist(player, inventory, args)
+                && hasEnoughSpaceInShop(player, inventory);
     }
 
-    private boolean hasEnoughSpaceInShop(Player player, Inventory inventory){
+    private boolean hasEnoughSpaceInShop(Player player, Inventory inventory) {
         for (int i = 0; i < ShopConfig.SHOP_FIELDS_TO_FILL_UP; i++) {
             ItemStack item = inventory.getItem(i);
             if (item == null) {
@@ -63,8 +69,8 @@ public class ShopController implements IShopController {
         return false;
     }
 
-    private boolean hasCorrectNumberOfArgs(Player player, String[] args){
-        if(args.length == 2){
+    private boolean hasCorrectNumberOfArgs(Player player, String[] args) {
+        if (args.length == 2) {
             return true;
         }
 
@@ -74,14 +80,32 @@ public class ShopController implements IShopController {
         return false;
     }
 
-    private boolean areArgsCorrectType(Player player, String[] args){
-        if(Material.getMaterial(args[1].toUpperCase()) != null){
+    private boolean areArgsCorrectType(Player player, String[] args) {
+        if (Material.getMaterial(args[1].toUpperCase()) != null) {
             return true;
         }
 
         player.sendMessage(ChatColor.RED + "Nie znaleziono materiału: %s".formatted(args[1]));
 
         return false;
+    }
+
+    private boolean doesCategoryNotExist(Player player, Inventory inventory, String[] args) {
+        String categoryName = args[0];
+
+        List<String> itemNamesArray = Arrays.stream(inventory.getContents())
+                .filter(Objects::nonNull)
+                .map(ItemStack::getItemMeta)
+                .filter(Objects::nonNull)
+                .map(ItemMeta::getDisplayName)
+                .toList();
+
+        if (itemNamesArray.contains(categoryName)) {
+            player.sendMessage(ChatColor.RED + "Istnieje już kategoria o nazwie " + categoryName);
+            return false;
+        }
+
+        return true;
     }
 
 }
