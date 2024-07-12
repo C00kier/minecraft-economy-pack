@@ -11,7 +11,9 @@ public final class PluginConfig {
     public static final String PAY_COMMAND = "pay";
     public static final String ADD_USER_MANUALLY_COMMAND = "new_money_user";
     public static final String TRANSLATION_COMMAND = "translation";
-    public static final String SHOP_COMMAND = "shop";
+    public static final String CALL_SHOP_COMMAND = "shop";
+    public static final String ADD_SHOP_CATEGORY_COMMAND = "add_shop_category";
+
 
     //translation
     public static final String TRANSLATION_TAG_POLISH = "pl";

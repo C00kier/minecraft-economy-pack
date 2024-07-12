@@ -1,11 +1,16 @@
 package pawel.cookier.ignaczak.economypack.shop.controllers;
 
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.config.ShopConfig;
 import pawel.cookier.ignaczak.economypack.shop.repository.IShopController;
+import pawel.cookier.ignaczak.economypack.utility.IShopUtility;
 
 public class ShopController implements IShopController {
     private final Inventory shopMain;
@@ -22,6 +27,61 @@ public class ShopController implements IShopController {
     @Override
     public boolean isShiftMouseClick(InventoryClickEvent event){
         return event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.SHIFT_RIGHT;
+    }
+
+    @Override
+    public void addShopCategory(Player player, Inventory inventory, String[] args) {
+        if(player.isOp()){
+            if(isAddShopCategoryValid(player, inventory, args)){
+                int emptyIndex = inventory.firstEmpty();
+                String displayName = args[0];
+                Material material = Material.getMaterial(args[1]);
+
+                ItemStack item = IShopUtility.createItemStack(material, displayName);
+                inventory.setItem(emptyIndex, item);
+
+                player.sendMessage(ChatColor.GREEN + "Dodano %s do sklepu".formatted(displayName));
+            }
+        }
+    }
+
+    private boolean isAddShopCategoryValid(Player player, Inventory inventory, String[] args){
+        return hasEnoughSpaceInShop(player, inventory)
+                && hasCorrectNumberOfArgs(player, args)
+                && areArgsCorrectType(player, args);
+    }
+
+    private boolean hasEnoughSpaceInShop(Player player, Inventory inventory){
+        for (int i = 0; i < ShopConfig.SHOP_FIELDS_TO_FILL_UP; i++) {
+            ItemStack item = inventory.getItem(i);
+            if (item == null) {
+                return true;
+            }
+        }
+
+        player.sendMessage(ChatColor.RED + "Nie możesz dodać nowej kategorii. Osiągnąłeś limit.");
+        return false;
+    }
+
+    private boolean hasCorrectNumberOfArgs(Player player, String[] args){
+        if(args.length == 2){
+            return true;
+        }
+
+        player.sendMessage(ChatColor.RED + "Musisz podać dokładnie dwa argumenty" +
+                "%s <nazwa kategorii> <typ materiału jaki ma się wyświetlić w sklepie>"
+                        .formatted(PluginConfig.ADD_SHOP_CATEGORY_COMMAND));
+        return false;
+    }
+
+    private boolean areArgsCorrectType(Player player, String[] args){
+        if(Material.getMaterial(args[1].toUpperCase()) != null){
+            return true;
+        }
+
+        player.sendMessage(ChatColor.RED + "Nie znaleziono materiału: %s".formatted(args[1]));
+
+        return false;
     }
 
 }

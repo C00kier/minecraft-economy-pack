@@ -99,7 +99,9 @@ public final class EconomyPack extends JavaPlugin {
         registerCommandWithTabCompleter("translation", pluginManagerCommands);
 
         //SHOP MANAGER
-        Objects.requireNonNull(getCommand(PluginConfig.SHOP_COMMAND)).setExecutor(shopCommands);
+        registerCommandWithTabCompleter(PluginConfig.ADD_SHOP_CATEGORY_COMMAND, shopCommands);
+        registerCommandWithTabCompleter(PluginConfig.CALL_SHOP_COMMAND, shopCommands);
+
     }
 
     private void registerCommandWithTabCompleter(String commandName, CommandExecutor executor) {
