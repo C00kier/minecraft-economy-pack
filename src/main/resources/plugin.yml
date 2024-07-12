@@ -12,6 +12,12 @@ commands:
   remove_shop_category:
     description: Removes category from shop
     permission: EconomyPack.remove_shop_category
+  edit_shop_category_name:
+    description: Changes category name
+    permission: EconomyPack.edit_shop_category_name
+  edit_shop_category_icon:
+    description: Changes category icon
+    permission: EconomyPack.edit_shop_category_icon
   gamble:
     description: Play gamble game
     permission: EconomyPack.gamble

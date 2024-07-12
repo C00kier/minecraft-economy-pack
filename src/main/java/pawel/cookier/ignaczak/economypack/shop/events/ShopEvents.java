@@ -5,14 +5,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import pawel.cookier.ignaczak.economypack.config.ShopConfig;
-import pawel.cookier.ignaczak.economypack.shop.controllers.ShopController;
+import pawel.cookier.ignaczak.economypack.shop.controllers.ShopCategoryController;
 
 public class ShopEvents implements Listener {
 
-    private final ShopController shopController;
+    private final ShopCategoryController shopCategoryController;
 
-    public ShopEvents(ShopController shopController) {
-        this.shopController = shopController;
+    public ShopEvents(ShopCategoryController shopCategoryController) {
+        this.shopCategoryController = shopCategoryController;
     }
 
     @EventHandler
@@ -22,7 +22,7 @@ public class ShopEvents implements Listener {
         {
             event.setCancelled(true);
 
-            if(shopController.isShiftMouseClick(event)){
+            if(shopCategoryController.isShiftMouseClick(event)){
                 return;
             }
 

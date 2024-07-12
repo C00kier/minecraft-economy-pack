@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.config.ShopConfig;
-import pawel.cookier.ignaczak.economypack.shop.controllers.ShopController;
+import pawel.cookier.ignaczak.economypack.shop.controllers.ShopCategoryController;
 import pawel.cookier.ignaczak.economypack.shop.controllers.ShopTabController;
 
 import java.util.ArrayList;
@@ -17,11 +17,11 @@ import java.util.List;
 
 public class ShopCommands implements CommandExecutor, TabCompleter {
 
-    private final ShopController shopController;
+    private final ShopCategoryController shopCategoryController;
     private final ShopTabController shopTabController;
 
-    public ShopCommands(ShopController shopController, ShopTabController shopTabController) {
-        this.shopController = shopController;
+    public ShopCommands(ShopCategoryController shopCategoryController, ShopTabController shopTabController) {
+        this.shopCategoryController = shopCategoryController;
         this.shopTabController = shopTabController;
     }
 
@@ -34,16 +34,23 @@ public class ShopCommands implements CommandExecutor, TabCompleter {
             String commandName = command.getName().toLowerCase();
 
             switch (commandName) {
-                case PluginConfig.CALL_SHOP_COMMAND -> shopController.openInventoryMenu(player);
-                case PluginConfig.ADD_SHOP_CATEGORY_COMMAND -> shopController.addShopCategory(
+                case PluginConfig.CALL_SHOP_COMMAND -> shopCategoryController.openInventoryMenu(player);
+                case PluginConfig.ADD_SHOP_CATEGORY_COMMAND -> shopCategoryController.addShopCategory(
                         player,
                         ShopConfig.SHOP_MAIN_INVENTORY,
                         args);
-                case PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND -> shopController.removeCategoryFromShop(
+                case PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND -> shopCategoryController.removeCategoryFromShop(
                         player,
                         ShopConfig.SHOP_MAIN_INVENTORY,
-                        args
-                );
+                        args);
+                case PluginConfig.EDIT_SHOP_CATEGORY_NAME_COMMAND -> shopCategoryController.editShopCategoryName(
+                        player,
+                        ShopConfig.SHOP_MAIN_INVENTORY,
+                        args);
+                case PluginConfig.EDIT_SHOP_CATEGORY_ICON_COMMAND -> shopCategoryController.editShopCategoryIcon(
+                        player,
+                        ShopConfig.SHOP_MAIN_INVENTORY,
+                        args);
             }
         }
         return true;
@@ -60,10 +67,12 @@ public class ShopCommands implements CommandExecutor, TabCompleter {
         String commandName = command.getName();
         switch (commandName) {
             case PluginConfig.CALL_SHOP_COMMAND -> suggestions.add("");
-            case PluginConfig.ADD_SHOP_CATEGORY_COMMAND -> suggestions.addAll(
-                    shopTabController.addCategoryOnTabComplete(args));
-            case PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND -> suggestions.addAll(
-                    shopTabController.removeCategoryOnTabComplete(args));
+            case PluginConfig.EDIT_SHOP_CATEGORY_ICON_COMMAND,
+                    PluginConfig.ADD_SHOP_CATEGORY_COMMAND ->
+                    suggestions.addAll(shopTabController.addEditCategoryIconOnTabComplete(args));
+            case PluginConfig.EDIT_SHOP_CATEGORY_NAME_COMMAND,
+                    PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND ->
+                    suggestions.addAll(shopTabController.removeEditNameCategoryOnTabComplete(args));
         }
 
         return suggestions;
