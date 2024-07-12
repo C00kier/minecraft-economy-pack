@@ -9,6 +9,9 @@ commands:
   add_shop_category:
     description: Adds new category to shop
     permission: EconomyPack.add_shop_category
+  remove_shop_category:
+    description: Removes category from shop
+    permission: EconomyPack.remove_shop_category
   gamble:
     description: Play gamble game
     permission: EconomyPack.gamble

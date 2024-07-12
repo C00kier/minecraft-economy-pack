@@ -1,9 +1,14 @@
 package pawel.cookier.ignaczak.economypack.utility;
 
 import org.bukkit.Material;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 public interface IShopUtility {
 
@@ -18,5 +23,22 @@ public interface IShopUtility {
         item.setItemMeta(meta);
 
         return item;
+    }
+
+    static List<String> getItemNamesFromInventory(Inventory inventory){
+        return Arrays.stream(inventory.getContents())
+                .filter(Objects::nonNull)
+                .map(ItemStack::getItemMeta)
+                .filter(Objects::nonNull)
+                .map(ItemMeta::getDisplayName)
+                .toList();
+    }
+
+    static void sortInventory(Inventory inventory, List<ItemStack> itemsList){
+        inventory.clear();
+
+        for (int i = 0; i <itemsList.size(); i++){
+            inventory.setItem(i, itemsList.get(i));
+        }
     }
 }

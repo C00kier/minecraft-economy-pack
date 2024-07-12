@@ -1,6 +1,5 @@
 package pawel.cookier.ignaczak.economypack.shop.commands;
 
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,17 +10,19 @@ import org.jetbrains.annotations.Nullable;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.config.ShopConfig;
 import pawel.cookier.ignaczak.economypack.shop.controllers.ShopController;
+import pawel.cookier.ignaczak.economypack.shop.controllers.ShopTabController;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ShopCommands implements CommandExecutor, TabCompleter {
 
     private final ShopController shopController;
+    private final ShopTabController shopTabController;
 
-    public ShopCommands(ShopController shopController) {
+    public ShopCommands(ShopController shopController, ShopTabController shopTabController) {
         this.shopController = shopController;
+        this.shopTabController = shopTabController;
     }
 
     @Override
@@ -38,6 +39,11 @@ public class ShopCommands implements CommandExecutor, TabCompleter {
                         player,
                         ShopConfig.SHOP_MAIN_INVENTORY,
                         args);
+                case PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND -> shopController.removeCategoryFromShop(
+                        player,
+                        ShopConfig.SHOP_MAIN_INVENTORY,
+                        args
+                );
             }
         }
         return true;
@@ -52,26 +58,16 @@ public class ShopCommands implements CommandExecutor, TabCompleter {
                                       @NotNull String[] args) {
         List<String> suggestions = new ArrayList<>();
         String commandName = command.getName();
-        switch (commandName){
+        switch (commandName) {
             case PluginConfig.CALL_SHOP_COMMAND -> suggestions.add("");
-            case PluginConfig.ADD_SHOP_CATEGORY_COMMAND -> {
-                if(args.length == 1){
-                    suggestions.add("<nazwa kategorii>");
-                } else if (args.length == 2) {
-                    suggestions.addAll(
-                            Arrays.stream(Material.values())
-                            .map(Material::name)
-                            .toList());
-
-                    if (!args[1].isEmpty()) {
-                        return suggestions.stream()
-                                .filter(name -> name.toLowerCase().startsWith(args[1].toLowerCase()))
-                                .toList();
-                    }
-                }
-            }
+            case PluginConfig.ADD_SHOP_CATEGORY_COMMAND -> suggestions.addAll(
+                    shopTabController.addCategoryOnTabComplete(args));
+            case PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND -> suggestions.addAll(
+                    shopTabController.removeCategoryOnTabComplete(args));
         }
 
         return suggestions;
     }
+
+
 }

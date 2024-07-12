@@ -13,9 +13,8 @@ import pawel.cookier.ignaczak.economypack.config.ShopConfig;
 import pawel.cookier.ignaczak.economypack.shop.repository.IShopController;
 import pawel.cookier.ignaczak.economypack.utility.IShopUtility;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ShopController implements IShopController {
     private final Inventory shopMain;
@@ -50,10 +49,41 @@ public class ShopController implements IShopController {
         }
     }
 
+    @Override
+    public void removeCategoryFromShop(Player player, Inventory inventory, String[] args) {
+        if(player.isOp()){
+            if(!doesCategoryNotExist(player, inventory, args,false)
+            && hasCorrectNumberOfArgs(player,args, PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND)
+            && hasSameArgs(player,args)){
+
+                String categoryName = args[0];
+                ItemStack[] contents = inventory.getContents();
+                List<ItemStack> itemsList = new ArrayList<>();
+
+                for (int i = 0; i < ShopConfig.SHOP_FIELDS_TO_FILL_UP; i++) {
+                    ItemStack item = contents[i];
+                    if (item != null) {
+                        ItemMeta meta = item.getItemMeta();
+                        if (meta != null && categoryName.equals(meta.getDisplayName())) {
+                            inventory.setItem(i, null);
+                            player.sendMessage(ChatColor.GREEN + "Usunięto kategorię %s".formatted(categoryName));
+                            continue;
+                        }
+                        itemsList.add(item);
+                    }
+                }
+
+                IShopUtility.sortInventory(inventory, itemsList);
+            }
+        }
+    }
+
+
+
     private boolean isAddShopCategoryValid(Player player, Inventory inventory, String[] args) {
-        return hasCorrectNumberOfArgs(player, args)
+        return hasCorrectNumberOfArgs(player, args, PluginConfig.ADD_SHOP_CATEGORY_COMMAND)
                 && areArgsCorrectType(player, args)
-                && doesCategoryNotExist(player, inventory, args)
+                && doesCategoryNotExist(player, inventory, args,true)
                 && hasEnoughSpaceInShop(player, inventory);
     }
 
@@ -69,14 +99,22 @@ public class ShopController implements IShopController {
         return false;
     }
 
-    private boolean hasCorrectNumberOfArgs(Player player, String[] args) {
+    private boolean hasCorrectNumberOfArgs(Player player, String[] args, String command) {
         if (args.length == 2) {
             return true;
         }
 
-        player.sendMessage(ChatColor.RED + "Musisz podać dokładnie dwa argumenty" +
-                "%s <nazwa kategorii> <typ materiału jaki ma się wyświetlić w sklepie>"
-                        .formatted(PluginConfig.ADD_SHOP_CATEGORY_COMMAND));
+        switch (command){
+            case PluginConfig.ADD_SHOP_CATEGORY_COMMAND -> player
+                    .sendMessage(ChatColor.RED + "Musisz podać dokładnie dwa argumenty" +
+                    "/%s <nazwa kategorii> <typ materiału jaki ma się wyświetlić w sklepie>"
+                            .formatted(PluginConfig.ADD_SHOP_CATEGORY_COMMAND));
+            case PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND -> player
+                    .sendMessage(ChatColor.RED + "Musisz podać nazwę kategorii 2 razy " +
+                    "/%s <nazwa kategorii> <nazwa kategorii>"
+                            .formatted(PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND));
+        }
+
         return false;
     }
 
@@ -90,22 +128,33 @@ public class ShopController implements IShopController {
         return false;
     }
 
-    private boolean doesCategoryNotExist(Player player, Inventory inventory, String[] args) {
+    private boolean doesCategoryNotExist(Player player, Inventory inventory, String[] args, boolean isAddingCategory) {
         String categoryName = args[0];
 
-        List<String> itemNamesArray = Arrays.stream(inventory.getContents())
-                .filter(Objects::nonNull)
-                .map(ItemStack::getItemMeta)
-                .filter(Objects::nonNull)
-                .map(ItemMeta::getDisplayName)
-                .toList();
+        List<String> itemNamesArray = IShopUtility.getItemNamesFromInventory(inventory);
 
         if (itemNamesArray.contains(categoryName)) {
-            player.sendMessage(ChatColor.RED + "Istnieje już kategoria o nazwie " + categoryName);
+            if(isAddingCategory){
+                player.sendMessage(ChatColor.RED + "Istnieje już kategoria o nazwie " + categoryName);
+            }
             return false;
         }
 
+        if(!isAddingCategory){
+            player.sendMessage(ChatColor.RED + "Nie znaleziono kategorii " + categoryName);
+        }
         return true;
     }
+
+    private boolean hasSameArgs(Player player, String[] args){
+        if(args[0].equalsIgnoreCase(args[1])){
+            return true;
+        }
+
+        player.sendMessage(ChatColor.RED + "Nazwa %s nie jest taka sama jak %s".formatted(args[0], args[1]));
+        return false;
+    }
+
+
 
 }

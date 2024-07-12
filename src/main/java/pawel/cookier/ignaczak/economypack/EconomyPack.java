@@ -15,6 +15,7 @@ import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceMan
 import pawel.cookier.ignaczak.economypack.scoreboard.controllers.ScoreboardHandler;
 import pawel.cookier.ignaczak.economypack.shop.commands.ShopCommands;
 import pawel.cookier.ignaczak.economypack.shop.controllers.ShopController;
+import pawel.cookier.ignaczak.economypack.shop.controllers.ShopTabController;
 import pawel.cookier.ignaczak.economypack.shop.events.ShopEvents;
 import pawel.cookier.ignaczak.economypack.translation_manager.controllers.TranslationManager;
 import pawel.cookier.ignaczak.economypack.utility.RandomUtility;
@@ -62,6 +63,7 @@ public final class EconomyPack extends JavaPlugin {
                 translationManager
         );
         ShopController shopController = new ShopController();
+        ShopTabController shopTabController = new ShopTabController();
 
         // Initialize events
         BalanceManagerEvents balanceManagerEvents = new BalanceManagerEvents(balanceManager, scoreboardHandler);
@@ -73,7 +75,7 @@ public final class EconomyPack extends JavaPlugin {
         this.moneyManagerCommands = new MoneyManagerCommands(moneyManagerController);
         this.gamblingCommands = new GamblingCommands(gamblingController);
         this.pluginManagerCommands = new PluginManagerCommands(pluginManagerController);
-        this.shopCommands = new ShopCommands(shopController);
+        this.shopCommands = new ShopCommands(shopController, shopTabController);
 
         // Register commands
         registerCommands();
@@ -100,6 +102,7 @@ public final class EconomyPack extends JavaPlugin {
 
         //SHOP MANAGER
         registerCommandWithTabCompleter(PluginConfig.ADD_SHOP_CATEGORY_COMMAND, shopCommands);
+        registerCommandWithTabCompleter(PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND, shopCommands);
         registerCommandWithTabCompleter(PluginConfig.CALL_SHOP_COMMAND, shopCommands);
 
     }

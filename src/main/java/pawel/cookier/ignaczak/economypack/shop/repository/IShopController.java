@@ -8,4 +8,5 @@ public interface IShopController {
     void openInventoryMenu(Player player);
     boolean isShiftMouseClick(InventoryClickEvent event);
     void addShopCategory(Player player, Inventory inventory, String[] args);
+    void removeCategoryFromShop(Player player, Inventory inventory, String[] args);
 }
