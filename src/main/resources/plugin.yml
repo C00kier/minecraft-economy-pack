@@ -3,6 +3,9 @@ version: '${project.version}'
 main: pawel.cookier.ignaczak.economypack.EconomyPack
 api-version: '1.20'
 commands:
+  shop:
+    description: Opens shop
+    permission: EconomyPack.shop
   gamble:
     description: Play gamble game
     permission: EconomyPack.gamble

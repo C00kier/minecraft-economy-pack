@@ -5,14 +5,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import pawel.cookier.ignaczak.economypack.shop.controllers.MenuController;
+import pawel.cookier.ignaczak.economypack.shop.controllers.ShopController;
 
 public class ShopCommands implements CommandExecutor{
 
-    private final MenuController menuController;
+    private final ShopController shopController;
 
-    public ShopCommands(MenuController menuController) {
-        this.menuController = menuController;
+    public ShopCommands(ShopController shopController) {
+        this.shopController = shopController;
     }
 
     @Override
@@ -21,7 +21,7 @@ public class ShopCommands implements CommandExecutor{
                              @NotNull String label,
                              @NotNull String[] args) {
         if(sender instanceof Player player && command.getName().equalsIgnoreCase("shop")){
-            menuController.openInventoryMenu(player);
+            shopController.openInventoryMenu(player);
         }
         return true;
     }

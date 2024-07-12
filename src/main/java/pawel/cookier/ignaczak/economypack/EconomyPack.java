@@ -10,9 +10,12 @@ import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.gambling.controllers.GamblingController;
 import pawel.cookier.ignaczak.economypack.money_manager.controllers.MoneyManagerController;
 import pawel.cookier.ignaczak.economypack.plugin_manager.controllers.PluginManagerController;
-import pawel.cookier.ignaczak.economypack.listeners.OnPlayerJoinListener;
+import pawel.cookier.ignaczak.economypack.balance_manager.events.BalanceManagerEvents;
 import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceManager;
 import pawel.cookier.ignaczak.economypack.scoreboard.controllers.ScoreboardHandler;
+import pawel.cookier.ignaczak.economypack.shop.commands.ShopCommands;
+import pawel.cookier.ignaczak.economypack.shop.controllers.ShopController;
+import pawel.cookier.ignaczak.economypack.shop.events.ShopEvents;
 import pawel.cookier.ignaczak.economypack.translation_manager.controllers.TranslationManager;
 import pawel.cookier.ignaczak.economypack.utility.RandomUtility;
 
@@ -29,6 +32,7 @@ public final class EconomyPack extends JavaPlugin {
     private MoneyManagerCommands moneyManagerCommands;
     private GamblingCommands gamblingCommands;
     private PluginManagerCommands pluginManagerCommands;
+    private ShopCommands shopCommands;
 
     @Override
     public void onEnable() {
@@ -41,10 +45,6 @@ public final class EconomyPack extends JavaPlugin {
 
         // Initialize utilities
         RandomUtility randomUtility = new RandomUtility(random);
-
-        // Initialize listeners
-        OnPlayerJoinListener onPlayerJoinListener = new OnPlayerJoinListener(balanceManager, scoreboardHandler);
-        getServer().getPluginManager().registerEvents(onPlayerJoinListener, this);
 
         //Initialize controllers
         GamblingController gamblingController = new GamblingController(
@@ -61,11 +61,19 @@ public final class EconomyPack extends JavaPlugin {
         PluginManagerController pluginManagerController = new PluginManagerController(
                 translationManager
         );
+        ShopController shopController = new ShopController();
+
+        // Initialize events
+        BalanceManagerEvents balanceManagerEvents = new BalanceManagerEvents(balanceManager, scoreboardHandler);
+        ShopEvents shopEvents = new ShopEvents(shopController);
+        getServer().getPluginManager().registerEvents(balanceManagerEvents, this);
+        getServer().getPluginManager().registerEvents(shopEvents, this);
 
         // Initialize commands
         this.moneyManagerCommands = new MoneyManagerCommands(moneyManagerController);
         this.gamblingCommands = new GamblingCommands(gamblingController);
         this.pluginManagerCommands = new PluginManagerCommands(pluginManagerController);
+        this.shopCommands = new ShopCommands(shopController);
 
         // Register commands
         registerCommands();
@@ -78,20 +86,23 @@ public final class EconomyPack extends JavaPlugin {
 
     private void registerCommands() {
         // MONEY_MANAGER
-        registerCommand("balance", moneyManagerCommands);
-        registerCommand("exchange", moneyManagerCommands);
-        registerCommand("pay", moneyManagerCommands);
-        registerCommand("new_money_user", moneyManagerCommands);
+        registerCommandWithTabCompleter("balance", moneyManagerCommands);
+        registerCommandWithTabCompleter("exchange", moneyManagerCommands);
+        registerCommandWithTabCompleter("pay", moneyManagerCommands);
+        registerCommandWithTabCompleter("new_money_user", moneyManagerCommands);
 
         // GAMBLING
-        registerCommand("gamble", gamblingCommands);
-        registerCommand("slots", gamblingCommands);
+        registerCommandWithTabCompleter("gamble", gamblingCommands);
+        registerCommandWithTabCompleter("slots", gamblingCommands);
 
         //TRANSLATION
-        registerCommand("translation", pluginManagerCommands);
+        registerCommandWithTabCompleter("translation", pluginManagerCommands);
+
+        //SHOP MANAGER
+        Objects.requireNonNull(getCommand(PluginConfig.SHOP_COMMAND)).setExecutor(shopCommands);
     }
 
-    private void registerCommand(String commandName, CommandExecutor executor) {
+    private void registerCommandWithTabCompleter(String commandName, CommandExecutor executor) {
         Objects.requireNonNull(getCommand(commandName)).setExecutor(executor);
         Objects.requireNonNull(getCommand(commandName)).setTabCompleter((TabCompleter) executor);
     }
