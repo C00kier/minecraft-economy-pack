@@ -13,6 +13,7 @@ import pawel.cookier.ignaczak.economypack.shop.repository.IShopCommandsControlle
 import pawel.cookier.ignaczak.economypack.shop.utility.IShopUtility;
 import pawel.cookier.ignaczak.economypack.shop.validation.ShopCommandsValidation;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class ShopCommandsController implements IShopCommandsController {
@@ -29,8 +30,8 @@ public class ShopCommandsController implements IShopCommandsController {
     }
 
     @Override
-    public void openInventoryMenu(Player player) {
-        player.openInventory(shop.getInventory());
+    public void openInventory(Player player, Inventory inventory) {
+        player.openInventory(inventory);
     }
 
     @Override
@@ -101,6 +102,21 @@ public class ShopCommandsController implements IShopCommandsController {
                 shopController.updateShopInventory(shop);
                 player.sendMessage(ChatColor.GREEN + "Zmieniono obiekt");
             }
+        }
+    }
+
+    @Override
+    public void switchBetweenInventoriesBasedOnItemStack(Player player, ItemStack itemStack) {
+        player.closeInventory();
+
+        String displayName = Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName();
+        Optional<Category> optionalCategory = shopController.findCategoryByName(shop, displayName);
+
+        if (optionalCategory.isPresent()) {
+            Category category = optionalCategory.get();
+            Inventory inventoryToOpen = category.getInventory();
+
+            openInventory(player, inventoryToOpen);
         }
     }
 

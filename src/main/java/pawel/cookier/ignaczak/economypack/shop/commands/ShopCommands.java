@@ -36,7 +36,7 @@ public class ShopCommands implements CommandExecutor, TabCompleter {
             String commandName = command.getName().toLowerCase();
 
             if (commandName.equalsIgnoreCase(PluginConfig.CALL_SHOP_COMMAND)) {
-                shopCommandsController.openInventoryMenu(player);
+                shopCommandsController.openInventory(player, shop.getInventory());
             }
 
             if (player.isOp()) {

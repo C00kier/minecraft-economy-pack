@@ -1,5 +1,6 @@
 package pawel.cookier.ignaczak.economypack.shop.repository;
 
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import pawel.cookier.ignaczak.economypack.shop.models.Category;
 import pawel.cookier.ignaczak.economypack.shop.models.Item;
