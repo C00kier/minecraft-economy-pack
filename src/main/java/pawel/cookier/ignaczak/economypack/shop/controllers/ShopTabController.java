@@ -3,7 +3,7 @@ package pawel.cookier.ignaczak.economypack.shop.controllers;
 import org.bukkit.Material;
 import pawel.cookier.ignaczak.economypack.config.ShopConfig;
 import pawel.cookier.ignaczak.economypack.shop.repository.IShopTabController;
-import pawel.cookier.ignaczak.economypack.utility.IShopUtility;
+import pawel.cookier.ignaczak.economypack.shop.utility.IShopUtility;
 
 import java.util.ArrayList;
 import java.util.Arrays;

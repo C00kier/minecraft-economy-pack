@@ -1,0 +1,38 @@
+package pawel.cookier.ignaczak.economypack.shop.controllers;
+
+import pawel.cookier.ignaczak.economypack.shop.models.Category;
+import pawel.cookier.ignaczak.economypack.shop.models.Item;
+import pawel.cookier.ignaczak.economypack.shop.repository.ICategoryController;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+public class CategoryController implements ICategoryController {
+    @Override
+    public void addItemToCategory(Category category, Item item) {
+        List<Item> currentList = new ArrayList<>(category.getListOfItems());
+        currentList.add(item);
+        category.setListOfItems(currentList);
+    }
+
+    @Override
+    public void removeItemFromCategory(Category category, Item item) {
+        List<Item> currentList = new ArrayList<>(category.getListOfItems());
+        currentList.remove(item);
+        category.setListOfItems(currentList);
+    }
+
+    @Override
+    public Optional<Item> findItemByName(Category category, String itemName) {
+        return category.getListOfItems()
+                .stream()
+                .filter(item ->
+                        Objects.requireNonNull(item.getItemStack().getItemMeta())
+                                .getDisplayName()
+                                .equalsIgnoreCase(itemName))
+                .findFirst();
+    }
+
+}

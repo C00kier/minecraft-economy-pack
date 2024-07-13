@@ -1,11 +1,11 @@
-package pawel.cookier.ignaczak.economypack.utility;
+package pawel.cookier.ignaczak.economypack.gambling.utility;
 
 import java.util.Random;
 
-public class RandomUtility implements IRandomUtility{
+public class GamblingUtility implements IGamblingUtility {
     private final Random random;
 
-    public RandomUtility(Random random) {
+    public GamblingUtility(Random random) {
         this.random = random;
     }
 

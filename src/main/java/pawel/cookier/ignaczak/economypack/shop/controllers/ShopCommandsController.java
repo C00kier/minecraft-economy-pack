@@ -10,16 +10,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.config.ShopConfig;
-import pawel.cookier.ignaczak.economypack.shop.repository.IShopCategoryController;
-import pawel.cookier.ignaczak.economypack.utility.IShopUtility;
+import pawel.cookier.ignaczak.economypack.shop.repository.IShopCommandsController;
+import pawel.cookier.ignaczak.economypack.shop.utility.IShopUtility;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShopCategoryController implements IShopCategoryController {
+public class ShopCommandsController implements IShopCommandsController {
     private final Inventory shopMain;
 
-    public ShopCategoryController() {
+    public ShopCommandsController() {
         this.shopMain = ShopConfig.SHOP_MAIN_INVENTORY;
     }
 
@@ -106,7 +106,7 @@ public class ShopCategoryController implements IShopCategoryController {
     }
 
     @Override
-    public void editShopCategoryIcon(Player player, Inventory inventory, String[] args) {
+    public void editShopCategoryItemStack(Player player, Inventory inventory, String[] args) {
         if(player.isOp()){
             if(hasCorrectNumberOfArgs(player,args, PluginConfig.EDIT_SHOP_CATEGORY_ICON_COMMAND)
             && areArgsCorrectType(player, args)

@@ -14,11 +14,11 @@ import pawel.cookier.ignaczak.economypack.balance_manager.events.BalanceManagerE
 import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceManager;
 import pawel.cookier.ignaczak.economypack.scoreboard.controllers.ScoreboardHandler;
 import pawel.cookier.ignaczak.economypack.shop.commands.ShopCommands;
-import pawel.cookier.ignaczak.economypack.shop.controllers.ShopCategoryController;
+import pawel.cookier.ignaczak.economypack.shop.controllers.ShopCommandsController;
 import pawel.cookier.ignaczak.economypack.shop.controllers.ShopTabController;
 import pawel.cookier.ignaczak.economypack.shop.events.ShopEvents;
 import pawel.cookier.ignaczak.economypack.translation_manager.controllers.TranslationManager;
-import pawel.cookier.ignaczak.economypack.utility.RandomUtility;
+import pawel.cookier.ignaczak.economypack.gambling.utility.GamblingUtility;
 
 import java.util.*;
 
@@ -45,11 +45,11 @@ public final class EconomyPack extends JavaPlugin {
         ScoreboardHandler scoreboardHandler = new ScoreboardHandler(balanceManager);
 
         // Initialize utilities
-        RandomUtility randomUtility = new RandomUtility(random);
+        GamblingUtility gamblingUtility = new GamblingUtility(random);
 
         //Initialize controllers
         GamblingController gamblingController = new GamblingController(
-                randomUtility,
+                gamblingUtility,
                 balanceManager,
                 scoreboardHandler,
                 translationManager
@@ -62,12 +62,12 @@ public final class EconomyPack extends JavaPlugin {
         PluginManagerController pluginManagerController = new PluginManagerController(
                 translationManager
         );
-        ShopCategoryController shopCategoryController = new ShopCategoryController();
+        ShopCommandsController shopCommandsController = new ShopCommandsController();
         ShopTabController shopTabController = new ShopTabController();
 
         // Initialize events
         BalanceManagerEvents balanceManagerEvents = new BalanceManagerEvents(balanceManager, scoreboardHandler);
-        ShopEvents shopEvents = new ShopEvents(shopCategoryController);
+        ShopEvents shopEvents = new ShopEvents(shopCommandsController);
         getServer().getPluginManager().registerEvents(balanceManagerEvents, this);
         getServer().getPluginManager().registerEvents(shopEvents, this);
 
@@ -75,7 +75,7 @@ public final class EconomyPack extends JavaPlugin {
         this.moneyManagerCommands = new MoneyManagerCommands(moneyManagerController);
         this.gamblingCommands = new GamblingCommands(gamblingController);
         this.pluginManagerCommands = new PluginManagerCommands(pluginManagerController);
-        this.shopCommands = new ShopCommands(shopCategoryController, shopTabController);
+        this.shopCommands = new ShopCommands(shopCommandsController, shopTabController);
 
         // Register commands
         registerCommands();

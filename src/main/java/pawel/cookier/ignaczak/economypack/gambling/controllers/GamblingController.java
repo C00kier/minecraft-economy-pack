@@ -9,19 +9,19 @@ import pawel.cookier.ignaczak.economypack.scoreboard.controllers.ScoreboardHandl
 import pawel.cookier.ignaczak.economypack.translation_manager.controllers.TranslationManager;
 import pawel.cookier.ignaczak.economypack.gambling.models.Game;
 import pawel.cookier.ignaczak.economypack.gambling.models.GameType;
-import pawel.cookier.ignaczak.economypack.utility.RandomUtility;
+import pawel.cookier.ignaczak.economypack.gambling.utility.GamblingUtility;
 
 public class GamblingController implements IGamblingController {
-    private final RandomUtility randomUtility;
+    private final GamblingUtility gamblingUtility;
     private final BalanceManager balanceManager;
     private final ScoreboardHandler scoreboardHandler;
     private final TranslationManager translationManager;
 
-    public GamblingController(RandomUtility randomUtility,
+    public GamblingController(GamblingUtility gamblingUtility,
                               BalanceManager balanceManager,
                               ScoreboardHandler scoreboardHandler,
                               TranslationManager translationManager) {
-        this.randomUtility = randomUtility;
+        this.gamblingUtility = gamblingUtility;
         this.balanceManager = balanceManager;
         this.scoreboardHandler = scoreboardHandler;
         this.translationManager = translationManager;
@@ -134,15 +134,15 @@ public class GamblingController implements IGamblingController {
     }
 
     private boolean isWinningGambleGame() {
-        return randomUtility.isTrueBasedOnChance(PluginConfig.GAMBLE_CHANCE);
+        return gamblingUtility.isTrueBasedOnChance(PluginConfig.GAMBLE_CHANCE);
     }
 
     private boolean isWinningSlotsGame(Player player) {
         int minNumber = PluginConfig.SLOTS_MIN_NUMBER_VALUE;
         int maxNumber = PluginConfig.SLOTS_MAX_NUMBER_VALUE + 1;
-        int number1 = randomUtility.generateRandomNumber(minNumber, maxNumber);
-        int number2 = randomUtility.generateRandomNumber(minNumber, maxNumber);
-        int number3 = randomUtility.generateRandomNumber(minNumber, maxNumber);
+        int number1 = gamblingUtility.generateRandomNumber(minNumber, maxNumber);
+        int number2 = gamblingUtility.generateRandomNumber(minNumber, maxNumber);
+        int number3 = gamblingUtility.generateRandomNumber(minNumber, maxNumber);
 
         player.sendMessage(ChatColor.GOLD +
                 translationManager.getMessage("message.gambling.slotsNumbers").formatted(

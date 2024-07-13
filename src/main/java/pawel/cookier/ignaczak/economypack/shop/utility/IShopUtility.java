@@ -1,4 +1,4 @@
-package pawel.cookier.ignaczak.economypack.utility;
+package pawel.cookier.ignaczak.economypack.shop.utility;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
