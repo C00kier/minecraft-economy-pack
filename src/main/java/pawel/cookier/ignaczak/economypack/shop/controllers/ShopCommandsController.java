@@ -7,8 +7,6 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.shop.models.Category;
 import pawel.cookier.ignaczak.economypack.shop.models.Shop;
 import pawel.cookier.ignaczak.economypack.shop.repository.IShopCommandsController;
@@ -42,7 +40,7 @@ public class ShopCommandsController implements IShopCommandsController {
 
     @Override
     public void addShopCategory(Player player, Inventory inventory, String[] args) {
-        if (validation.isAddShopCategoryValid(player,inventory,args)) {
+        if (validation.isAddShopCategoryValid(player, inventory, args)) {
             String displayName = args[0];
             Material material = Material.getMaterial(args[1]);
 
@@ -60,7 +58,7 @@ public class ShopCommandsController implements IShopCommandsController {
             String categoryName = args[0];
             Optional<Category> optionalCategory = shopController.findCategoryByName(shop, categoryName);
 
-            if(optionalCategory.isPresent()){
+            if (optionalCategory.isPresent()) {
                 Category categoryToRemove = optionalCategory.get();
                 shopController.removeCategoryFromShop(shop, categoryToRemove);
                 player.sendMessage(ChatColor.GREEN + "Usunięto kategorię %s".formatted(categoryName));
@@ -72,20 +70,17 @@ public class ShopCommandsController implements IShopCommandsController {
     public void editShopCategoryName(Player player, Inventory inventory, String[] args) {
         if (validation.isEditCategoryNameValid(player, inventory, args)) {
             String oldName = args[0];
-            String newName = args[1];
-            ItemStack[] contents = inventory.getContents();
 
-            for (int i = 0; i < PluginConfig.SHOP_INVENTORY_FIELDS_TO_FILL_UP; i++) {
-                ItemStack item = contents[i];
-                if (item != null) {
-                    ItemMeta meta = item.getItemMeta();
-                    if (meta != null && oldName.equals(meta.getDisplayName())) {
-                        meta.setDisplayName(newName);
-                        item.setItemMeta(meta);
-                        player.sendMessage(ChatColor.GREEN + "Zmieniono nazwę %s na %s"
-                                .formatted(oldName, newName));
-                    }
-                }
+            Optional<Category> category = shopController.findCategoryByName(shop, oldName);
+            if (category.isPresent()) {
+                String newName = args[1];
+                Category categoryToEdit = category.get();
+
+                categoryController.editCategoryItemStackName(categoryToEdit, newName);
+                shopController.updateShopInventory(shop);
+
+                player.sendMessage(ChatColor.GREEN + "Zmieniono nazwę %s na %s"
+                        .formatted(oldName, newName));
             }
         }
     }
@@ -94,19 +89,17 @@ public class ShopCommandsController implements IShopCommandsController {
     public void editShopCategoryItemStack(Player player, Inventory inventory, String[] args) {
         if (validation.isEditCategoryItemStackValid(player, inventory, args)) {
             String categoryName = args[0];
-            Material material = Material.getMaterial(args[1]);
-            ItemStack[] contents = inventory.getContents();
+            Optional<Category> category = shopController.findCategoryByName(shop, categoryName);
 
-            for (int i = 0; i < PluginConfig.SHOP_INVENTORY_FIELDS_TO_FILL_UP; i++) {
-                ItemStack item = contents[i];
-                if (item != null) {
-                    ItemMeta meta = item.getItemMeta();
-                    if (meta != null && categoryName.equals(meta.getDisplayName())) {
-                        ItemStack newItem = IShopUtility.createItemStack(material, categoryName);
-                        inventory.setItem(i, newItem);
-                        player.sendMessage(ChatColor.GREEN + "Zmieniono ikonę");
-                    }
-                }
+            if (category.isPresent()) {
+                Category categoryToEdit = category.get();
+
+                Material material = Material.getMaterial(args[1]);
+                ItemStack newItem = IShopUtility.createItemStack(material, categoryName);
+
+                categoryController.editCategoryItemStackMaterial(categoryToEdit, newItem);
+                shopController.updateShopInventory(shop);
+                player.sendMessage(ChatColor.GREEN + "Zmieniono obiekt");
             }
         }
     }

@@ -38,7 +38,8 @@ public class ShopController implements IShopController {
                 .findFirst();
     }
 
-    private void updateShopInventory(Shop shop) {
+    @Override
+    public void updateShopInventory(Shop shop) {
         shop.getInventory().clear();
         shop.getInventory().setContents(
                 shop.getCategoryList()

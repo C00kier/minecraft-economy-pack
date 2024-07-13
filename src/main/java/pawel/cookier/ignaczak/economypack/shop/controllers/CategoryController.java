@@ -1,5 +1,7 @@
 package pawel.cookier.ignaczak.economypack.shop.controllers;
 
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import pawel.cookier.ignaczak.economypack.shop.models.Category;
 import pawel.cookier.ignaczak.economypack.shop.models.Item;
 import pawel.cookier.ignaczak.economypack.shop.repository.ICategoryController;
@@ -35,4 +37,22 @@ public class CategoryController implements ICategoryController {
                 .findFirst();
     }
 
+    @Override
+    public void editCategoryItemStackName(Category category, String newName) {
+        ItemStack itemStack = category.getCategoryItemStack();
+        ItemMeta itemMeta = itemStack.getItemMeta();
+
+        assert itemMeta != null;
+        itemMeta.setDisplayName(newName);
+        itemStack.setItemMeta(itemMeta);
+
+        category.setCategoryItemStack(itemStack);
+    }
+
+    @Override
+    public void editCategoryItemStackMaterial(Category category, ItemStack newItemStack) {
+        category.setCategoryItemStack(newItemStack);
+    }
+
 }
+
