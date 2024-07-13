@@ -1,5 +1,7 @@
 package pawel.cookier.ignaczak.economypack.config;
 
+import org.bukkit.Bukkit;
+import org.bukkit.inventory.Inventory;
 import pawel.cookier.ignaczak.economypack.gambling.models.GameType;
 
 public final class PluginConfig {
@@ -34,6 +36,10 @@ public final class PluginConfig {
     //money manager
     public static final Long PRICE_PER_GOLD_INGOT = 20L;
 
+    //shop
+    public final static int SHOP_INVENTORY_SIZE = 45;
+    public final static int SHOP_INVENTORY_FIELDS_TO_FILL_UP = 36; //9 slots for navbar
+
     //gamble
     public static final int GAMBLE_CHANCE = 50;
     public static final Long MIN_GAMBLE_VALUE = 100L;
@@ -46,4 +52,6 @@ public final class PluginConfig {
     public static final GameType SLOTS_GAME_TYPE = GameType.SLOTS_GAME;
     public static final int SLOTS_MIN_NUMBER_VALUE = 1;
     public static final int SLOTS_MAX_NUMBER_VALUE = 5;
+
+
 }

@@ -8,19 +8,21 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
-import pawel.cookier.ignaczak.economypack.config.ShopConfig;
 import pawel.cookier.ignaczak.economypack.shop.controllers.ShopCommandsController;
 import pawel.cookier.ignaczak.economypack.shop.controllers.ShopTabController;
+import pawel.cookier.ignaczak.economypack.shop.models.Shop;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ShopCommands implements CommandExecutor, TabCompleter {
 
+    private final Shop shop;
     private final ShopCommandsController shopCommandsController;
     private final ShopTabController shopTabController;
 
-    public ShopCommands(ShopCommandsController shopCommandsController, ShopTabController shopTabController) {
+    public ShopCommands(Shop shop, ShopCommandsController shopCommandsController, ShopTabController shopTabController) {
+        this.shop = shop;
         this.shopCommandsController = shopCommandsController;
         this.shopTabController = shopTabController;
     }
@@ -33,28 +35,29 @@ public class ShopCommands implements CommandExecutor, TabCompleter {
         if (sender instanceof Player player) {
             String commandName = command.getName().toLowerCase();
 
-            if (commandName.equalsIgnoreCase(PluginConfig.CALL_SHOP_COMMAND)){
+            if (commandName.equalsIgnoreCase(PluginConfig.CALL_SHOP_COMMAND)) {
                 shopCommandsController.openInventoryMenu(player);
             }
 
-            if(player.isOp()){
+            if (player.isOp()) {
                 switch (commandName) {
                     case PluginConfig.ADD_SHOP_CATEGORY_COMMAND -> shopCommandsController.addShopCategory(
                             player,
-                            ShopConfig.SHOP_MAIN_INVENTORY,
+                            shop.getInventory(),
                             args);
                     case PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND -> shopCommandsController.removeCategoryFromShop(
                             player,
-                            ShopConfig.SHOP_MAIN_INVENTORY,
+                            shop.getInventory(),
                             args);
                     case PluginConfig.EDIT_SHOP_CATEGORY_NAME_COMMAND -> shopCommandsController.editShopCategoryName(
                             player,
-                            ShopConfig.SHOP_MAIN_INVENTORY,
+                            shop.getInventory(),
                             args);
-                    case PluginConfig.EDIT_SHOP_CATEGORY_ICON_COMMAND -> shopCommandsController.editShopCategoryItemStack(
-                            player,
-                            ShopConfig.SHOP_MAIN_INVENTORY,
-                            args);
+                    case PluginConfig.EDIT_SHOP_CATEGORY_ICON_COMMAND ->
+                            shopCommandsController.editShopCategoryItemStack(
+                                    player,
+                                    shop.getInventory(),
+                                    args);
                 }
             }
         }

@@ -1,7 +1,7 @@
 package pawel.cookier.ignaczak.economypack.shop.controllers;
 
 import org.bukkit.Material;
-import pawel.cookier.ignaczak.economypack.config.ShopConfig;
+import pawel.cookier.ignaczak.economypack.shop.models.Shop;
 import pawel.cookier.ignaczak.economypack.shop.repository.IShopTabController;
 import pawel.cookier.ignaczak.economypack.shop.utility.IShopUtility;
 
@@ -10,6 +10,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ShopTabController implements IShopTabController {
+    private final Shop shop;
+
+    public ShopTabController(Shop shop) {
+        this.shop = shop;
+    }
+
     @Override
     public List<String> addEditCategoryIconOnTabComplete(String[] args) {
         List<String> suggestions = new ArrayList<>();
@@ -35,7 +41,7 @@ public class ShopTabController implements IShopTabController {
 
     private List<String> autocompleteWithInventoryDisplayName(int argIndex, String[] args) {
         List<String> suggestions = new ArrayList<>(
-                IShopUtility.getItemNamesFromInventory(ShopConfig.SHOP_MAIN_INVENTORY));
+                IShopUtility.getItemNamesFromInventory(shop.getInventory()));
 
         if (!args[argIndex].isEmpty()) {
             return suggestions.stream()

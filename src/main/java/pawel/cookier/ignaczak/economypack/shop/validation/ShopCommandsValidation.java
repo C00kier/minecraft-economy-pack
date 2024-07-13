@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
-import pawel.cookier.ignaczak.economypack.config.ShopConfig;
 import pawel.cookier.ignaczak.economypack.shop.repository.IShopCommandsValidation;
 import pawel.cookier.ignaczak.economypack.shop.utility.IShopUtility;
 
@@ -72,7 +71,7 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
     }
 
     private boolean hasEnoughSpaceInShop(Player player, Inventory inventory) {
-        for (int i = 0; i < ShopConfig.SHOP_FIELDS_TO_FILL_UP; i++) {
+        for (int i = 0; i < PluginConfig.SHOP_INVENTORY_FIELDS_TO_FILL_UP; i++) {
             ItemStack item = inventory.getItem(i);
             if (item == null) {
                 return true;

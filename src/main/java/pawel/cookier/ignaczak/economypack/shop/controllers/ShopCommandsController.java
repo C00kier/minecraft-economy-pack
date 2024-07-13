@@ -8,7 +8,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import pawel.cookier.ignaczak.economypack.config.ShopConfig;
+import pawel.cookier.ignaczak.economypack.config.PluginConfig;
+import pawel.cookier.ignaczak.economypack.shop.models.Shop;
 import pawel.cookier.ignaczak.economypack.shop.repository.IShopCommandsController;
 import pawel.cookier.ignaczak.economypack.shop.utility.IShopUtility;
 import pawel.cookier.ignaczak.economypack.shop.validation.ShopCommandsValidation;
@@ -17,17 +18,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShopCommandsController implements IShopCommandsController {
-    private final Inventory shopMain;
+    private final Shop shop;
     private final ShopCommandsValidation validation;
+    private final CategoryController categoryController;
+    private final ShopController shopController;
 
-    public ShopCommandsController(ShopCommandsValidation validation) {
-        this.shopMain = ShopConfig.SHOP_MAIN_INVENTORY;
-        this.validation = validation;
+    public ShopCommandsController(Shop shop) {
+        this.shop = shop;
+        this.validation = new ShopCommandsValidation();
+        this.categoryController = new CategoryController();
+        this.shopController = new ShopController();
     }
 
     @Override
     public void openInventoryMenu(Player player) {
-        player.openInventory(shopMain);
+        player.openInventory(shop.getInventory());
     }
 
     @Override
@@ -56,7 +61,7 @@ public class ShopCommandsController implements IShopCommandsController {
             ItemStack[] contents = inventory.getContents();
             List<ItemStack> itemsList = new ArrayList<>();
 
-            for (int i = 0; i < ShopConfig.SHOP_FIELDS_TO_FILL_UP; i++) {
+            for (int i = 0; i < PluginConfig.SHOP_INVENTORY_FIELDS_TO_FILL_UP; i++) {
                 ItemStack item = contents[i];
                 if (item != null) {
                     ItemMeta meta = item.getItemMeta();
@@ -79,7 +84,7 @@ public class ShopCommandsController implements IShopCommandsController {
             String newName = args[1];
             ItemStack[] contents = inventory.getContents();
 
-            for (int i = 0; i < ShopConfig.SHOP_FIELDS_TO_FILL_UP; i++) {
+            for (int i = 0; i < PluginConfig.SHOP_INVENTORY_FIELDS_TO_FILL_UP; i++) {
                 ItemStack item = contents[i];
                 if (item != null) {
                     ItemMeta meta = item.getItemMeta();
@@ -101,7 +106,7 @@ public class ShopCommandsController implements IShopCommandsController {
             Material material = Material.getMaterial(args[1]);
             ItemStack[] contents = inventory.getContents();
 
-            for (int i = 0; i < ShopConfig.SHOP_FIELDS_TO_FILL_UP; i++) {
+            for (int i = 0; i < PluginConfig.SHOP_INVENTORY_FIELDS_TO_FILL_UP; i++) {
                 ItemStack item = contents[i];
                 if (item != null) {
                     ItemMeta meta = item.getItemMeta();
