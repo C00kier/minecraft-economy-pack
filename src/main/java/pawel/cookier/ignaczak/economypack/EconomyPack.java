@@ -17,6 +17,7 @@ import pawel.cookier.ignaczak.economypack.shop.commands.ShopCommands;
 import pawel.cookier.ignaczak.economypack.shop.controllers.ShopCommandsController;
 import pawel.cookier.ignaczak.economypack.shop.controllers.ShopTabController;
 import pawel.cookier.ignaczak.economypack.shop.events.ShopEvents;
+import pawel.cookier.ignaczak.economypack.shop.validation.ShopCommandsValidation;
 import pawel.cookier.ignaczak.economypack.translation_manager.controllers.TranslationManager;
 import pawel.cookier.ignaczak.economypack.gambling.utility.GamblingUtility;
 
@@ -47,6 +48,9 @@ public final class EconomyPack extends JavaPlugin {
         // Initialize utilities
         GamblingUtility gamblingUtility = new GamblingUtility(random);
 
+        //Initialize validation
+        ShopCommandsValidation shopCommandsValidation = new ShopCommandsValidation();
+
         //Initialize controllers
         GamblingController gamblingController = new GamblingController(
                 gamblingUtility,
@@ -62,7 +66,7 @@ public final class EconomyPack extends JavaPlugin {
         PluginManagerController pluginManagerController = new PluginManagerController(
                 translationManager
         );
-        ShopCommandsController shopCommandsController = new ShopCommandsController();
+        ShopCommandsController shopCommandsController = new ShopCommandsController(shopCommandsValidation);
         ShopTabController shopTabController = new ShopTabController();
 
         // Initialize events

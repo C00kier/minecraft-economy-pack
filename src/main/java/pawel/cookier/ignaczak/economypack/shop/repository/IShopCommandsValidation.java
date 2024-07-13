@@ -3,7 +3,7 @@ package pawel.cookier.ignaczak.economypack.shop.repository;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-public interface ICommandsValidation {
+public interface IShopCommandsValidation {
     boolean isAddShopCategoryValid(Player player, Inventory inventory, String[] args);
     boolean isRemoveCategoryValid(Player player, Inventory inventory, String[] args);
     boolean isEditCategoryNameValid(Player player, Inventory inventory, String[] args);

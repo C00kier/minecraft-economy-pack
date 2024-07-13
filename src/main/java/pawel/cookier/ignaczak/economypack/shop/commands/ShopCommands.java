@@ -33,24 +33,29 @@ public class ShopCommands implements CommandExecutor, TabCompleter {
         if (sender instanceof Player player) {
             String commandName = command.getName().toLowerCase();
 
-            switch (commandName) {
-                case PluginConfig.CALL_SHOP_COMMAND -> shopCommandsController.openInventoryMenu(player);
-                case PluginConfig.ADD_SHOP_CATEGORY_COMMAND -> shopCommandsController.addShopCategory(
-                        player,
-                        ShopConfig.SHOP_MAIN_INVENTORY,
-                        args);
-                case PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND -> shopCommandsController.removeCategoryFromShop(
-                        player,
-                        ShopConfig.SHOP_MAIN_INVENTORY,
-                        args);
-                case PluginConfig.EDIT_SHOP_CATEGORY_NAME_COMMAND -> shopCommandsController.editShopCategoryName(
-                        player,
-                        ShopConfig.SHOP_MAIN_INVENTORY,
-                        args);
-                case PluginConfig.EDIT_SHOP_CATEGORY_ICON_COMMAND -> shopCommandsController.editShopCategoryItemStack(
-                        player,
-                        ShopConfig.SHOP_MAIN_INVENTORY,
-                        args);
+            if (commandName.equalsIgnoreCase(PluginConfig.CALL_SHOP_COMMAND)){
+                shopCommandsController.openInventoryMenu(player);
+            }
+
+            if(player.isOp()){
+                switch (commandName) {
+                    case PluginConfig.ADD_SHOP_CATEGORY_COMMAND -> shopCommandsController.addShopCategory(
+                            player,
+                            ShopConfig.SHOP_MAIN_INVENTORY,
+                            args);
+                    case PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND -> shopCommandsController.removeCategoryFromShop(
+                            player,
+                            ShopConfig.SHOP_MAIN_INVENTORY,
+                            args);
+                    case PluginConfig.EDIT_SHOP_CATEGORY_NAME_COMMAND -> shopCommandsController.editShopCategoryName(
+                            player,
+                            ShopConfig.SHOP_MAIN_INVENTORY,
+                            args);
+                    case PluginConfig.EDIT_SHOP_CATEGORY_ICON_COMMAND -> shopCommandsController.editShopCategoryItemStack(
+                            player,
+                            ShopConfig.SHOP_MAIN_INVENTORY,
+                            args);
+                }
             }
         }
         return true;
