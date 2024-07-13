@@ -9,8 +9,4 @@ public interface IShopController {
     void addCategoryToShop(Shop shop, Category category);
     void removeCategoryFromShop(Shop shop, Category category);
     Optional<Category> findCategoryByName(Shop shop, String categoryName);
-
-    //file operations
-    void updateShop();
-    void loadShopFromFile();
 }

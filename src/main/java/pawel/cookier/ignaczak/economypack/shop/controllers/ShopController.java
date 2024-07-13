@@ -1,11 +1,13 @@
 package pawel.cookier.ignaczak.economypack.shop.controllers;
 
+import org.bukkit.inventory.ItemStack;
 import pawel.cookier.ignaczak.economypack.shop.models.Category;
 import pawel.cookier.ignaczak.economypack.shop.models.Shop;
 import pawel.cookier.ignaczak.economypack.shop.repository.IShopController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ShopController implements IShopController {
@@ -15,6 +17,7 @@ public class ShopController implements IShopController {
         List<Category> currentCategories = new ArrayList<>(shop.getCategoryList());
         currentCategories.add(category);
         shop.setCategoryList(currentCategories);
+        updateShopInventory(shop);
     }
 
     @Override
@@ -22,24 +25,26 @@ public class ShopController implements IShopController {
         List<Category> currentCategories = new ArrayList<>(shop.getCategoryList());
         currentCategories.remove(category);
         shop.setCategoryList(currentCategories);
+        updateShopInventory(shop);
     }
 
     @Override
     public Optional<Category> findCategoryByName(Shop shop, String categoryName) {
         return shop.getCategoryList()
                 .stream()
-                .filter(category -> category.getName().equalsIgnoreCase(categoryName))
+                .filter(category -> Objects.requireNonNull(category.getCategoryItemStack().getItemMeta())
+                        .getDisplayName()
+                        .equalsIgnoreCase(categoryName))
                 .findFirst();
-
     }
 
-    @Override
-    public void updateShop() {
-
+    private void updateShopInventory(Shop shop) {
+        shop.getInventory().clear();
+        shop.getInventory().setContents(
+                shop.getCategoryList()
+                        .stream()
+                        .map(Category::getCategoryItemStack)
+                        .toArray(ItemStack[]::new));
     }
 
-    @Override
-    public void loadShopFromFile() {
-
-    }
 }

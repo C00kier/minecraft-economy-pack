@@ -9,12 +9,10 @@ public class Category {
     private static int categoryID = 0;
 
     private final int id;
-    private String name;
     private ItemStack categoryItemStack;
     private List<Item> listOfItems;
 
-    public Category(String name, ItemStack categoryItemStack) {
-        this.name = name;
+    public Category(ItemStack categoryItemStack) {
         this.categoryItemStack = categoryItemStack;
         this.listOfItems = new ArrayList<>();
         this.id = categoryID++;
@@ -22,14 +20,6 @@ public class Category {
 
     public int getId() {
         return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public ItemStack getCategoryItemStack() {

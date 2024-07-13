@@ -34,11 +34,4 @@ public interface IShopUtility {
                 .toList();
     }
 
-    static void sortInventory(Inventory inventory, List<ItemStack> itemsList){
-        inventory.clear();
-
-        for (int i = 0; i <itemsList.size(); i++){
-            inventory.setItem(i, itemsList.get(i));
-        }
-    }
 }

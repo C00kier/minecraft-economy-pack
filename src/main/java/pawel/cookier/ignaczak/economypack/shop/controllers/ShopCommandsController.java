@@ -9,13 +9,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
+import pawel.cookier.ignaczak.economypack.shop.models.Category;
 import pawel.cookier.ignaczak.economypack.shop.models.Shop;
 import pawel.cookier.ignaczak.economypack.shop.repository.IShopCommandsController;
 import pawel.cookier.ignaczak.economypack.shop.utility.IShopUtility;
 import pawel.cookier.ignaczak.economypack.shop.validation.ShopCommandsValidation;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
 public class ShopCommandsController implements IShopCommandsController {
     private final Shop shop;
@@ -43,13 +43,13 @@ public class ShopCommandsController implements IShopCommandsController {
     @Override
     public void addShopCategory(Player player, Inventory inventory, String[] args) {
         if (validation.isAddShopCategoryValid(player,inventory,args)) {
-            int emptyIndex = inventory.firstEmpty();
             String displayName = args[0];
             Material material = Material.getMaterial(args[1]);
 
             ItemStack item = IShopUtility.createItemStack(material, displayName);
-            inventory.setItem(emptyIndex, item);
+            Category category = new Category(item);
 
+            shopController.addCategoryToShop(shop, category);
             player.sendMessage(ChatColor.GREEN + "Dodano kategorię %s do sklepu".formatted(displayName));
         }
     }
@@ -58,22 +58,13 @@ public class ShopCommandsController implements IShopCommandsController {
     public void removeCategoryFromShop(Player player, Inventory inventory, String[] args) {
         if (validation.isRemoveCategoryValid(player, inventory, args)) {
             String categoryName = args[0];
-            ItemStack[] contents = inventory.getContents();
-            List<ItemStack> itemsList = new ArrayList<>();
+            Optional<Category> optionalCategory = shopController.findCategoryByName(shop, categoryName);
 
-            for (int i = 0; i < PluginConfig.SHOP_INVENTORY_FIELDS_TO_FILL_UP; i++) {
-                ItemStack item = contents[i];
-                if (item != null) {
-                    ItemMeta meta = item.getItemMeta();
-                    if (meta != null && categoryName.equals(meta.getDisplayName())) {
-                        inventory.setItem(i, null);
-                        player.sendMessage(ChatColor.GREEN + "Usunięto kategorię %s".formatted(categoryName));
-                        continue;
-                    }
-                    itemsList.add(item);
-                }
+            if(optionalCategory.isPresent()){
+                Category categoryToRemove = optionalCategory.get();
+                shopController.removeCategoryFromShop(shop, categoryToRemove);
+                player.sendMessage(ChatColor.GREEN + "Usunięto kategorię %s".formatted(categoryName));
             }
-            IShopUtility.sortInventory(inventory, itemsList);
         }
     }
 
