@@ -1,5 +1,6 @@
 package pawel.cookier.ignaczak.economypack.shop.controllers;
 
+import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -13,6 +14,7 @@ import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceMan
 import pawel.cookier.ignaczak.economypack.shop.models.Category;
 import pawel.cookier.ignaczak.economypack.shop.models.Shop;
 import pawel.cookier.ignaczak.economypack.shop.repository.IShopEventsController;
+import pawel.cookier.ignaczak.economypack.shop.utility.IShopUtility;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -70,21 +72,49 @@ public class ShopEventsController implements IShopEventsController {
         ItemMeta meta = itemStack.getItemMeta();
 
         if (meta != null) {
+            String itemName = IShopUtility.formatMaterialName(itemStack.getType().name());
             NamespacedKey key = new NamespacedKey(plugin, "sellPrice");
             Double sellPrice = meta.getPersistentDataContainer().get(key, PersistentDataType.DOUBLE);
-
-            if(sellPrice != null){
+            if (sellPrice != null) {
                 for (int i = 0; i < inventory.getSize(); i++) {
                     ItemStack inventoryItemStack = inventory.getItem(i);
-                    if (inventoryItemStack != null && itemStack.isSimilar(inventoryItemStack)) {
+                    if (inventoryItemStack != null
+                            && isShopItemStackSameAsInventoryItemStack(itemStack, inventoryItemStack)) {
                         amountOfItemInInventory += inventoryItemStack.getAmount();
                         inventory.setItem(i, null);
                     }
                 }
                 double moneyToAdd = amountOfItemInInventory * sellPrice;
                 balanceManager.addMoneyToPlayer(moneyToAdd, player.getUniqueId());
+
+                if (amountOfItemInInventory != 0) {
+                    player.sendMessage(ChatColor.GREEN +
+                            "Sprzedałeś %s x [%s] za %s$".formatted(
+                                    amountOfItemInInventory,
+                                    itemName,
+                                    moneyToAdd));
+                }
             }
         }
+    }
+
+    private boolean isShopItemStackSameAsInventoryItemStack(ItemStack shopItemStack, ItemStack inventoryItemStack) {
+        if (shopItemStack == null || inventoryItemStack == null) {
+            return false;
+        }
+
+        ItemMeta shopMeta = shopItemStack.getItemMeta();
+        ItemMeta inventoryMeta = inventoryItemStack.getItemMeta();
+
+        if (shopMeta == null || inventoryMeta == null) {
+            return false;
+        }
+
+        boolean isDisplayNameEqual = shopMeta.getDisplayName().equals(inventoryMeta.getDisplayName());
+        boolean isTypeEqual = shopItemStack.getType() == inventoryItemStack.getType();
+        boolean hasSameEnchants = shopMeta.getEnchants().equals(inventoryMeta.getEnchants());
+
+        return isDisplayNameEqual && isTypeEqual && hasSameEnchants;
     }
 
 }

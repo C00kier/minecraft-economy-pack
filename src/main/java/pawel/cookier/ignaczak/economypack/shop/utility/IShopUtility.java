@@ -40,5 +40,12 @@ public interface IShopUtility {
         return Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName();
     }
 
-
+    static String formatMaterialName(String materialName) {
+        String[] words = materialName.split("_");
+        StringBuilder formattedName = new StringBuilder();
+        for (String word : words) {
+            formattedName.append(word.charAt(0)).append(word.substring(1).toLowerCase()).append(" ");
+        }
+        return formattedName.toString().trim();
+    }
 }

@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -50,7 +51,7 @@ public class ShopEvents implements Listener {
             ItemStack clickedItem = event.getCurrentItem();
 
             if (shopEventsController.isItemStackInCurrentlyOpenInventory(inventory, clickedItem)
-                    && shopEventsController.isShiftMouseClick(event)) {
+                    && event.getClick() == ClickType.SHIFT_RIGHT) {
                 Player player = (Player) event.getWhoClicked();
                 assert clickedItem != null;
                 shopEventsController.exchangeAllItemStacksOfSameTypeForMoney(plugin, player, clickedItem);
