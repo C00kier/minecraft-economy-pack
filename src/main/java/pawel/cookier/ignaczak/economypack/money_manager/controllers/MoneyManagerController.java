@@ -1,5 +1,6 @@
 package pawel.cookier.ignaczak.economypack.money_manager.controllers;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -10,6 +11,8 @@ import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceMan
 import pawel.cookier.ignaczak.economypack.scoreboard.controllers.ScoreboardHandler;
 import pawel.cookier.ignaczak.economypack.translation_manager.controllers.TranslationManager;
 import pawel.cookier.ignaczak.economypack.money_manager.repository.IMoneyManagerController;
+
+import java.util.UUID;
 
 public class MoneyManagerController implements IMoneyManagerController {
     private final BalanceManager balanceManager;
@@ -22,21 +25,6 @@ public class MoneyManagerController implements IMoneyManagerController {
         this.balanceManager = balanceManager;
         this.scoreboardHandler = scoreboardHandler;
         this.translationManager = translationManager;
-    }
-
-    public void checkBalance(Player player, String[] args) {
-        String playerToCheck = getPlayerNameToCheck(player, args);
-
-        if (balanceManager.containsPlayer(playerToCheck)) {
-            Long balance = balanceManager.getBalance(playerToCheck);
-            player.sendMessage(ChatColor.GOLD
-                    + translationManager.getMessage("message.moneymanager.userBalance")
-                    .formatted(playerToCheck, balance));
-        } else {
-            player.sendMessage(ChatColor.LIGHT_PURPLE +
-                    translationManager.getMessage("message.moneymanager.balanceUserNotFound")
-                            .formatted(playerToCheck));
-        }
     }
 
     public void exchangeGold(Player player, String[] args) {
@@ -53,36 +41,9 @@ public class MoneyManagerController implements IMoneyManagerController {
     public void payToPlayer(Player giver, String[] args) {
         if (!validatePayToPlayerArgs(giver, args)) return;
 
-        long amount = Long.parseLong(args[0]);
+        double amount = Double.parseDouble(args[0]);
         String receiverName = args[1];
         processPayment(giver, amount, receiverName);
-    }
-
-    public void addPlayerManually(Player player, String[] args) {
-        if (args.length == 1) {
-            String newPlayerName = args[0];
-            addUserToMoneyBaseManually(player, newPlayerName);
-        } else {
-            player.sendMessage(ChatColor.LIGHT_PURPLE +
-                    translationManager.getMessage("message.moneymanager.invalidParameter"));
-        }
-    }
-
-    private void addUserToMoneyBaseManually(Player player, String playerName) {
-        if (player.isOp()) {
-            if (!balanceManager.containsPlayer(playerName)) {
-                balanceManager.setBalance(playerName, 0L);
-                player.sendMessage(ChatColor.GREEN +
-                        translationManager.getMessage("message.moneymanager.userAdded").formatted(playerName));
-            } else {
-                player.sendMessage(ChatColor.LIGHT_PURPLE +
-                        translationManager.getMessage("message.moneymanager.userAlreadyExists")
-                                .formatted(playerName));
-            }
-        } else {
-            player.sendMessage(ChatColor.LIGHT_PURPLE +
-                    translationManager.getMessage("message.common.lackOfPermission"));
-        }
     }
 
     private boolean validateExchangeGoldArgs(Player player, String[] args) {
@@ -107,7 +68,7 @@ public class MoneyManagerController implements IMoneyManagerController {
     }
 
     private void processGoldExchange(Player player, int amountToExchange, Inventory inventory) {
-        String playerName = player.getName();
+        UUID playerId = player.getUniqueId();
         int remainingToRemove = amountToExchange;
 
         int income = 0;
@@ -117,9 +78,8 @@ public class MoneyManagerController implements IMoneyManagerController {
             ItemStack item = inventory.getItem(i);
             if (item != null && item.getType() == Material.GOLD_INGOT) {
                 int itemAmount = item.getAmount();
-                Long playerBalance = balanceManager.getBalance(playerName);
-                long pricePerIngot = PluginConfig.PRICE_PER_GOLD_INGOT;
-                long moneyToReceive;
+                double pricePerIngot = PluginConfig.PRICE_PER_GOLD_INGOT;
+                double moneyToReceive;
 
                 if (itemAmount > remainingToRemove) {
                     item.setAmount(itemAmount - remainingToRemove);
@@ -132,14 +92,13 @@ public class MoneyManagerController implements IMoneyManagerController {
                 }
 
                 income += moneyToReceive;
-                playerBalance += moneyToReceive;
-                balanceManager.setBalance(playerName, playerBalance);
+                balanceManager.addMoneyToPlayer(moneyToReceive, playerId);
                 scoreboardHandler.updateMoney(player);
             }
         }
         player.sendMessage(ChatColor.GOLD
                 + translationManager.getMessage("message.moneymanager.exchangeEarnings")
-                .formatted(playerName, income));
+                .formatted(player.getName(), income));
     }
 
     private boolean validatePayToPlayerArgs(Player giver, String[] args) {
@@ -149,7 +108,7 @@ public class MoneyManagerController implements IMoneyManagerController {
             return false;
         }
         try {
-            long amount = Long.parseLong(args[0]);
+            double amount = Double.parseDouble(args[0]);
             if (amount <= 0) {
                 giver.sendMessage(ChatColor.LIGHT_PURPLE
                         + translationManager.getMessage("message.moneymanager.minPayValue"));
@@ -163,13 +122,14 @@ public class MoneyManagerController implements IMoneyManagerController {
         return true;
     }
 
-    private void processPayment(Player giver, long amount, String receiverName) {
-        String giverName = giver.getName();
-        long giverBalance = balanceManager.getBalance(giverName);
+    private void processPayment(Player giver, double amount, String receiverName) {
+        UUID giverId = giver.getUniqueId();
+        double giverBalance = balanceManager.getBalance(giverId);
 
         if (giverBalance >= amount) {
-            if (balanceManager.containsPlayer(receiverName)) {
-                completePayment(giver, giverName, amount, receiverName);
+            UUID receiverID = balanceManager.getPlayerUUID(receiverName);
+            if (balanceManager.containsPlayer(receiverID)) {
+                completePayment(giver, amount, receiverID);
             } else {
                 giver.sendMessage(ChatColor.LIGHT_PURPLE
                         + translationManager.getMessage("message.moneymanager.payUserNotFound")
@@ -181,17 +141,21 @@ public class MoneyManagerController implements IMoneyManagerController {
         }
     }
 
-    private void completePayment(Player giver, String giverName, long amount, String receiverName) {
-        long giverBalance = balanceManager.getBalance(giverName) - amount;
-        long receiverBalance = balanceManager.getBalance(receiverName) + amount;
+    private void completePayment(Player giver, double amount, UUID receiverId) {
+        UUID giverId = giver.getUniqueId();
 
-        balanceManager.setBalance(giverName, giverBalance);
-        balanceManager.setBalance(receiverName, receiverBalance);
+        balanceManager.addMoneyToPlayer(amount, receiverId);
+        balanceManager.removeMoneyFromPlayer(amount, giverId);
+
+        Player receiver = Bukkit.getPlayer(receiverId);
+        scoreboardHandler.updateMoney(receiver);
         scoreboardHandler.updateMoney(giver);
 
+        //wiadomość wysłana do otrzymującego
+        assert receiver != null;
         giver.sendMessage(ChatColor.GOLD
                 + translationManager.getMessage("message.moneymanager.completePayment")
-                .formatted(giverName, receiverName, amount));
+                .formatted(giver.getName(), receiver.getName(), amount));
     }
 
     private boolean hasEnoughGoldInInventory(Player player, Inventory inventory, int amountToRemove) {
@@ -215,12 +179,5 @@ public class MoneyManagerController implements IMoneyManagerController {
         }
 
         return totalGoldIngots;
-    }
-
-    private String getPlayerNameToCheck(Player player, String[] args) {
-        if (args.length == 1) {
-            return args[0];
-        }
-        return player.getName();
     }
 }

@@ -6,6 +6,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceManager;
 import pawel.cookier.ignaczak.economypack.scoreboard.controllers.ScoreboardHandler;
 
+import java.util.UUID;
+
 public class BalanceManagerEvents implements Listener {
 
     private final BalanceManager balanceManager;
@@ -18,9 +20,9 @@ public class BalanceManagerEvents implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        String playerName = event.getPlayer().getName();
-        if (!balanceManager.containsPlayer(playerName)) {
-            balanceManager.setBalance(playerName, 0L);
+        UUID playerUUID = event.getPlayer().getUniqueId();
+        if (!balanceManager.containsPlayer(playerUUID)) {
+            balanceManager.setBalance(playerUUID, 0d);
         }
 
         scoreboardHandler.updateMoney(event.getPlayer());

@@ -11,6 +11,8 @@ import pawel.cookier.ignaczak.economypack.gambling.models.Game;
 import pawel.cookier.ignaczak.economypack.gambling.models.GameType;
 import pawel.cookier.ignaczak.economypack.gambling.utility.GamblingUtility;
 
+import java.util.UUID;
+
 public class GamblingController implements IGamblingController {
     private final GamblingUtility gamblingUtility;
     private final BalanceManager balanceManager;
@@ -57,10 +59,10 @@ public class GamblingController implements IGamblingController {
                         game.minGameValue());
 
         if (args.length != 0) {
-            long gameValue;
+            double gameValue;
 
             try {
-                gameValue = Long.parseLong(args[0]);
+                gameValue = Double.parseDouble(args[0]);
             } catch (NumberFormatException e) {
                 player.sendMessage(ChatColor.LIGHT_PURPLE +
                         translationManager.getMessage("message.gambling.incorrectBetValue"));
@@ -84,35 +86,35 @@ public class GamblingController implements IGamblingController {
     }
 
     private void playGame(Player player,
-                          Long gameValue,
-                          Long gameMultiplier,
+                          Double gameValue,
+                          Double gameMultiplier,
                           GameType gameType,
                           String moneyLockMessage) {
 
-        String playerName = player.getName();
-        Long currentBalance = balanceManager.getBalance(playerName);
+        UUID playerId = player.getUniqueId();
+        Double currentBalance = balanceManager.getBalance(playerId);
 
         if (currentBalance >= gameValue) {
             boolean isWinning = isWinningGame(gameType, player);
             if (isWinning) {
-                Long winValue = gameValue * gameMultiplier;
+                Double winValue = gameValue * gameMultiplier;
                 currentBalance += (winValue);
                 player.sendMessage(ChatColor.GREEN +
                         translationManager.getMessage("message.gambling.won").formatted(
-                                playerName,
+                                player.getName(),
                                 winValue));
             } else {
                 currentBalance -= gameValue;
                 player.sendMessage(ChatColor.DARK_RED +
                         translationManager.getMessage("message.gambling.lost").formatted(
-                                playerName,
+                                player.getName(),
                                 gameValue));
             }
-            balanceManager.setBalance(playerName, currentBalance);
+            balanceManager.setBalance(playerId, currentBalance);
             scoreboardHandler.updateMoney(player);
             player.sendMessage(ChatColor.GOLD +
                     translationManager.getMessage("message.gambling.currentBalance").formatted(
-                            playerName,
+                            player.getName(),
                             currentBalance));
         } else {
             player.sendMessage(moneyLockMessage);

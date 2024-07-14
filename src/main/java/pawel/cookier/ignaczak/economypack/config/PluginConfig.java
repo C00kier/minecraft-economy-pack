@@ -1,17 +1,13 @@
 package pawel.cookier.ignaczak.economypack.config;
 
-import org.bukkit.Bukkit;
-import org.bukkit.inventory.Inventory;
 import pawel.cookier.ignaczak.economypack.gambling.models.GameType;
 
 public final class PluginConfig {
     //commands
     public static final String GAMBLE_COMMAND = "gamble";
     public static final String SLOTS_COMMAND = "slots";
-    public static final String BALANCE_COMMAND = "balance";
     public static final String EXCHANGE_COMMAND = "exchange";
     public static final String PAY_COMMAND = "pay";
-    public static final String ADD_USER_MANUALLY_COMMAND = "new_money_user";
     public static final String TRANSLATION_COMMAND = "translation";
     public static final String CALL_SHOP_COMMAND = "shop";
     public static final String ADD_SHOP_CATEGORY_COMMAND = "add_shop_category";
@@ -35,7 +31,7 @@ public final class PluginConfig {
     public static final String CURRENT_PLUGIN_LANGUAGE_TAG = "pl";
 
     //money manager
-    public static final Long PRICE_PER_GOLD_INGOT = 20L;
+    public static final Double PRICE_PER_GOLD_INGOT = 20d;
 
     //shop
     public final static int SHOP_INVENTORY_SIZE = 45;
@@ -43,13 +39,13 @@ public final class PluginConfig {
 
     //gamble
     public static final int GAMBLE_CHANCE = 50;
-    public static final Long MIN_GAMBLE_VALUE = 100L;
-    public static final Long GAMBLE_MULTIPLIER = 1L;
+    public static final Double MIN_GAMBLE_VALUE = 100d;
+    public static final Double GAMBLE_MULTIPLIER = 1d;
     public static final GameType GAMBLE_GAME_TYPE = GameType.GAMBLE_GAME;
 
     //slots
-    public static final Long MIN_SLOTS_VALUE = 100L;
-    public static final Long SLOTS_MULTIPLIER = 8L;
+    public static final Double MIN_SLOTS_VALUE = 100d;
+    public static final Double SLOTS_MULTIPLIER = 8d;
     public static final GameType SLOTS_GAME_TYPE = GameType.SLOTS_GAME;
     public static final int SLOTS_MIN_NUMBER_VALUE = 1;
     public static final int SLOTS_MAX_NUMBER_VALUE = 5;

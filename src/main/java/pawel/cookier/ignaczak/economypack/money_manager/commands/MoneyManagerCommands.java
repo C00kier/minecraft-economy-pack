@@ -30,10 +30,8 @@ public class MoneyManagerCommands implements CommandExecutor, TabCompleter {
                              @NotNull String[] args) {
         if (sender instanceof Player player) {
             switch (command.getName().toLowerCase()) {
-                case PluginConfig.BALANCE_COMMAND -> moneyManagerController.checkBalance(player, args);
                 case PluginConfig.EXCHANGE_COMMAND -> moneyManagerController.exchangeGold(player, args);
                 case PluginConfig.PAY_COMMAND -> moneyManagerController.payToPlayer(player, args);
-                case PluginConfig.ADD_USER_MANUALLY_COMMAND -> moneyManagerController.addPlayerManually(player, args);
             }
         }
         return true;
@@ -51,7 +49,6 @@ public class MoneyManagerCommands implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             switch (commandName.toLowerCase()) {
                 case PluginConfig.EXCHANGE_COMMAND, PluginConfig.PAY_COMMAND -> suggestions.add("<amount>");
-                case PluginConfig.ADD_USER_MANUALLY_COMMAND, PluginConfig.BALANCE_COMMAND -> suggestions.add("<name>");
             }
         } else if (args.length == 2 && commandName.equalsIgnoreCase(PluginConfig.PAY_COMMAND)) {
             for (Player player : getOnlinePlayers()) {
