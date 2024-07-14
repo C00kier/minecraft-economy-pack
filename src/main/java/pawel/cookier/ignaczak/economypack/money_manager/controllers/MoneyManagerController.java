@@ -8,7 +8,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceManager;
-import pawel.cookier.ignaczak.economypack.scoreboard.controllers.ScoreboardHandler;
 import pawel.cookier.ignaczak.economypack.translation_manager.controllers.TranslationManager;
 import pawel.cookier.ignaczak.economypack.money_manager.repository.IMoneyManagerController;
 
@@ -16,14 +15,11 @@ import java.util.UUID;
 
 public class MoneyManagerController implements IMoneyManagerController {
     private final BalanceManager balanceManager;
-    private final ScoreboardHandler scoreboardHandler;
     private final TranslationManager translationManager;
 
     public MoneyManagerController(BalanceManager balanceManager,
-                                  ScoreboardHandler scoreboardHandler,
                                   TranslationManager translationManager) {
         this.balanceManager = balanceManager;
-        this.scoreboardHandler = scoreboardHandler;
         this.translationManager = translationManager;
     }
 
@@ -93,7 +89,6 @@ public class MoneyManagerController implements IMoneyManagerController {
 
                 income += moneyToReceive;
                 balanceManager.addMoneyToPlayer(moneyToReceive, playerId);
-                scoreboardHandler.updateMoney(player);
             }
         }
         player.sendMessage(ChatColor.GOLD
@@ -148,8 +143,6 @@ public class MoneyManagerController implements IMoneyManagerController {
         balanceManager.removeMoneyFromPlayer(amount, giverId);
 
         Player receiver = Bukkit.getPlayer(receiverId);
-        scoreboardHandler.updateMoney(receiver);
-        scoreboardHandler.updateMoney(giver);
 
         //wiadomość wysłana do otrzymującego
         assert receiver != null;

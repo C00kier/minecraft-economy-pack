@@ -43,8 +43,8 @@ public final class EconomyPack extends JavaPlugin {
         Locale userLocale = Locale.forLanguageTag(PluginConfig.CURRENT_PLUGIN_LANGUAGE_TAG);
         TranslationManager translationManager = new TranslationManager(userLocale);
 
-        this.balanceManager = new BalanceManager(this, userBalance);
         ScoreboardHandler scoreboardHandler = new ScoreboardHandler(balanceManager);
+        this.balanceManager = new BalanceManager(this, userBalance, scoreboardHandler);
 
         // Initialize utilities
         GamblingUtility gamblingUtility = new GamblingUtility(random);
@@ -53,12 +53,10 @@ public final class EconomyPack extends JavaPlugin {
         GamblingController gamblingController = new GamblingController(
                 gamblingUtility,
                 balanceManager,
-                scoreboardHandler,
                 translationManager
         );
         MoneyManagerController moneyManagerController = new MoneyManagerController(
                 balanceManager,
-                scoreboardHandler,
                 translationManager
         );
         PluginManagerController pluginManagerController = new PluginManagerController(
@@ -84,7 +82,7 @@ public final class EconomyPack extends JavaPlugin {
                 balanceManager);
 
         // Initialize events
-        BalanceManagerEvents balanceManagerEvents = new BalanceManagerEvents(balanceManager, scoreboardHandler);
+        BalanceManagerEvents balanceManagerEvents = new BalanceManagerEvents(balanceManager);
         ShopEvents shopEvents = new ShopEvents(shop, shopEventsController, this);
         getServer().getPluginManager().registerEvents(balanceManagerEvents, this);
         getServer().getPluginManager().registerEvents(shopEvents, this);

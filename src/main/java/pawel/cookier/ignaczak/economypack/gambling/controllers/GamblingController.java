@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceManager;
 import pawel.cookier.ignaczak.economypack.gambling.repository.IGamblingController;
-import pawel.cookier.ignaczak.economypack.scoreboard.controllers.ScoreboardHandler;
 import pawel.cookier.ignaczak.economypack.translation_manager.controllers.TranslationManager;
 import pawel.cookier.ignaczak.economypack.gambling.models.Game;
 import pawel.cookier.ignaczak.economypack.gambling.models.GameType;
@@ -16,16 +15,13 @@ import java.util.UUID;
 public class GamblingController implements IGamblingController {
     private final GamblingUtility gamblingUtility;
     private final BalanceManager balanceManager;
-    private final ScoreboardHandler scoreboardHandler;
     private final TranslationManager translationManager;
 
     public GamblingController(GamblingUtility gamblingUtility,
                               BalanceManager balanceManager,
-                              ScoreboardHandler scoreboardHandler,
                               TranslationManager translationManager) {
         this.gamblingUtility = gamblingUtility;
         this.balanceManager = balanceManager;
-        this.scoreboardHandler = scoreboardHandler;
         this.translationManager = translationManager;
     }
 
@@ -98,20 +94,19 @@ public class GamblingController implements IGamblingController {
             boolean isWinning = isWinningGame(gameType, player);
             if (isWinning) {
                 Double winValue = gameValue * gameMultiplier;
-                currentBalance += (winValue);
+                balanceManager.addMoneyToPlayer(winValue, playerId);
                 player.sendMessage(ChatColor.GREEN +
                         translationManager.getMessage("message.gambling.won").formatted(
                                 player.getName(),
                                 winValue));
             } else {
-                currentBalance -= gameValue;
+                balanceManager.removeMoneyFromPlayer(gameValue, playerId);
                 player.sendMessage(ChatColor.DARK_RED +
                         translationManager.getMessage("message.gambling.lost").formatted(
                                 player.getName(),
                                 gameValue));
             }
-            balanceManager.setBalance(playerId, currentBalance);
-            scoreboardHandler.updateMoney(player);
+
             player.sendMessage(ChatColor.GOLD +
                     translationManager.getMessage("message.gambling.currentBalance").formatted(
                             player.getName(),

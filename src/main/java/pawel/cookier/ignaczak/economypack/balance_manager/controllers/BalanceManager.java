@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import pawel.cookier.ignaczak.economypack.balance_manager.repository.IBalanceManager;
+import pawel.cookier.ignaczak.economypack.scoreboard.controllers.ScoreboardHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,12 +19,14 @@ public class BalanceManager implements IBalanceManager {
     private final FileConfiguration config;
     private final Map<UUID, Double> userBalance;
     private final JavaPlugin plugin;
+    private final ScoreboardHandler scoreboardHandler;
 
-    public BalanceManager(JavaPlugin plugin, Map<UUID, Double> userBalance) {
+    public BalanceManager(JavaPlugin plugin, Map<UUID, Double> userBalance, ScoreboardHandler scoreboardHandler) {
         this.userBalance = userBalance;
         this.plugin = plugin;
 
         configFile = new File(plugin.getDataFolder(), "balances.yml");
+        this.scoreboardHandler = scoreboardHandler;
         if (!configFile.exists()) {
             if (configFile.getParentFile().mkdirs()) {
                 plugin.getLogger().log(Level.INFO, "Created directories for balances.yml");
@@ -68,6 +71,7 @@ public class BalanceManager implements IBalanceManager {
     @Override
     public void setBalance(UUID playerId, Double amount) {
         userBalance.put(playerId, amount);
+        scoreboardHandler.updateMoney(Bukkit.getPlayer(playerId));
         saveBalances();
     }
 
