@@ -27,18 +27,12 @@ commands:
   slots:
     description: Play slots game
     permission: EconomyPack.slots
-  balance:
-    description: Check your balance
-    permission: EconomyPack.balance
   exchange:
     description: Exchange gold ingots to money
     permission: EconomyPack.exchange
   pay:
     description: Pay player
     permission: EconomyPack.pay
-  new_money_user:
-    description: Testing only. Add new user to money database.
-    permission: EconomyPack.money_new
   translation:
     description: Changes the language of the plugin.
     permission: EconomyPack.translation
