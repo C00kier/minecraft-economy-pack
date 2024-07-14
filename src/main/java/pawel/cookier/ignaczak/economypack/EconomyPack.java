@@ -12,7 +12,6 @@ import pawel.cookier.ignaczak.economypack.money_manager.controllers.MoneyManager
 import pawel.cookier.ignaczak.economypack.plugin_manager.controllers.PluginManagerController;
 import pawel.cookier.ignaczak.economypack.balance_manager.events.BalanceManagerEvents;
 import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceManager;
-import pawel.cookier.ignaczak.economypack.scoreboard.controllers.ScoreboardHandler;
 import pawel.cookier.ignaczak.economypack.shop.commands.ShopCommands;
 import pawel.cookier.ignaczak.economypack.shop.controllers.*;
 import pawel.cookier.ignaczak.economypack.shop.events.ShopEvents;
@@ -42,9 +41,7 @@ public final class EconomyPack extends JavaPlugin {
         // Initialize managers
         Locale userLocale = Locale.forLanguageTag(PluginConfig.CURRENT_PLUGIN_LANGUAGE_TAG);
         TranslationManager translationManager = new TranslationManager(userLocale);
-
-        ScoreboardHandler scoreboardHandler = new ScoreboardHandler(balanceManager);
-        this.balanceManager = new BalanceManager(this, userBalance, scoreboardHandler);
+        this.balanceManager = new BalanceManager(this, userBalance);
 
         // Initialize utilities
         GamblingUtility gamblingUtility = new GamblingUtility(random);

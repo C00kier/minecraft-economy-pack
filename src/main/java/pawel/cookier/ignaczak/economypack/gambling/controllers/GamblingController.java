@@ -94,12 +94,14 @@ public class GamblingController implements IGamblingController {
             boolean isWinning = isWinningGame(gameType, player);
             if (isWinning) {
                 Double winValue = gameValue * gameMultiplier;
+                currentBalance += winValue;
                 balanceManager.addMoneyToPlayer(winValue, playerId);
                 player.sendMessage(ChatColor.GREEN +
                         translationManager.getMessage("message.gambling.won").formatted(
                                 player.getName(),
                                 winValue));
             } else {
+                currentBalance -= gameValue;
                 balanceManager.removeMoneyFromPlayer(gameValue, playerId);
                 player.sendMessage(ChatColor.DARK_RED +
                         translationManager.getMessage("message.gambling.lost").formatted(

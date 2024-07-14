@@ -1,5 +1,7 @@
 package pawel.cookier.ignaczak.economypack.balance_manager.repository;
 
+import org.bukkit.entity.Player;
+
 import java.util.UUID;
 
 public interface IBalanceManager {
@@ -11,4 +13,5 @@ public interface IBalanceManager {
     void addMoneyToPlayer(Double amount, UUID playerId);
     void removeMoneyFromPlayer(Double amount, UUID playerId);
     UUID getPlayerUUID(String playerName);
+    void updateMoney(Player player);
 }

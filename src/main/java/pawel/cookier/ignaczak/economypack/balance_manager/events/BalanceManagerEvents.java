@@ -1,5 +1,6 @@
 package pawel.cookier.ignaczak.economypack.balance_manager.events;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -17,9 +18,13 @@ public class BalanceManagerEvents implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        UUID playerUUID = event.getPlayer().getUniqueId();
+        Player player = event.getPlayer();
+        UUID playerUUID = player.getUniqueId();
+
         if (!balanceManager.containsPlayer(playerUUID)) {
             balanceManager.setBalance(playerUUID, 0d);
+        }else{
+            balanceManager.updateMoney(player);
         }
     }
 

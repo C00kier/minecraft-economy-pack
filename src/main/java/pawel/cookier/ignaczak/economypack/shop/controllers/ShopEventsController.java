@@ -81,13 +81,10 @@ public class ShopEventsController implements IShopEventsController {
                         inventory.setItem(i, null);
                     }
                 }
-                exchangeAmountOfItemStackForMoney(player, amountOfItemInInventory, sellPrice);
+                double moneyToAdd = amountOfItemInInventory * sellPrice;
+                balanceManager.addMoneyToPlayer(moneyToAdd, player.getUniqueId());
             }
         }
     }
 
-    private void exchangeAmountOfItemStackForMoney(Player player, int amount, double sellPrice) {
-        //double moneyToAdd = amount * sellPrice;
-
-    }
 }
