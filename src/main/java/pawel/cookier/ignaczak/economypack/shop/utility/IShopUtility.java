@@ -34,4 +34,9 @@ public interface IShopUtility {
                 .toList();
     }
 
+    static String extractDisplayNameFromMaterial(Material material){
+        assert material != null;
+        ItemStack itemStack = new ItemStack(material);
+        return Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName();
+    }
 }

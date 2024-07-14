@@ -1,6 +1,6 @@
 package pawel.cookier.ignaczak.economypack.shop.repository;
 
-import org.bukkit.inventory.Inventory;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import pawel.cookier.ignaczak.economypack.shop.models.Category;
 import pawel.cookier.ignaczak.economypack.shop.models.Item;
@@ -13,4 +13,6 @@ public interface ICategoryController {
     Optional<Item> findItemByName(Category category, String itemName);
     void editCategoryItemStackName(Category category, String newName);
     void editCategoryItemStackMaterial(Category category, ItemStack newItemStack);
+    void updateCategory(Category category);
+    boolean doesCategoryContainDisplayName(Category category, String displayName);
 }

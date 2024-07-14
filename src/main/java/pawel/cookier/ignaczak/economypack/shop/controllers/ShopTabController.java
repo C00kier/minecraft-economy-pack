@@ -17,7 +17,7 @@ public class ShopTabController implements IShopTabController {
     }
 
     @Override
-    public List<String> addEditCategoryIconOnTabComplete(String[] args) {
+    public List<String> addCategoryOnTabComplete(String[] args) {
         List<String> suggestions = new ArrayList<>();
         if (args.length == 1) {
             suggestions.add("<nazwa kategorii>");
@@ -28,10 +28,21 @@ public class ShopTabController implements IShopTabController {
     }
 
     @Override
+    public List<String> editCategoryItemStackTypeOnTabComplete(String[] args) {
+        List<String> suggestions = new ArrayList<>();
+        if (args.length == 1) {
+            suggestions.addAll(autocompleteWithCategoryDisplayName(0, args));
+        } else if (args.length == 2) {
+            suggestions.addAll(autocompleteWithMaterialNames(1, args));
+        }
+        return suggestions;
+    }
+
+    @Override
     public List<String> removeEditNameCategoryOnTabComplete(String[] args) {
         List<String> suggestions = new ArrayList<>();
         if (args.length == 1) {
-            suggestions.addAll(autocompleteWithInventoryDisplayName(0, args));
+            suggestions.addAll(autocompleteWithCategoryDisplayName(0, args));
         } else if (args.length == 2) {
             suggestions.add("<nazwa kategorii>");
         }
@@ -39,7 +50,22 @@ public class ShopTabController implements IShopTabController {
         return suggestions;
     }
 
-    private List<String> autocompleteWithInventoryDisplayName(int argIndex, String[] args) {
+    @Override
+    public List<String> addItemOnTabComplete(String[] args) {
+        List<String> suggestions = new ArrayList<>();
+        if (args.length == 1) {
+            suggestions.addAll(autocompleteWithCategoryDisplayName(0, args));
+        } else if (args.length == 2) {
+            suggestions.addAll(autocompleteWithMaterialNames(1, args));
+        } else if (args.length == 3) {
+            suggestions.add("<sell price>");
+        } else if (args.length == 4) {
+            suggestions.add("<buy price>");
+        }
+        return suggestions;
+    }
+
+    private List<String> autocompleteWithCategoryDisplayName(int argIndex, String[] args) {
         List<String> suggestions = new ArrayList<>(
                 IShopUtility.getItemNamesFromInventory(shop.getInventory()));
 

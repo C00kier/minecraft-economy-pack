@@ -6,17 +6,32 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
+import pawel.cookier.ignaczak.economypack.shop.controllers.CategoryController;
+import pawel.cookier.ignaczak.economypack.shop.controllers.ShopController;
+import pawel.cookier.ignaczak.economypack.shop.models.Category;
+import pawel.cookier.ignaczak.economypack.shop.models.Shop;
 import pawel.cookier.ignaczak.economypack.shop.repository.IShopCommandsValidation;
 import pawel.cookier.ignaczak.economypack.shop.utility.IShopUtility;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ShopCommandsValidation implements IShopCommandsValidation {
+
+    private final Shop shop;
+    private final ShopController shopController;
+    private final CategoryController categoryController;
+
+    public ShopCommandsValidation(Shop shop, ShopController shopController, CategoryController categoryController) {
+        this.shop = shop;
+        this.shopController = shopController;
+        this.categoryController = categoryController;
+    }
 
     @Override
     public boolean isAddShopCategoryValid(Player player, Inventory inventory, String[] args) {
         if (hasAddCategoryEnoughArgs(player, args)
-                && isSecondArgumentMaterial(player, args)
+                && isArgumentMaterial(player, args, 1)
                 && hasEnoughSpaceInShop(player, inventory)) {
             if (doesCategoryNotExist(inventory, args)) {
                 return true;
@@ -59,7 +74,7 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
     @Override
     public boolean isEditCategoryItemStackValid(Player player, Inventory inventory, String[] args) {
         if (hasEditCategoryItemStackEnoughArgs(player, args)
-                && isSecondArgumentMaterial(player, args)) {
+                && isArgumentMaterial(player, args, 1)) {
             if (doesCategoryNotExist(inventory, args)) {
                 String categoryName = args[0];
                 player.sendMessage(ChatColor.RED + "Nie znaleziono kategorii " + categoryName);
@@ -67,6 +82,69 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
                 return true;
             }
         }
+        return false;
+    }
+
+    @Override
+    public boolean isAddShopItemValid(Player player, String[] args) {
+        return hasCorrectQuantityOfArgsAddItem(player, args)
+                && categoryExists(player, args, 0)
+                && isArgumentMaterial(player, args, 1)
+                && canArgumentBeParsedToDouble(player, args, 2)
+                && canArgumentBeParsedToDouble(player, args, 3)
+                && !doesItemAlreadyExistsInCategory(player, args, 0, 1);
+    }
+
+    private boolean hasCorrectQuantityOfArgsAddItem(Player player, String[] args){
+        if(args.length == 4){
+            return true;
+        }
+
+        player.sendMessage(ChatColor.RED + "Musisz podać dokładnie 4 argumenty "
+        + "/%s <nazwa kategorii> <typ materiału> <cena sprzedaży> <cena kupna>".formatted(PluginConfig.ADD_SHOP_ITEM_COMMAND));
+        return false;
+    }
+
+    private boolean categoryExists(Player player, String[] args, int argumentIndex){
+        String categoryName = args[argumentIndex];
+        Optional<Category> optionalCategory = shopController.findCategoryByName(shop, categoryName);
+
+        if(optionalCategory.isPresent()){
+            return true;
+        }
+
+        player.sendMessage(ChatColor.RED + "Nie znaleziono kategorii %s".formatted(categoryName));
+        return false;
+    }
+
+    private boolean canArgumentBeParsedToDouble(Player player, String[] args, int argumentIndex){
+        try {
+            Double.parseDouble(args[argumentIndex]);
+            return true;
+        } catch (NumberFormatException e) {
+            player.sendMessage(ChatColor.RED + "Wprowadź liczbę. Wprowadzono: %s".formatted(args[argumentIndex]));
+            return false;
+        }
+    }
+
+    private boolean doesItemAlreadyExistsInCategory(Player player,
+                                                    String[] args,
+                                                    int categoryNameIndex,
+                                                    int materialIndex){
+        String categoryName = args[categoryNameIndex];
+        Material material = Material.getMaterial(args[materialIndex]);
+        String displayName = IShopUtility.extractDisplayNameFromMaterial(material);
+
+        Optional<Category> optionalCategory = shopController.findCategoryByName(shop, categoryName);
+        if(optionalCategory.isPresent()){
+            Category category = optionalCategory.get();
+            if(categoryController.doesCategoryContainDisplayName(category, displayName)){
+                player.sendMessage(ChatColor.RED +
+                        "Przedmiot o takiej nazwie istnieje już w kategorii %s".formatted(categoryName));
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -81,7 +159,6 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
         player.sendMessage(ChatColor.RED + "Nie możesz dodać nowej kategorii. Osiągnąłeś limit.");
         return false;
     }
-
 
     private boolean hasAddCategoryEnoughArgs(Player player, String[] args) {
         if (args.length == 2) {
@@ -131,12 +208,12 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
         return false;
     }
 
-    private boolean isSecondArgumentMaterial(Player player, String[] args) {
-        if (Material.getMaterial(args[1].toUpperCase()) != null) {
+    private boolean isArgumentMaterial(Player player, String[] args, int argumentIndex) {
+        if (Material.getMaterial(args[argumentIndex].toUpperCase()) != null) {
             return true;
         }
 
-        player.sendMessage(ChatColor.RED + "Nie znaleziono materiału: %s".formatted(args[1]));
+        player.sendMessage(ChatColor.RED + "Nie znaleziono materiału: %s".formatted(args[argumentIndex]));
 
         return false;
     }
@@ -160,4 +237,5 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
         }
         return false;
     }
+
 }

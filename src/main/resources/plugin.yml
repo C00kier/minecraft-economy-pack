@@ -18,6 +18,9 @@ commands:
   edit_shop_category_icon:
     description: Changes category icon
     permission: EconomyPack.edit_shop_category_icon
+  add_shop_item:
+    description: Adding item to category
+    permission: EconomyPack.add_shop_item
   gamble:
     description: Play gamble game
     permission: EconomyPack.gamble

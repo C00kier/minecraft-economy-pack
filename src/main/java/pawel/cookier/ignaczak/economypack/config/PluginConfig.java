@@ -18,6 +18,7 @@ public final class PluginConfig {
     public static final String REMOVE_SHOP_CATEGORY_COMMAND = "remove_shop_category";
     public static final String EDIT_SHOP_CATEGORY_NAME_COMMAND = "edit_shop_category_name";
     public static final String EDIT_SHOP_CATEGORY_ICON_COMMAND = "edit_shop_category_icon";
+    public static final String ADD_SHOP_ITEM_COMMAND = "add_shop_item";
 
 
     //translation

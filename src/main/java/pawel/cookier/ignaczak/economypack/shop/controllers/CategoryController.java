@@ -17,6 +17,7 @@ public class CategoryController implements ICategoryController {
         List<Item> currentList = new ArrayList<>(category.getListOfItems());
         currentList.add(item);
         category.setListOfItems(currentList);
+        updateCategory(category);
     }
 
     @Override
@@ -24,6 +25,7 @@ public class CategoryController implements ICategoryController {
         List<Item> currentList = new ArrayList<>(category.getListOfItems());
         currentList.remove(item);
         category.setListOfItems(currentList);
+        updateCategory(category);
     }
 
     @Override
@@ -52,6 +54,31 @@ public class CategoryController implements ICategoryController {
     @Override
     public void editCategoryItemStackMaterial(Category category, ItemStack newItemStack) {
         category.setCategoryItemStack(newItemStack);
+    }
+
+    @Override
+    public void updateCategory(Category category) {
+        category.getInventory().clear();
+        category.getInventory().setContents(
+                category.getListOfItems()
+                        .stream()
+                        .map(Item::getItemStack)
+                        .toArray(ItemStack[]::new));
+    }
+
+    @Override
+    public boolean doesCategoryContainDisplayName(Category category, String displayName) {
+        if (category == null || displayName == null) {
+            return false;
+        }
+
+        return category.getListOfItems()
+                .stream()
+                .map(Item::getItemStack)
+                .map(ItemStack::getItemMeta)
+                .filter(Objects::nonNull)
+                .map(ItemMeta::getDisplayName)
+                .anyMatch(name -> name.equalsIgnoreCase(displayName));
     }
 
 }
