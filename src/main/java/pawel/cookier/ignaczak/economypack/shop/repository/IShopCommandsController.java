@@ -13,9 +13,6 @@ public interface IShopCommandsController {
     void removeCategoryFromShop(Player player, String[] args);
     void editShopCategoryName(Player player, String[] args);
     void editShopCategoryItemStack(Player player, String[] args);
-    //events
-    boolean isShiftMouseClick(InventoryClickEvent event);
-    void switchBetweenInventoriesBasedOnItemStack(Player player, ItemStack itemStack);
     //item
     void addShopItem(JavaPlugin plugin, Player player, String[] args);
 

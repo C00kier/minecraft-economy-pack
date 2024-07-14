@@ -39,4 +39,6 @@ public interface IShopUtility {
         ItemStack itemStack = new ItemStack(material);
         return Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName();
     }
+
+
 }

@@ -4,8 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,7 +17,6 @@ import pawel.cookier.ignaczak.economypack.shop.utility.IShopUtility;
 import pawel.cookier.ignaczak.economypack.shop.validation.ShopCommandsValidation;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class ShopCommandsController implements IShopCommandsController {
@@ -41,11 +38,6 @@ public class ShopCommandsController implements IShopCommandsController {
     @Override
     public void openInventory(Player player, Inventory inventory) {
         player.openInventory(inventory);
-    }
-
-    @Override
-    public boolean isShiftMouseClick(InventoryClickEvent event) {
-        return event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.SHIFT_RIGHT;
     }
 
     @Override
@@ -111,21 +103,6 @@ public class ShopCommandsController implements IShopCommandsController {
                 shopController.updateShopInventory(shop);
                 player.sendMessage(ChatColor.GREEN + "Zmieniono obiekt");
             }
-        }
-    }
-
-    @Override
-    public void switchBetweenInventoriesBasedOnItemStack(Player player, ItemStack itemStack) {
-        player.closeInventory();
-
-        String displayName = Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName();
-        Optional<Category> optionalCategory = shopController.findCategoryByName(shop, displayName);
-
-        if (optionalCategory.isPresent()) {
-            Category category = optionalCategory.get();
-            Inventory inventoryToOpen = category.getInventory();
-
-            openInventory(player, inventoryToOpen);
         }
     }
 
