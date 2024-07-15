@@ -36,6 +36,13 @@ public final class PluginConfig {
     //shop
     public final static int SHOP_INVENTORY_SIZE = 45;
     public final static int SHOP_INVENTORY_FIELDS_TO_FILL_UP = 36; //9 slots for navbar
+    public final static int SHOP_NAVBAR_BALANCE_PLACE = 36;
+    public final static int SHOP_NAVBAR_PREVIOUS_PAGE_BUTTON_PLACE = 39;
+    public final static int SHOP_NAVBAR_BUTTON_SEPARATOR_PLACE = 40;
+    public final static int SHOP_NAVBAR_NEXT_PAGE_BUTTON_PLACE = 41;
+    public final static int SHOP_NAVBAR_RETURN_PLACE = 44;
+    public final static int[] EMPTY_NAVBAR_FIELDS = {37,38,42,43};
+
 
     //gamble
     public static final int GAMBLE_CHANCE = 50;

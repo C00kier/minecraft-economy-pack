@@ -9,8 +9,12 @@ import pawel.cookier.ignaczak.economypack.shop.models.Shop;
 
 public interface IShopEventsController {
     boolean isItemStackInCurrentlyOpenInventory(Inventory inventory, ItemStack itemStack);
+
     boolean isShiftMouseClick(InventoryClickEvent event);
-    void switchBetweenInventoriesBasedOnItemStack(Shop shop, Player player, ItemStack itemStack);
+
+    void switchBetweenInventoriesBasedOnItemStack(Shop shop, Player player, ItemStack itemStack, int currentPage);
+
     boolean doesShopContainExistingCategoryByInventory(Shop shop, Inventory inventory);
+
     void exchangeAllItemStacksOfSameTypeForMoney(JavaPlugin plugin, Player player, ItemStack itemStack);
 }

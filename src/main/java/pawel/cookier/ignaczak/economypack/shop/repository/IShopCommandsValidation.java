@@ -5,8 +5,12 @@ import org.bukkit.inventory.Inventory;
 
 public interface IShopCommandsValidation {
     boolean isAddShopCategoryValid(Player player, Inventory inventory, String[] args);
+
     boolean isRemoveCategoryValid(Player player, Inventory inventory, String[] args);
+
     boolean isEditCategoryNameValid(Player player, Inventory inventory, String[] args);
+
     boolean isEditCategoryItemStackValid(Player player, Inventory inventory, String[] args);
+
     boolean isAddShopItemValid(Player player, String[] args);
 }

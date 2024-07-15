@@ -91,8 +91,7 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
                 && categoryExists(player, args, 0)
                 && isArgumentMaterial(player, args, 1)
                 && canArgumentBeParsedToDouble(player, args, 2)
-                && canArgumentBeParsedToDouble(player, args, 3)
-                && !doesItemAlreadyExistsInCategory(player, args, 0, 1);
+                && canArgumentBeParsedToDouble(player, args, 3);
     }
 
     private boolean hasCorrectQuantityOfArgsAddItem(Player player, String[] args){
@@ -125,27 +124,6 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
             player.sendMessage(ChatColor.RED + "Wprowadź liczbę. Wprowadzono: %s".formatted(args[argumentIndex]));
             return false;
         }
-    }
-
-    private boolean doesItemAlreadyExistsInCategory(Player player,
-                                                    String[] args,
-                                                    int categoryNameIndex,
-                                                    int materialIndex){
-        String categoryName = args[categoryNameIndex];
-        Material material = Material.getMaterial(args[materialIndex]);
-        String displayName = IShopUtility.extractDisplayNameFromMaterial(material);
-
-        Optional<Category> optionalCategory = shopController.findCategoryByName(shop, categoryName);
-        if(optionalCategory.isPresent()){
-            Category category = optionalCategory.get();
-            if(categoryController.doesCategoryContainDisplayName(category, displayName)){
-                player.sendMessage(ChatColor.RED +
-                        "Przedmiot o takiej nazwie istnieje już w kategorii %s".formatted(categoryName));
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private boolean hasEnoughSpaceInShop(Player player, Inventory inventory) {

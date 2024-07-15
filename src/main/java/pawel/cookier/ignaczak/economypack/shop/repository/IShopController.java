@@ -7,7 +7,10 @@ import java.util.Optional;
 
 public interface IShopController {
     void addCategoryToShop(Shop shop, Category category);
+
     void removeCategoryFromShop(Shop shop, Category category);
+
     Optional<Category> findCategoryByName(Shop shop, String categoryName);
+
     void updateShopInventory(Shop shop);
 }

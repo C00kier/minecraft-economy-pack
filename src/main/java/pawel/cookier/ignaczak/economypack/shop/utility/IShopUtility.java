@@ -48,4 +48,5 @@ public interface IShopUtility {
         }
         return formattedName.toString().trim();
     }
+
 }

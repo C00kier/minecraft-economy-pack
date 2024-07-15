@@ -76,7 +76,7 @@ public final class EconomyPack extends JavaPlugin {
         ShopEventsController shopEventsController = new ShopEventsController(
                 shopCommandsController,
                 shopController,
-                balanceManager);
+                categoryController, balanceManager);
 
         // Initialize events
         BalanceManagerEvents balanceManagerEvents = new BalanceManagerEvents(balanceManager);

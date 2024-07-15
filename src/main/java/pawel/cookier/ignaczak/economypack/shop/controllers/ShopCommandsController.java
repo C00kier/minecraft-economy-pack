@@ -127,7 +127,10 @@ public class ShopCommandsController implements IShopCommandsController {
         }
     }
 
-    private Item createItem(JavaPlugin plugin, Material material, double sellPrice, double buyPrice) {
+    private Item createItem(JavaPlugin plugin,
+                            Material material,
+                            double sellPrice,
+                            double buyPrice) {
         ItemStack itemStack = new ItemStack(material);
         ItemMeta itemMeta = itemStack.getItemMeta();
 

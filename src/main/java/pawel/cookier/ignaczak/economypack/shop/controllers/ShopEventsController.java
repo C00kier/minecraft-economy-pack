@@ -1,6 +1,7 @@
 package pawel.cookier.ignaczak.economypack.shop.controllers;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -11,6 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceManager;
+import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.shop.models.Category;
 import pawel.cookier.ignaczak.economypack.shop.models.Shop;
 import pawel.cookier.ignaczak.economypack.shop.repository.IShopEventsController;
@@ -23,13 +25,15 @@ public class ShopEventsController implements IShopEventsController {
 
     private final ShopCommandsController shopCommandsController;
     private final ShopController shopController;
+    private final CategoryController categoryController;
     private final BalanceManager balanceManager;
 
     public ShopEventsController(ShopCommandsController shopCommandsController,
                                 ShopController shopController,
-                                BalanceManager balanceManager) {
+                                CategoryController categoryController, BalanceManager balanceManager) {
         this.shopCommandsController = shopCommandsController;
         this.shopController = shopController;
+        this.categoryController = categoryController;
         this.balanceManager = balanceManager;
     }
 
@@ -44,7 +48,7 @@ public class ShopEventsController implements IShopEventsController {
     }
 
     @Override
-    public void switchBetweenInventoriesBasedOnItemStack(Shop shop, Player player, ItemStack itemStack) {
+    public void switchBetweenInventoriesBasedOnItemStack(Shop shop, Player player, ItemStack itemStack, int currentPage) {
         player.closeInventory();
 
         String displayName = Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName();
@@ -53,6 +57,24 @@ public class ShopEventsController implements IShopEventsController {
         if (optionalCategory.isPresent()) {
             Category category = optionalCategory.get();
             Inventory inventoryToOpen = category.getInventory();
+            int inventorySize = inventoryToOpen.getSize();
+
+            int totalPages = (int) Math.ceil((double) inventorySize / PluginConfig.SHOP_INVENTORY_FIELDS_TO_FILL_UP);
+            currentPage = Math.max(1, Math.min(currentPage, totalPages));
+
+            int start = (currentPage - 1) * PluginConfig.SHOP_INVENTORY_FIELDS_TO_FILL_UP;
+            int end = Math.min(start + PluginConfig.SHOP_INVENTORY_FIELDS_TO_FILL_UP, inventorySize);
+
+            for (int i = start; i < end; i++) {
+                inventoryToOpen.setItem(i - start, inventoryToOpen.getItem(i));
+            }
+
+            categoryController.addNavBarToInventory(player,
+                    balanceManager,
+                    inventoryToOpen,
+                    Material.SPRUCE_BUTTON,
+                    Material.SMOOTH_STONE,
+                    Material.SPRUCE_BUTTON);
 
             shopCommandsController.openInventory(player, inventoryToOpen);
         }

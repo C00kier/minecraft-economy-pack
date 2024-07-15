@@ -26,7 +26,7 @@ public class ShopEvents implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
+    public void onShopInventoryClick(InventoryClickEvent event) {
         Inventory inventory = event.getInventory();
 
         if (inventory.equals(shop.getInventory())) {
@@ -38,7 +38,8 @@ public class ShopEvents implements Listener {
 
             Player player = (Player) event.getWhoClicked();
 
-            shopEventsController.switchBetweenInventoriesBasedOnItemStack(shop, player, clickedItem);
+            int page = 1;
+            shopEventsController.switchBetweenInventoriesBasedOnItemStack(shop, player, clickedItem,page);
         }
     }
 
@@ -57,6 +58,10 @@ public class ShopEvents implements Listener {
                 shopEventsController.exchangeAllItemStacksOfSameTypeForMoney(plugin, player, clickedItem);
             }
         }
+    }
+
+    @EventHandler
+    public void nextPageButton(InventoryClickEvent event){
 
     }
 }
