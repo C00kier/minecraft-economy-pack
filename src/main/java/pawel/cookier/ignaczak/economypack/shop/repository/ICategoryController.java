@@ -29,4 +29,6 @@ public interface ICategoryController {
                               Material buttonMaterial,
                               Material separatorMaterial,
                               Material backButtonMaterial);
+
+    String getCategoryNameByCategory(Category category);
 }

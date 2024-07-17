@@ -12,9 +12,11 @@ public interface IShopEventsController {
 
     boolean isShiftMouseClick(InventoryClickEvent event);
 
-    void switchBetweenInventoriesBasedOnItemStack(Shop shop, Player player, ItemStack itemStack, int currentPage);
-
     boolean doesShopContainExistingCategoryByInventory(Shop shop, Inventory inventory);
 
     void exchangeAllItemStacksOfSameTypeForMoney(JavaPlugin plugin, Player player, ItemStack itemStack);
+
+    void clickCategoryEvent(Shop shop, InventoryClickEvent event, ItemStack itemStack);
+
+    void nextButtonClickEvent(Shop shop, InventoryClickEvent event);
 }

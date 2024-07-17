@@ -13,11 +13,13 @@ public class Category {
     private static int categoryID = 0;
 
     private final int id;
+    private int currentPage;
     private ItemStack categoryItemStack;
     private List<Item> listOfItems;
     private Inventory inventory;
 
     public Category(ItemStack categoryItemStack) {
+        this.currentPage = 1;
         this.categoryItemStack = categoryItemStack;
         this.listOfItems = new ArrayList<>();
         this.id = categoryID++;
@@ -28,6 +30,14 @@ public class Category {
 
     public int getId() {
         return id;
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
     }
 
     public Inventory getInventory() {

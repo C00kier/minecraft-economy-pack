@@ -1,5 +1,6 @@
 package pawel.cookier.ignaczak.economypack.shop.controllers;
 
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import pawel.cookier.ignaczak.economypack.shop.models.Category;
 import pawel.cookier.ignaczak.economypack.shop.models.Shop;
@@ -35,6 +36,14 @@ public class ShopController implements IShopController {
                 .filter(category -> Objects.requireNonNull(category.getCategoryItemStack().getItemMeta())
                         .getDisplayName()
                         .equalsIgnoreCase(categoryName))
+                .findFirst();
+    }
+
+    @Override
+    public Optional<Category> findCategoryByInventory(Shop shop, Inventory inventory) {
+        return shop.getCategoryList()
+                .stream()
+                .filter(category -> category.getInventory().equals(inventory))
                 .findFirst();
     }
 

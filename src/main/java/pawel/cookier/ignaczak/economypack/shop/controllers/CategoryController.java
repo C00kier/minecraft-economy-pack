@@ -88,6 +88,11 @@ public class CategoryController implements ICategoryController {
         setButtonPartInNavbar(inventory, buttonMaterial, separatorMaterial, backButtonMaterial);
     }
 
+    @Override
+    public String getCategoryNameByCategory(Category category) {
+        return Objects.requireNonNull(category.getCategoryItemStack().getItemMeta()).getDisplayName();
+    }
+
     private void setPlayerHeadInNavbar(Player player,
                                        BalanceManager balanceManager,
                                        Inventory inventory){
@@ -122,7 +127,7 @@ public class CategoryController implements ICategoryController {
                                        Material separatorMaterial,
                                        Material backButtonMaterial){
         ItemStack nextButton = IShopUtility.createItemStack(buttonMaterial, "Następna Strona");
-        ItemStack separatorItem = IShopUtility.createItemStack(separatorMaterial, null);
+        ItemStack separatorItem = IShopUtility.createItemStack(separatorMaterial, "-");
         ItemStack previousButton = IShopUtility.createItemStack(backButtonMaterial, "Poprzednia Strona");
 
         inventory.setItem(PluginConfig.SHOP_NAVBAR_PREVIOUS_PAGE_BUTTON_PLACE, previousButton);

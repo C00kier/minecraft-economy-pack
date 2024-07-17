@@ -1,5 +1,6 @@
 package pawel.cookier.ignaczak.economypack.config;
 
+import org.bukkit.Material;
 import pawel.cookier.ignaczak.economypack.gambling.models.GameType;
 
 public final class PluginConfig {
@@ -42,6 +43,10 @@ public final class PluginConfig {
     public final static int SHOP_NAVBAR_NEXT_PAGE_BUTTON_PLACE = 41;
     public final static int SHOP_NAVBAR_RETURN_PLACE = 44;
     public final static int[] EMPTY_NAVBAR_FIELDS = {37,38,42,43};
+    public final static Material SHOP_NAVBAR_NEXT_BUTTON_MATERIAL = Material.SPRUCE_BUTTON;
+    public final static Material SHOP_NAVBAR_SEPARATOR_MATERIAL = Material.SMOOTH_STONE;
+    public final static Material SHOP_NAVBAR_PREVIOUS_BUTTON_MATERIAL = Material.OAK_BUTTON;
+
 
 
     //gamble
