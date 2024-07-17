@@ -21,14 +21,5 @@ public interface ICategoryController {
 
     void editCategoryItemStackMaterial(Category category, ItemStack newItemStack);
 
-    void updateCategory(Category category);
-
-    void addNavBarToInventory(Player player,
-                              BalanceManager balanceManager,
-                              Inventory inventory,
-                              Material buttonMaterial,
-                              Material separatorMaterial,
-                              Material backButtonMaterial);
-
-    String getCategoryNameByCategory(Category category);
+    void setCategoryInventoryByPage(BalanceManager balanceManager, Player player, Category category, int pageToDisplay);
 }

@@ -18,7 +18,6 @@ import pawel.cookier.ignaczak.economypack.shop.repository.IShopEventsController;
 import pawel.cookier.ignaczak.economypack.shop.utility.IShopUtility;
 
 import java.util.Objects;
-import java.util.Optional;
 
 public class ShopEventsController implements IShopEventsController {
 
@@ -89,76 +88,44 @@ public class ShopEventsController implements IShopEventsController {
     @Override
     public void clickCategoryEvent(Shop shop, InventoryClickEvent event, ItemStack itemStack) {
         String categoryName = Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName();
-        Optional<Category> optionalCategory = shopController.findCategoryByName(shop, categoryName);
 
-        if(optionalCategory.isPresent()){
-            Category category = optionalCategory.get();
+        shopController.findCategoryByName(shop, categoryName).ifPresent(category -> {
             category.setCurrentPage(1);
-
             Player player = (Player) event.getWhoClicked();
-            switchToCategoryInventoryBasedOnNameAndPageNumber(shop, player, categoryName, category.getCurrentPage());
-        }
+            switchToCategoryInventory(player, category);
+        });
     }
 
     @Override
-    public void nextButtonClickEvent(Shop shop, InventoryClickEvent event){
+    public void nextButtonClickEvent(Shop shop, InventoryClickEvent event) {
         Inventory inventory = event.getInventory();
-
-        Optional<Category> optionalCategory = shopController.findCategoryByInventory(shop, inventory);
-        if(optionalCategory.isPresent()){
-            Category category = optionalCategory.get();
-            String categoryName = categoryController.getCategoryNameByCategory(category);
-            int totalPages = (int) Math.ceil((double) inventory.getSize() / PluginConfig.SHOP_INVENTORY_FIELDS_TO_FILL_UP);
+        shopController.findCategoryByInventory(shop, inventory).ifPresent(category -> {
+            int itemsInCategory = category.getListOfItems().size();
+            int totalPages = (int) Math.ceil((double) itemsInCategory / PluginConfig.SHOP_INVENTORY_FIELDS_TO_FILL_UP);
             int currentPage = category.getCurrentPage();
 
-            if(currentPage < totalPages){
-                category.setCurrentPage(category.getCurrentPage() + 1);
+            if (currentPage < totalPages) {
+                category.setCurrentPage(currentPage + 1);
                 Player player = (Player) event.getWhoClicked();
-                player.sendMessage("strona do włączenia " + category.getCurrentPage());
-                switchToCategoryInventoryBasedOnNameAndPageNumber(shop, player, categoryName, category.getCurrentPage());
+                player.sendMessage("Przełącz");
+                switchToCategoryInventory(player, category);
             }
-        }
+        });
     }
 
-    private void switchToCategoryInventoryBasedOnNameAndPageNumber(Shop shop,
-                                                                  Player player,
-                                                                  String categoryName,
-                                                                  int page) {
+    private void switchToCategoryInventory(Player player,
+                                           Category category) {
         player.closeInventory();
 
-        Optional<Category> optionalCategory = shopController.findCategoryByName(shop, categoryName);
+        int itemsInCategory = category.getListOfItems().size();
+        int totalPages = (int) Math.ceil((double) itemsInCategory / PluginConfig.SHOP_INVENTORY_FIELDS_TO_FILL_UP);
+        int pageToOpen = category.getCurrentPage();
 
-        if (optionalCategory.isPresent()) {
-            Category category = optionalCategory.get();
-            categoryController.updateCategory(category);
-            Inventory inventoryToOpen = category.getInventory();
-            int inventorySize = inventoryToOpen.getSize();
-
-            int totalPages = (int) Math.ceil((double) inventorySize / PluginConfig.SHOP_INVENTORY_FIELDS_TO_FILL_UP);
-            page = Math.max(1, Math.min(page, totalPages));
-
-            int start = (page - 1) * PluginConfig.SHOP_INVENTORY_FIELDS_TO_FILL_UP;
-            int end = Math.min(start + PluginConfig.SHOP_INVENTORY_FIELDS_TO_FILL_UP, inventorySize);
-
-            if(page != 1){
-                for (int i = 0; i < PluginConfig.SHOP_INVENTORY_FIELDS_TO_FILL_UP; i++) {
-                    inventoryToOpen.setItem(i, null);
-                }
-            }
-
-            for (int i = start; i < end; i++) {
-                inventoryToOpen.setItem(i - start, inventoryToOpen.getItem(i));
-            }
-
-            categoryController.addNavBarToInventory(player,
-                    balanceManager,
-                    inventoryToOpen,
-                    PluginConfig.SHOP_NAVBAR_NEXT_BUTTON_MATERIAL,
-                    PluginConfig.SHOP_NAVBAR_SEPARATOR_MATERIAL,
-                    PluginConfig.SHOP_NAVBAR_PREVIOUS_BUTTON_MATERIAL);
-
-            shopCommandsController.openInventory(player, inventoryToOpen);
+        if (pageToOpen <= totalPages) {
+            categoryController.setCategoryInventoryByPage(balanceManager, player, category, pageToOpen);
         }
+
+        shopCommandsController.openInventory(player, category.getInventory());
     }
 
     private boolean isShopItemStackSameAsInventoryItemStack(ItemStack shopItemStack, ItemStack inventoryItemStack) {

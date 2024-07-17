@@ -34,12 +34,6 @@ public interface IShopUtility {
                 .toList();
     }
 
-    static String extractDisplayNameFromMaterial(Material material){
-        assert material != null;
-        ItemStack itemStack = new ItemStack(material);
-        return Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName();
-    }
-
     static String formatMaterialName(String materialName) {
         String[] words = materialName.split("_");
         StringBuilder formattedName = new StringBuilder();
@@ -48,5 +42,4 @@ public interface IShopUtility {
         }
         return formattedName.toString().trim();
     }
-
 }
