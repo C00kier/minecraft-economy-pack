@@ -107,7 +107,20 @@ public class ShopEventsController implements IShopEventsController {
             if (currentPage < totalPages) {
                 category.setCurrentPage(currentPage + 1);
                 Player player = (Player) event.getWhoClicked();
-                player.sendMessage("Przełącz");
+                switchToCategoryInventory(player, category);
+            }
+        });
+    }
+
+    @Override
+    public void previousButtonClickEvent(Shop shop, InventoryClickEvent event) {
+        Inventory inventory = event.getInventory();
+        shopController.findCategoryByInventory(shop, inventory).ifPresent(category -> {
+            int currentPage = category.getCurrentPage();
+
+            if(currentPage > 1){
+                category.setCurrentPage(currentPage - 1);
+                Player player = (Player) event.getWhoClicked();
                 switchToCategoryInventory(player, category);
             }
         });

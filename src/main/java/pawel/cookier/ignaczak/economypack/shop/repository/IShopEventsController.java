@@ -19,4 +19,6 @@ public interface IShopEventsController {
     void clickCategoryEvent(Shop shop, InventoryClickEvent event, ItemStack itemStack);
 
     void nextButtonClickEvent(Shop shop, InventoryClickEvent event);
+
+    void previousButtonClickEvent(Shop shop, InventoryClickEvent event);
 }

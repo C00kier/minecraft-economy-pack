@@ -27,6 +27,7 @@ public class ShopEvents implements Listener {
         this.plugin = plugin;
     }
 
+    //menu navigation
     @EventHandler
     public void onShopInventoryClick(InventoryClickEvent event) {
         Inventory inventory = event.getInventory();
@@ -43,6 +44,39 @@ public class ShopEvents implements Listener {
     }
 
     @EventHandler
+    public void nextPageButton(InventoryClickEvent event) {
+        Inventory inventory = event.getInventory();
+
+        if (shopEventsController.doesShopContainExistingCategoryByInventory(shop, inventory)) {
+            event.setCancelled(true);
+            ItemStack clickedItem = event.getCurrentItem();
+
+            if (clickedItem != null
+                    && clickedItem.getType() == PluginConfig.SHOP_NAVBAR_NEXT_BUTTON_MATERIAL
+                    && Objects.requireNonNull(clickedItem.getItemMeta()).getDisplayName().equals("Następna Strona")) {
+                shopEventsController.nextButtonClickEvent(shop, event);
+            }
+        }
+    }
+
+    @EventHandler
+    public void previousPageButton(InventoryClickEvent event){
+        Inventory inventory = event.getInventory();
+
+        if (shopEventsController.doesShopContainExistingCategoryByInventory(shop, inventory)) {
+            event.setCancelled(true);
+            ItemStack clickedItem = event.getCurrentItem();
+
+            if (clickedItem != null
+                    && clickedItem.getType() == PluginConfig.SHOP_NAVBAR_PREVIOUS_BUTTON_MATERIAL
+                    && Objects.requireNonNull(clickedItem.getItemMeta()).getDisplayName().equals("Poprzednia Strona")) {
+                shopEventsController.previousButtonClickEvent(shop, event);
+            }
+        }
+    }
+
+    //selling items
+    @EventHandler
     public void sellAllItemsOfCertainType(InventoryClickEvent event) {
         Inventory inventory = event.getInventory();
 
@@ -56,22 +90,6 @@ public class ShopEvents implements Listener {
                 Player player = (Player) event.getWhoClicked();
 
                 shopEventsController.exchangeAllItemStacksOfSameTypeForMoney(plugin, player, clickedItem);
-            }
-        }
-    }
-
-    @EventHandler
-    public void nextPageButton(InventoryClickEvent event) {
-        Inventory inventory = event.getInventory();
-
-        if (shopEventsController.doesShopContainExistingCategoryByInventory(shop, inventory)) {
-            event.setCancelled(true);
-            ItemStack clickedItem = event.getCurrentItem();
-
-            if (clickedItem != null
-                    && clickedItem.getType() == PluginConfig.SHOP_NAVBAR_NEXT_BUTTON_MATERIAL
-                    && Objects.requireNonNull(clickedItem.getItemMeta()).getDisplayName().equals("Następna Strona")) {
-                shopEventsController.nextButtonClickEvent(shop, event);
             }
         }
     }
