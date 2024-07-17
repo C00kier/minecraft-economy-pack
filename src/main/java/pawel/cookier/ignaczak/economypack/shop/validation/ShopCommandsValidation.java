@@ -94,6 +94,25 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
                 && canArgumentBeParsedToDouble(player, args, 3);
     }
 
+    @Override
+    public boolean isAddItemFromHandToCategoryValid(Player player, String[] args) {
+        return hasCorrectQuantityOfArgsAddFromHand(player, args)
+                && categoryExists(player, args, 0)
+                && canArgumentBeParsedToDouble(player, args, 1)
+                && canArgumentBeParsedToDouble(player, args, 2);
+    }
+
+    private boolean hasCorrectQuantityOfArgsAddFromHand(Player player, String[] args){
+        if(args.length == 3){
+            return true;
+        }
+
+        player.sendMessage(ChatColor.RED + "Musisz podać dokładnie 3 argumenty "
+                + "/%s <nazwa kategorii> <cena sprzedaży> <cena kupna>"
+                .formatted(PluginConfig.ADD_ITEM_FROM_HAND_TO_CATEGORY));
+        return false;
+    }
+
     private boolean hasCorrectQuantityOfArgsAddItem(Player player, String[] args){
         if(args.length == 4){
             return true;

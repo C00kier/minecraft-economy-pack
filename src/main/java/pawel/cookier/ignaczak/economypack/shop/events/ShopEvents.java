@@ -104,7 +104,6 @@ public class ShopEvents implements Listener {
                     && shopEventsController.isItemStackInCurrentlyOpenInventory(inventory, clickedItem)
                     && event.getClick() == ClickType.SHIFT_RIGHT) {
                 Player player = (Player) event.getWhoClicked();
-
                 shopEventsController.exchangeAllItemStacksOfSameTypeForMoney(plugin, player, clickedItem);
             }
         }

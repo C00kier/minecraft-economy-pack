@@ -85,7 +85,7 @@ public class ShopCommandsController implements IShopCommandsController {
     public void editShopCategoryItemStack(Player player, String[] args) {
         if (validation.isEditCategoryItemStackValid(player, shop.getInventory(), args)) {
             String categoryName = args[0];
-            
+
             shopController.findCategoryByName(shop, categoryName).ifPresent(category -> {
 
                 Material material = Material.getMaterial(args[1]);
@@ -106,22 +106,46 @@ public class ShopCommandsController implements IShopCommandsController {
             shopController.findCategoryByName(shop, categoryName).ifPresent(category -> {
 
                 Material material = Material.getMaterial(args[1]);
-                double sellPrice = Double.parseDouble(args[2]);
-                double buyPrice = Double.parseDouble(args[3]);
+                if (material != null) {
+                    double sellPrice = Double.parseDouble(args[2]);
+                    double buyPrice = Double.parseDouble(args[3]);
+                    ItemStack itemStack = new ItemStack(material);
+                    Item item = createItem(plugin, itemStack, sellPrice, buyPrice);
 
-                Item item = createItem(plugin, material, sellPrice, buyPrice);
+                    categoryController.addItemToCategory(category, item);
+                    player.sendMessage(
+                            ChatColor.GREEN + "Dodano %s do kategorii %s".formatted(args[1], categoryName));
+                }
+            });
+        }
+    }
+
+    @Override
+    public void addItemFromHandToCategory(JavaPlugin plugin, Player player, String[] args) {
+        if (validation.isAddItemFromHandToCategoryValid(player, args)) {
+            ItemStack itemStack = new ItemStack(player.getInventory().getItemInMainHand());
+            shopController.findCategoryByName(shop, args[0]).ifPresent(category -> {
+                itemStack.setAmount(1);
+                ItemMeta meta = itemStack.getItemMeta();
+
+                double sellPrice = Double.parseDouble(args[1]);
+                double buyPrice = Double.parseDouble(args[2]);
+
+                Item item = createItem(plugin, itemStack, sellPrice, buyPrice);
                 categoryController.addItemToCategory(category, item);
-                player.sendMessage(
-                        ChatColor.GREEN + "Dodano %s do kategorii %s".formatted(args[1], categoryName));
+                player.sendMessage("item " + item);
+                if (meta != null) {
+                    player.sendMessage(ChatColor.GREEN + "Dodano %s do kategorii %s".formatted(
+                            meta.getDisplayName(), args[0]));
+                }
             });
         }
     }
 
     private Item createItem(JavaPlugin plugin,
-                            Material material,
+                            ItemStack itemStack,
                             double sellPrice,
                             double buyPrice) {
-        ItemStack itemStack = new ItemStack(material);
         ItemMeta itemMeta = itemStack.getItemMeta();
 
         assert itemMeta != null;

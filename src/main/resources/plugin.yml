@@ -21,6 +21,9 @@ commands:
   add_shop_item:
     description: Adding item to category
     permission: EconomyPack.add_shop_item
+  add_item_from_hand:
+    description: Adds item from hand to category
+    permission: EconomyPack.add_item_from_hand
   gamble:
     description: Play gamble game
     permission: EconomyPack.gamble

@@ -56,6 +56,8 @@ public class ShopCommands implements CommandExecutor, TabCompleter {
                     case PluginConfig.EDIT_SHOP_CATEGORY_ICON_COMMAND ->
                             shopCommandsController.editShopCategoryItemStack(player, args);
                     case PluginConfig.ADD_SHOP_ITEM_COMMAND -> shopCommandsController.addShopItem(plugin, player, args);
+                    case PluginConfig.ADD_ITEM_FROM_HAND_TO_CATEGORY -> shopCommandsController.addItemFromHandToCategory(
+                            plugin, player, args);
                 }
             }
         }
@@ -81,6 +83,8 @@ public class ShopCommands implements CommandExecutor, TabCompleter {
                     suggestions.addAll(shopTabController.removeEditNameCategoryOnTabComplete(args));
             case PluginConfig.ADD_SHOP_ITEM_COMMAND ->
                     suggestions.addAll(shopTabController.addItemOnTabComplete(args));
+            case PluginConfig.ADD_ITEM_FROM_HAND_TO_CATEGORY ->
+                suggestions.addAll(shopTabController.addItemFromHandOnTabComplete(args));
         }
 
         return suggestions;

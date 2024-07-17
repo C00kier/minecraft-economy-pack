@@ -65,6 +65,19 @@ public class ShopTabController implements IShopTabController {
         return suggestions;
     }
 
+    @Override
+    public List<String> addItemFromHandOnTabComplete(String[] args) {
+        List<String> suggestions = new ArrayList<>();
+        if (args.length == 1) {
+            suggestions.addAll(autocompleteWithCategoryDisplayName(0, args));
+        } else if (args.length == 2) {
+            suggestions.add("<sell price>");
+        } else if (args.length == 3) {
+            suggestions.add("<buy price>");
+        }
+        return suggestions;
+    }
+
     private List<String> autocompleteWithCategoryDisplayName(int argIndex, String[] args) {
         List<String> suggestions = new ArrayList<>(
                 IShopUtility.getItemNamesFromInventory(shop.getInventory()));

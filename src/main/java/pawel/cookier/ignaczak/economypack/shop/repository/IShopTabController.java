@@ -10,4 +10,6 @@ public interface IShopTabController {
     List<String> removeEditNameCategoryOnTabComplete(String[] args);
 
     List<String> addItemOnTabComplete(String[] args);
+
+    List<String> addItemFromHandOnTabComplete(String[] args);
 }

@@ -13,4 +13,6 @@ public interface IShopCommandsValidation {
     boolean isEditCategoryItemStackValid(Player player, Inventory inventory, String[] args);
 
     boolean isAddShopItemValid(Player player, String[] args);
+
+    boolean isAddItemFromHandToCategoryValid(Player player, String[] args);
 }
