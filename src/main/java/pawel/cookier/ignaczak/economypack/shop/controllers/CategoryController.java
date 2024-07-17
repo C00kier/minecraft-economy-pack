@@ -113,7 +113,7 @@ public class CategoryController implements ICategoryController {
         ItemMeta meta = returnItem.getItemMeta();
 
         if (meta != null) {
-            meta.setDisplayName("Wyjdź");
+            meta.setDisplayName("Wróć");
             returnItem.setItemMeta(meta);
             inventory.setItem(PluginConfig.SHOP_NAVBAR_RETURN_PLACE, returnItem);
         }

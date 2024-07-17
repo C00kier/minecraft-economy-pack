@@ -118,12 +118,18 @@ public class ShopEventsController implements IShopEventsController {
         shopController.findCategoryByInventory(shop, inventory).ifPresent(category -> {
             int currentPage = category.getCurrentPage();
 
-            if(currentPage > 1){
+            if (currentPage > 1) {
                 category.setCurrentPage(currentPage - 1);
                 Player player = (Player) event.getWhoClicked();
                 switchToCategoryInventory(player, category);
             }
         });
+    }
+
+    @Override
+    public void backButtonClickEvent(Shop shop, InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+        shopCommandsController.openInventory(player, shop.getInventory());
     }
 
     private void switchToCategoryInventory(Player player,

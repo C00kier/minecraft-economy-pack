@@ -75,6 +75,22 @@ public class ShopEvents implements Listener {
         }
     }
 
+    @EventHandler
+    public void returnToShopButton(InventoryClickEvent event){
+        Inventory inventory = event.getInventory();
+
+        if (shopEventsController.doesShopContainExistingCategoryByInventory(shop, inventory)) {
+            event.setCancelled(true);
+            ItemStack clickedItem = event.getCurrentItem();
+
+            if (clickedItem != null
+                    && clickedItem.getType() == Material.BARRIER
+                    && Objects.requireNonNull(clickedItem.getItemMeta()).getDisplayName().equals("Wróć")) {
+                shopEventsController.backButtonClickEvent(shop, event);
+            }
+        }
+    }
+
     //selling items
     @EventHandler
     public void sellAllItemsOfCertainType(InventoryClickEvent event) {
