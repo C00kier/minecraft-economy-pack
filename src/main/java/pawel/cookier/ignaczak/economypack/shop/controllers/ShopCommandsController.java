@@ -17,7 +17,6 @@ import pawel.cookier.ignaczak.economypack.shop.utility.IShopUtility;
 import pawel.cookier.ignaczak.economypack.shop.validation.ShopCommandsValidation;
 
 import java.util.List;
-import java.util.Optional;
 
 public class ShopCommandsController implements IShopCommandsController {
     private final Shop shop;
@@ -58,13 +57,11 @@ public class ShopCommandsController implements IShopCommandsController {
     public void removeCategoryFromShop(Player player, String[] args) {
         if (validation.isRemoveCategoryValid(player, shop.getInventory(), args)) {
             String categoryName = args[0];
-            Optional<Category> optionalCategory = shopController.findCategoryByName(shop, categoryName);
 
-            if (optionalCategory.isPresent()) {
-                Category categoryToRemove = optionalCategory.get();
-                shopController.removeCategoryFromShop(shop, categoryToRemove);
+            shopController.findCategoryByName(shop, categoryName).ifPresent(category -> {
+                shopController.removeCategoryFromShop(shop, category);
                 player.sendMessage(ChatColor.GREEN + "Usunięto kategorię %s".formatted(categoryName));
-            }
+            });
         }
     }
 
@@ -73,17 +70,14 @@ public class ShopCommandsController implements IShopCommandsController {
         if (validation.isEditCategoryNameValid(player, shop.getInventory(), args)) {
             String oldName = args[0];
 
-            Optional<Category> category = shopController.findCategoryByName(shop, oldName);
-            if (category.isPresent()) {
+            shopController.findCategoryByName(shop, oldName).ifPresent(category -> {
                 String newName = args[1];
-                Category categoryToEdit = category.get();
-
-                categoryController.editCategoryItemStackName(categoryToEdit, newName);
+                categoryController.editCategoryItemStackName(category, newName);
                 shopController.updateShopInventory(shop);
 
                 player.sendMessage(ChatColor.GREEN + "Zmieniono nazwę %s na %s"
                         .formatted(oldName, newName));
-            }
+            });
         }
     }
 
@@ -91,18 +85,16 @@ public class ShopCommandsController implements IShopCommandsController {
     public void editShopCategoryItemStack(Player player, String[] args) {
         if (validation.isEditCategoryItemStackValid(player, shop.getInventory(), args)) {
             String categoryName = args[0];
-            Optional<Category> category = shopController.findCategoryByName(shop, categoryName);
-
-            if (category.isPresent()) {
-                Category categoryToEdit = category.get();
+            
+            shopController.findCategoryByName(shop, categoryName).ifPresent(category -> {
 
                 Material material = Material.getMaterial(args[1]);
                 ItemStack newItem = IShopUtility.createItemStack(material, categoryName);
 
-                categoryController.editCategoryItemStackMaterial(categoryToEdit, newItem);
+                categoryController.editCategoryItemStackMaterial(category, newItem);
                 shopController.updateShopInventory(shop);
                 player.sendMessage(ChatColor.GREEN + "Zmieniono obiekt");
-            }
+            });
         }
     }
 
@@ -111,10 +103,8 @@ public class ShopCommandsController implements IShopCommandsController {
         if (validation.isAddShopItemValid(player, args)) {
 
             String categoryName = args[0];
-            Optional<Category> optionalCategory = shopController.findCategoryByName(shop, categoryName);
+            shopController.findCategoryByName(shop, categoryName).ifPresent(category -> {
 
-            if (optionalCategory.isPresent()) {
-                Category category = optionalCategory.get();
                 Material material = Material.getMaterial(args[1]);
                 double sellPrice = Double.parseDouble(args[2]);
                 double buyPrice = Double.parseDouble(args[3]);
@@ -123,7 +113,7 @@ public class ShopCommandsController implements IShopCommandsController {
                 categoryController.addItemToCategory(category, item);
                 player.sendMessage(
                         ChatColor.GREEN + "Dodano %s do kategorii %s".formatted(args[1], categoryName));
-            }
+            });
         }
     }
 
