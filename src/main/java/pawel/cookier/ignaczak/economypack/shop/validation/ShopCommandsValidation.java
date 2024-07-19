@@ -6,26 +6,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
-import pawel.cookier.ignaczak.economypack.shop.controllers.CategoryController;
 import pawel.cookier.ignaczak.economypack.shop.controllers.ShopController;
 import pawel.cookier.ignaczak.economypack.shop.models.Category;
+import pawel.cookier.ignaczak.economypack.shop.models.Item;
 import pawel.cookier.ignaczak.economypack.shop.models.Shop;
 import pawel.cookier.ignaczak.economypack.shop.repository.IShopCommandsValidation;
-import pawel.cookier.ignaczak.economypack.shop.utility.IShopUtility;
 
-import java.util.List;
 import java.util.Optional;
 
 public class ShopCommandsValidation implements IShopCommandsValidation {
 
     private final Shop shop;
     private final ShopController shopController;
-    private final CategoryController categoryController;
 
-    public ShopCommandsValidation(Shop shop, ShopController shopController, CategoryController categoryController) {
+    public ShopCommandsValidation(Shop shop, ShopController shopController) {
         this.shop = shop;
         this.shopController = shopController;
-        this.categoryController = categoryController;
     }
 
     @Override
@@ -33,7 +29,7 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
         if (hasAddCategoryEnoughArgs(player, args)
                 && isArgumentMaterial(player, args, 1)
                 && hasEnoughSpaceInShop(player, inventory)) {
-            if (doesCategoryNotExist(inventory, args)) {
+            if (!categoryExists(args, 0)) {
                 return true;
             } else {
                 String categoryName = args[0];
@@ -44,10 +40,10 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
     }
 
     @Override
-    public boolean isRemoveCategoryValid(Player player, Inventory inventory, String[] args) {
+    public boolean isRemoveCategoryValid(Player player, String[] args) {
         if (hasRemoveCategoryEnoughArgs(player, args)
                 && hasSameArgs(player, args, PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND)) {
-            if (doesCategoryNotExist(inventory, args)) {
+            if (!categoryExists(args, 0)) {
                 String categoryName = args[0];
                 player.sendMessage(ChatColor.RED + "Nie znaleziono kategorii " + categoryName);
             } else {
@@ -58,10 +54,10 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
     }
 
     @Override
-    public boolean isEditCategoryNameValid(Player player, Inventory inventory, String[] args) {
+    public boolean isEditCategoryNameValid(Player player, String[] args) {
         if (hasEditCategoryNameEnoughArgs(player, args)
                 && !hasSameArgs(player, args, PluginConfig.EDIT_SHOP_CATEGORY_NAME_COMMAND)) {
-            if (doesCategoryNotExist(inventory, args)) {
+            if (!categoryExists(args, 0)) {
                 String categoryName = args[0];
                 player.sendMessage(ChatColor.RED + "Nie znaleziono kategorii " + categoryName);
             } else {
@@ -72,10 +68,10 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
     }
 
     @Override
-    public boolean isEditCategoryItemStackValid(Player player, Inventory inventory, String[] args) {
+    public boolean isEditCategoryItemStackValid(Player player, String[] args) {
         if (hasEditCategoryItemStackEnoughArgs(player, args)
                 && isArgumentMaterial(player, args, 1)) {
-            if (doesCategoryNotExist(inventory, args)) {
+            if (!categoryExists(args, 0)) {
                 String categoryName = args[0];
                 player.sendMessage(ChatColor.RED + "Nie znaleziono kategorii " + categoryName);
             } else {
@@ -87,23 +83,102 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
 
     @Override
     public boolean isAddShopItemValid(Player player, String[] args) {
-        return hasCorrectQuantityOfArgsAddItem(player, args)
-                && categoryExists(player, args, 0)
+        if (hasCorrectQuantityOfArgsAddItem(player, args)
                 && isArgumentMaterial(player, args, 1)
                 && canArgumentBeParsedToDouble(player, args, 2)
-                && canArgumentBeParsedToDouble(player, args, 3);
+                && canArgumentBeParsedToDouble(player, args, 3)
+                && isDoubleParsedValueGreaterThanZero(player, args, 2)
+                && isDoubleParsedValueGreaterThanZero(player, args, 3)) {
+            if (!categoryExists(args, 0)) {
+                String categoryName = args[0];
+                player.sendMessage(ChatColor.RED + "Nie znaleziono kategorii " + categoryName);
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public boolean isAddItemFromHandToCategoryValid(Player player, String[] args) {
-        return hasCorrectQuantityOfArgsAddFromHand(player, args)
-                && categoryExists(player, args, 0)
+        if (hasCorrectQuantityOfArgsAddFromHand(player, args)
                 && canArgumentBeParsedToDouble(player, args, 1)
-                && canArgumentBeParsedToDouble(player, args, 2);
+                && canArgumentBeParsedToDouble(player, args, 2)
+                && isDoubleParsedValueGreaterThanZero(player, args, 1)
+                && isDoubleParsedValueGreaterThanZero(player, args, 2)) {
+            if (!categoryExists(args, 0)) {
+                String categoryName = args[0];
+                player.sendMessage(ChatColor.RED + "Nie znaleziono kategorii " + categoryName);
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
-    private boolean hasCorrectQuantityOfArgsAddFromHand(Player player, String[] args){
-        if(args.length == 3){
+    @Override
+    public boolean isEditItemSellPriceValid(Player player, String[] args) {
+        return hasEditItemSellCorrectArgsQuantity(player, args)
+                && canArgumentBeParsedToInteger(player, args, 0)
+                && canArgumentBeParsedToDouble(player, args, 1)
+                && isDoubleParsedValueGreaterThanZero(player, args, 1)
+                && isItemWithPassedIdExisting(player, args, 0);
+    }
+
+    @Override
+    public boolean isEditItemBuyPriceValid(Player player, String[] args) {
+        return hasEditItemBuyCorrectArgsQuantity(player, args)
+                && canArgumentBeParsedToInteger(player, args, 0)
+                && canArgumentBeParsedToDouble(player, args, 1)
+                && isDoubleParsedValueGreaterThanZero(player, args, 1)
+                && isItemWithPassedIdExisting(player, args, 0);
+    }
+
+    private boolean isDoubleParsedValueGreaterThanZero(Player player,String[] args, int doubleIndex){
+        double value = Double.parseDouble(args[doubleIndex]);
+
+        if(value > 0){
+            return true;
+        }
+
+        player.sendMessage(ChatColor.RED + "Wartość musi być większa od 0. Podano: %s".formatted(value));
+        return false;
+    }
+
+    private boolean hasEditItemSellCorrectArgsQuantity(Player player, String[] args) {
+        if (args.length == 2) {
+            return true;
+        }
+
+        player.sendMessage(ChatColor.RED + "Musisz podać dokładnie 2 argumenty "
+                + "/%s <id przedmiotu> <cena sprzedaży>".formatted(PluginConfig.EDIT_ITEM_SELL_PRICE));
+        return false;
+    }
+
+    private boolean hasEditItemBuyCorrectArgsQuantity(Player player, String[] args) {
+        if (args.length == 2) {
+            return true;
+        }
+
+        player.sendMessage(ChatColor.RED + "Musisz podać dokładnie 2 argumenty "
+                + "/%s <id przedmiotu> <cena kupna>".formatted(PluginConfig.EDIT_ITEM_BUY_PRICE));
+        return false;
+    }
+
+    private boolean isItemWithPassedIdExisting(Player player, String[] args, int itemIdIndex){
+        int itemId = Integer.parseInt(args[itemIdIndex]);
+
+        Optional<Item> optionalItem = shopController.findItemByItemId(shop, itemId);
+        if(optionalItem.isPresent()){
+            return true;
+        }
+
+        player.sendMessage(ChatColor.RED + "Nie znaleziono przedmiotu z id: %s".formatted(itemId));
+        return false;
+    }
+
+    private boolean hasCorrectQuantityOfArgsAddFromHand(Player player, String[] args) {
+        if (args.length == 3) {
             return true;
         }
 
@@ -113,34 +188,40 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
         return false;
     }
 
-    private boolean hasCorrectQuantityOfArgsAddItem(Player player, String[] args){
-        if(args.length == 4){
+    private boolean hasCorrectQuantityOfArgsAddItem(Player player, String[] args) {
+        if (args.length == 4) {
             return true;
         }
 
         player.sendMessage(ChatColor.RED + "Musisz podać dokładnie 4 argumenty "
-        + "/%s <nazwa kategorii> <typ materiału> <cena sprzedaży> <cena kupna>".formatted(PluginConfig.ADD_SHOP_ITEM_COMMAND));
+                + "/%s <nazwa kategorii> <typ materiału> <cena sprzedaży> <cena kupna>".formatted(PluginConfig.ADD_SHOP_ITEM_COMMAND));
         return false;
     }
 
-    private boolean categoryExists(Player player, String[] args, int argumentIndex){
+    private boolean categoryExists(String[] args,
+                                   int argumentIndex) {
         String categoryName = args[argumentIndex];
         Optional<Category> optionalCategory = shopController.findCategoryByName(shop, categoryName);
 
-        if(optionalCategory.isPresent()){
-            return true;
-        }
-
-        player.sendMessage(ChatColor.RED + "Nie znaleziono kategorii %s".formatted(categoryName));
-        return false;
+        return optionalCategory.isPresent();
     }
 
-    private boolean canArgumentBeParsedToDouble(Player player, String[] args, int argumentIndex){
+    private boolean canArgumentBeParsedToDouble(Player player, String[] args, int argumentIndex) {
         try {
             Double.parseDouble(args[argumentIndex]);
             return true;
         } catch (NumberFormatException e) {
             player.sendMessage(ChatColor.RED + "Wprowadź liczbę. Wprowadzono: %s".formatted(args[argumentIndex]));
+            return false;
+        }
+    }
+
+    private boolean canArgumentBeParsedToInteger(Player player, String[] args, int argumentIndex) {
+        try {
+            Integer.parseInt(args[argumentIndex]);
+            return true;
+        } catch (NumberFormatException e) {
+            player.sendMessage(ChatColor.RED + "Wprowadź liczbę całkowitą. Wprowadzono: %s".formatted(args[argumentIndex]));
             return false;
         }
     }
@@ -213,12 +294,6 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
         player.sendMessage(ChatColor.RED + "Nie znaleziono materiału: %s".formatted(args[argumentIndex]));
 
         return false;
-    }
-
-    private boolean doesCategoryNotExist(Inventory inventory, String[] args) {
-        String categoryName = args[0];
-        List<String> itemNamesArray = IShopUtility.getItemNamesFromInventory(inventory);
-        return !itemNamesArray.contains(categoryName);
     }
 
     private boolean hasSameArgs(Player player, String[] args, String command) {

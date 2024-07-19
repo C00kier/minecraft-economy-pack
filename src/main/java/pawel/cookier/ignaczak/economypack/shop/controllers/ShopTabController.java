@@ -78,6 +78,28 @@ public class ShopTabController implements IShopTabController {
         return suggestions;
     }
 
+    @Override
+    public List<String> editItemSellPriceOnTabComplete(String[] args) {
+        List<String> suggestions = new ArrayList<>();
+        if (args.length == 1) {
+            suggestions.add("<item id>");
+        } else if (args.length == 2) {
+            suggestions.add("<sell price>");
+        }
+        return suggestions;
+    }
+
+    @Override
+    public List<String> editItemBuyPriceOnTabComplete(String[] args) {
+        List<String> suggestions = new ArrayList<>();
+        if (args.length == 1) {
+            suggestions.add("<item id>");
+        } else if (args.length == 2) {
+            suggestions.add("<buy price>");
+        }
+        return suggestions;
+    }
+
     private List<String> autocompleteWithCategoryDisplayName(int argIndex, String[] args) {
         List<String> suggestions = new ArrayList<>(
                 IShopUtility.getItemNamesFromInventory(shop.getInventory()));
@@ -104,4 +126,5 @@ public class ShopTabController implements IShopTabController {
         }
         return suggestions;
     }
+
 }

@@ -24,6 +24,12 @@ commands:
   add_item_from_hand:
     description: Adds item from hand to category
     permission: EconomyPack.add_item_from_hand
+  edit_item_sell_price:
+    description: Changes item sell price
+    permission: EconomyPack.edit_item_sell_price
+  edit_item_buy_price:
+    description: Changes item buy price
+    permission: EconomyPack.edit_item_buy_price
   gamble:
     description: Play gamble game
     permission: EconomyPack.gamble

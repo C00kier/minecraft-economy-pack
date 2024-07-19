@@ -3,6 +3,7 @@ package pawel.cookier.ignaczak.economypack.shop.controllers;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import pawel.cookier.ignaczak.economypack.shop.models.Category;
+import pawel.cookier.ignaczak.economypack.shop.models.Item;
 import pawel.cookier.ignaczak.economypack.shop.models.Shop;
 import pawel.cookier.ignaczak.economypack.shop.repository.IShopController;
 
@@ -55,6 +56,14 @@ public class ShopController implements IShopController {
                         .stream()
                         .map(Category::getCategoryItemStack)
                         .toArray(ItemStack[]::new));
+    }
+
+    @Override
+    public Optional<Item> findItemByItemId(Shop shop, int itemId) {
+        return shop.getCategoryList().stream()
+                .flatMap(category -> category.getListOfItems().stream())
+                .filter(item -> item.getId() == itemId)
+                .findFirst();
     }
 
 }

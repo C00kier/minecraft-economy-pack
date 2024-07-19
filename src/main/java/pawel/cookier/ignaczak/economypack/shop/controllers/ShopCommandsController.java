@@ -21,15 +21,17 @@ import java.util.List;
 public class ShopCommandsController implements IShopCommandsController {
     private final Shop shop;
     private final ShopCommandsValidation validation;
+    private final ItemController itemController;
     private final CategoryController categoryController;
     private final ShopController shopController;
 
     public ShopCommandsController(Shop shop,
                                   ShopCommandsValidation validation,
-                                  CategoryController categoryController,
+                                  ItemController itemController, CategoryController categoryController,
                                   ShopController shopController) {
         this.shop = shop;
         this.validation = validation;
+        this.itemController = itemController;
         this.categoryController = categoryController;
         this.shopController = shopController;
     }
@@ -55,7 +57,7 @@ public class ShopCommandsController implements IShopCommandsController {
 
     @Override
     public void removeCategoryFromShop(Player player, String[] args) {
-        if (validation.isRemoveCategoryValid(player, shop.getInventory(), args)) {
+        if (validation.isRemoveCategoryValid(player, args)) {
             String categoryName = args[0];
 
             shopController.findCategoryByName(shop, categoryName).ifPresent(category -> {
@@ -67,7 +69,7 @@ public class ShopCommandsController implements IShopCommandsController {
 
     @Override
     public void editShopCategoryName(Player player, String[] args) {
-        if (validation.isEditCategoryNameValid(player, shop.getInventory(), args)) {
+        if (validation.isEditCategoryNameValid(player, args)) {
             String oldName = args[0];
 
             shopController.findCategoryByName(shop, oldName).ifPresent(category -> {
@@ -83,7 +85,7 @@ public class ShopCommandsController implements IShopCommandsController {
 
     @Override
     public void editShopCategoryItemStack(Player player, String[] args) {
-        if (validation.isEditCategoryItemStackValid(player, shop.getInventory(), args)) {
+        if (validation.isEditCategoryItemStackValid(player, args)) {
             String categoryName = args[0];
 
             shopController.findCategoryByName(shop, categoryName).ifPresent(category -> {
@@ -133,12 +135,34 @@ public class ShopCommandsController implements IShopCommandsController {
 
                 Item item = createItem(plugin, itemStack, sellPrice, buyPrice);
                 categoryController.addItemToCategory(category, item);
-                player.sendMessage("item " + item);
+
                 if (meta != null) {
                     player.sendMessage(ChatColor.GREEN + "Dodano %s do kategorii %s".formatted(
                             meta.getDisplayName(), args[0]));
                 }
             });
+        }
+    }
+
+    @Override
+    public void editItemSellPrice(JavaPlugin plugin, Player player, String[] args) {
+        if (validation.isEditItemSellPriceValid(player, args)) {
+            int itemId = Integer.parseInt(args[0]);
+            Double newSellPrice = Double.parseDouble(args[1]);
+
+            shopController.findItemByItemId(shop, itemId).ifPresent(item ->
+                itemController.updateItemSellPrice(plugin, player, item, newSellPrice));
+        }
+    }
+
+    @Override
+    public void editItemBuyPrice(JavaPlugin plugin, Player player, String[] args) {
+        if (validation.isEditItemBuyPriceValid(player, args)) {
+            int itemId = Integer.parseInt(args[0]);
+            Double newSellPrice = Double.parseDouble(args[1]);
+
+            shopController.findItemByItemId(shop, itemId).ifPresent(item ->
+                    itemController.updateItemBuyPrice(plugin, player, item, newSellPrice));
         }
     }
 
@@ -161,7 +185,24 @@ public class ShopCommandsController implements IShopCommandsController {
 
         itemStack.setItemMeta(itemMeta);
 
-        return new Item(itemStack, sellPrice, buyPrice);
+        Item item = new Item(itemStack, sellPrice, buyPrice);
+        makeItemStackToDisplayItemId(item);
+
+        return item;
+    }
+
+    private void makeItemStackToDisplayItemId(Item item) {
+        ItemStack itemStack = item.getItemStack();
+        ItemMeta meta = itemStack.getItemMeta();
+
+        if (meta != null) {
+            List<String> loreList = meta.getLore();
+            if (loreList != null) {
+                loreList.add(ChatColor.GRAY + "Item id: %s".formatted(item.getId()));
+                meta.setLore(loreList);
+                itemStack.setItemMeta(meta);
+            }
+        }
     }
 
 }

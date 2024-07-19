@@ -12,4 +12,8 @@ public interface IShopTabController {
     List<String> addItemOnTabComplete(String[] args);
 
     List<String> addItemFromHandOnTabComplete(String[] args);
+
+    List<String> editItemSellPriceOnTabComplete(String[] args);
+
+    List<String> editItemBuyPriceOnTabComplete(String[] args);
 }

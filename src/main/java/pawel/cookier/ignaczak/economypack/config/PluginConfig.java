@@ -17,6 +17,8 @@ public final class PluginConfig {
     public static final String EDIT_SHOP_CATEGORY_ICON_COMMAND = "edit_shop_category_icon";
     public static final String ADD_SHOP_ITEM_COMMAND = "add_shop_item";
     public static final String ADD_ITEM_FROM_HAND_TO_CATEGORY = "add_item_from_hand";
+    public static final String EDIT_ITEM_SELL_PRICE = "edit_item_sell_price";
+    public static final String EDIT_ITEM_BUY_PRICE = "edit_item_buy_price";
 
 
     //translation

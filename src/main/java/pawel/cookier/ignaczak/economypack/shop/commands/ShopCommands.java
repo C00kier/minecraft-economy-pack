@@ -47,17 +47,20 @@ public class ShopCommands implements CommandExecutor, TabCompleter {
 
             if (player.isOp()) {
                 switch (commandName) {
-                    case PluginConfig.ADD_SHOP_CATEGORY_COMMAND -> shopCommandsController.addShopCategory(
-                            player, args);
-                    case PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND -> shopCommandsController.removeCategoryFromShop(
-                            player, args);
-                    case PluginConfig.EDIT_SHOP_CATEGORY_NAME_COMMAND -> shopCommandsController.editShopCategoryName(
-                            player, args);
+                    case PluginConfig.ADD_SHOP_CATEGORY_COMMAND -> shopCommandsController.addShopCategory(player, args);
+                    case PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND ->
+                            shopCommandsController.removeCategoryFromShop(player, args);
+                    case PluginConfig.EDIT_SHOP_CATEGORY_NAME_COMMAND ->
+                            shopCommandsController.editShopCategoryName(player, args);
                     case PluginConfig.EDIT_SHOP_CATEGORY_ICON_COMMAND ->
                             shopCommandsController.editShopCategoryItemStack(player, args);
                     case PluginConfig.ADD_SHOP_ITEM_COMMAND -> shopCommandsController.addShopItem(plugin, player, args);
-                    case PluginConfig.ADD_ITEM_FROM_HAND_TO_CATEGORY -> shopCommandsController.addItemFromHandToCategory(
-                            plugin, player, args);
+                    case PluginConfig.ADD_ITEM_FROM_HAND_TO_CATEGORY ->
+                            shopCommandsController.addItemFromHandToCategory(plugin, player, args);
+                    case PluginConfig.EDIT_ITEM_SELL_PRICE ->
+                            shopCommandsController.editItemSellPrice(plugin, player, args);
+                    case PluginConfig.EDIT_ITEM_BUY_PRICE ->
+                            shopCommandsController.editItemBuyPrice(plugin, player, args);
                 }
             }
         }
@@ -77,14 +80,17 @@ public class ShopCommands implements CommandExecutor, TabCompleter {
             case PluginConfig.ADD_SHOP_CATEGORY_COMMAND ->
                     suggestions.addAll(shopTabController.addCategoryOnTabComplete(args));
             case PluginConfig.EDIT_SHOP_CATEGORY_ICON_COMMAND ->
-                suggestions.addAll(shopTabController.editCategoryItemStackTypeOnTabComplete(args));
+                    suggestions.addAll(shopTabController.editCategoryItemStackTypeOnTabComplete(args));
             case PluginConfig.EDIT_SHOP_CATEGORY_NAME_COMMAND,
                     PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND ->
                     suggestions.addAll(shopTabController.removeEditNameCategoryOnTabComplete(args));
-            case PluginConfig.ADD_SHOP_ITEM_COMMAND ->
-                    suggestions.addAll(shopTabController.addItemOnTabComplete(args));
+            case PluginConfig.ADD_SHOP_ITEM_COMMAND -> suggestions.addAll(shopTabController.addItemOnTabComplete(args));
             case PluginConfig.ADD_ITEM_FROM_HAND_TO_CATEGORY ->
-                suggestions.addAll(shopTabController.addItemFromHandOnTabComplete(args));
+                    suggestions.addAll(shopTabController.addItemFromHandOnTabComplete(args));
+            case PluginConfig.EDIT_ITEM_SELL_PRICE ->
+                suggestions.addAll(shopTabController.editItemSellPriceOnTabComplete(args));
+            case PluginConfig.EDIT_ITEM_BUY_PRICE ->
+                suggestions.addAll(shopTabController.editItemBuyPriceOnTabComplete(args));
         }
 
         return suggestions;

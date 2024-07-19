@@ -14,7 +14,6 @@ import pawel.cookier.ignaczak.economypack.shop.repository.ICategoryController;
 import pawel.cookier.ignaczak.economypack.shop.utility.IShopUtility;
 
 import java.util.List;
-import java.util.Optional;
 
 public class CategoryController implements ICategoryController {
 
@@ -30,16 +29,6 @@ public class CategoryController implements ICategoryController {
         List<Item> currentList = category.getListOfItems();
         currentList.remove(item);
         category.setListOfItems(currentList);
-    }
-
-    @Override
-    public Optional<Item> findItemByName(Category category, String itemName) {
-        return category.getListOfItems().stream()
-                .filter(item -> {
-                    ItemMeta itemMeta = item.getItemStack().getItemMeta();
-                    return itemMeta != null && itemMeta.getDisplayName().equalsIgnoreCase(itemName);
-                })
-                .findFirst();
     }
 
     @Override

@@ -62,14 +62,15 @@ public final class EconomyPack extends JavaPlugin {
 
         //shop
         ShopController shopController = new ShopController();
+        ItemController itemController = new ItemController();
         CategoryController categoryController = new CategoryController();
         ShopCommandsValidation shopCommandsValidation = new ShopCommandsValidation(
                 shop,
-                shopController,
-                categoryController);
+                shopController);
         ShopCommandsController shopCommandsController = new ShopCommandsController(
                 shop,
                 shopCommandsValidation,
+                itemController,
                 categoryController,
                 shopController);
         ShopTabController shopTabController = new ShopTabController(shop);
@@ -119,6 +120,8 @@ public final class EconomyPack extends JavaPlugin {
         registerCommandWithTabCompleter(PluginConfig.EDIT_SHOP_CATEGORY_ICON_COMMAND, shopCommands);
         registerCommandWithTabCompleter(PluginConfig.ADD_SHOP_ITEM_COMMAND, shopCommands);
         registerCommandWithTabCompleter(PluginConfig.ADD_ITEM_FROM_HAND_TO_CATEGORY, shopCommands);
+        registerCommandWithTabCompleter(PluginConfig.EDIT_ITEM_SELL_PRICE, shopCommands);
+        registerCommandWithTabCompleter(PluginConfig.EDIT_ITEM_BUY_PRICE, shopCommands);
     }
 
     private void registerCommandWithTabCompleter(String commandName, CommandExecutor executor) {
