@@ -17,6 +17,7 @@ import pawel.cookier.ignaczak.economypack.shop.utility.IShopUtility;
 import pawel.cookier.ignaczak.economypack.shop.validation.ShopCommandsValidation;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ShopCommandsController implements IShopCommandsController {
     private final Shop shop;
@@ -145,13 +146,39 @@ public class ShopCommandsController implements IShopCommandsController {
     }
 
     @Override
+    public void removeItemFromCategory(JavaPlugin plugin, Player player, String[] args) {
+        if (validation.isRemoveItemFromCategoryValid(player, args)) {
+            String categoryName = args[0];
+            int itemId = Integer.parseInt(args[1]);
+
+            Optional<Category> optionalCategory = shopController.findCategoryByName(shop, categoryName);
+            if (optionalCategory.isPresent()) {
+                Optional<Item> optionalItem = shopController.findItemByItemId(shop, itemId);
+                if (optionalItem.isPresent()) {
+                    Category category = optionalCategory.get();
+                    Item item = optionalItem.get();
+
+                    if (category.getListOfItems().contains(item)) {
+                        categoryController.removeItemFromCategory(category, item);
+                        player.sendMessage(ChatColor.GREEN +
+                                "Usunięto item o id %s z kategorii %s".formatted(itemId, categoryName));
+                    }else {
+                        player.sendMessage(ChatColor.RED +
+                                "Nie znaleziono przedmiotu o id %s w kategorii %s". formatted(item, categoryName));
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
     public void editItemSellPrice(JavaPlugin plugin, Player player, String[] args) {
         if (validation.isEditItemSellPriceValid(player, args)) {
             int itemId = Integer.parseInt(args[0]);
             Double newSellPrice = Double.parseDouble(args[1]);
 
             shopController.findItemByItemId(shop, itemId).ifPresent(item ->
-                itemController.updateItemSellPrice(plugin, player, item, newSellPrice));
+                    itemController.updateItemSellPrice(plugin, player, item, newSellPrice));
         }
     }
 

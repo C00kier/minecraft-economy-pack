@@ -79,6 +79,17 @@ public class ShopTabController implements IShopTabController {
     }
 
     @Override
+    public List<String> removeItemOnTabComplete(String[] args) {
+        List<String> suggestions = new ArrayList<>();
+        if (args.length == 1) {
+            suggestions.addAll(autocompleteWithCategoryDisplayName(0, args));
+        } else if (args.length == 2) {
+            suggestions.add("<item id>");
+        }
+        return suggestions;
+    }
+
+    @Override
     public List<String> editItemSellPriceOnTabComplete(String[] args) {
         List<String> suggestions = new ArrayList<>();
         if (args.length == 1) {

@@ -55,11 +55,13 @@ public class ShopCommands implements CommandExecutor, TabCompleter {
                     case PluginConfig.EDIT_SHOP_CATEGORY_ICON_COMMAND ->
                             shopCommandsController.editShopCategoryItemStack(player, args);
                     case PluginConfig.ADD_SHOP_ITEM_COMMAND -> shopCommandsController.addShopItem(plugin, player, args);
-                    case PluginConfig.ADD_ITEM_FROM_HAND_TO_CATEGORY ->
+                    case PluginConfig.ADD_ITEM_FROM_HAND_TO_CATEGORY_COMMAND ->
                             shopCommandsController.addItemFromHandToCategory(plugin, player, args);
-                    case PluginConfig.EDIT_ITEM_SELL_PRICE ->
+                    case PluginConfig.REMOVE_ITEM_COMMAND ->
+                            shopCommandsController.removeItemFromCategory(plugin, player, args);
+                    case PluginConfig.EDIT_ITEM_SELL_PRICE_COMMAND ->
                             shopCommandsController.editItemSellPrice(plugin, player, args);
-                    case PluginConfig.EDIT_ITEM_BUY_PRICE ->
+                    case PluginConfig.EDIT_ITEM_BUY_PRICE_COMMAND ->
                             shopCommandsController.editItemBuyPrice(plugin, player, args);
                 }
             }
@@ -85,12 +87,14 @@ public class ShopCommands implements CommandExecutor, TabCompleter {
                     PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND ->
                     suggestions.addAll(shopTabController.removeEditNameCategoryOnTabComplete(args));
             case PluginConfig.ADD_SHOP_ITEM_COMMAND -> suggestions.addAll(shopTabController.addItemOnTabComplete(args));
-            case PluginConfig.ADD_ITEM_FROM_HAND_TO_CATEGORY ->
+            case PluginConfig.ADD_ITEM_FROM_HAND_TO_CATEGORY_COMMAND ->
                     suggestions.addAll(shopTabController.addItemFromHandOnTabComplete(args));
-            case PluginConfig.EDIT_ITEM_SELL_PRICE ->
-                suggestions.addAll(shopTabController.editItemSellPriceOnTabComplete(args));
-            case PluginConfig.EDIT_ITEM_BUY_PRICE ->
-                suggestions.addAll(shopTabController.editItemBuyPriceOnTabComplete(args));
+            case PluginConfig.REMOVE_ITEM_COMMAND ->
+                    suggestions.addAll(shopTabController.removeItemOnTabComplete(args));
+            case PluginConfig.EDIT_ITEM_SELL_PRICE_COMMAND ->
+                    suggestions.addAll(shopTabController.editItemSellPriceOnTabComplete(args));
+            case PluginConfig.EDIT_ITEM_BUY_PRICE_COMMAND ->
+                    suggestions.addAll(shopTabController.editItemBuyPriceOnTabComplete(args));
         }
 
         return suggestions;

@@ -29,7 +29,7 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
         if (hasAddCategoryEnoughArgs(player, args)
                 && isArgumentMaterial(player, args, 1)
                 && hasEnoughSpaceInShop(player, inventory)) {
-            if (!categoryExists(args, 0)) {
+            if (!doesCategoryExists(args, 0)) {
                 return true;
             } else {
                 String categoryName = args[0];
@@ -43,7 +43,7 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
     public boolean isRemoveCategoryValid(Player player, String[] args) {
         if (hasRemoveCategoryEnoughArgs(player, args)
                 && hasSameArgs(player, args, PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND)) {
-            if (!categoryExists(args, 0)) {
+            if (!doesCategoryExists(args, 0)) {
                 String categoryName = args[0];
                 player.sendMessage(ChatColor.RED + "Nie znaleziono kategorii " + categoryName);
             } else {
@@ -57,7 +57,7 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
     public boolean isEditCategoryNameValid(Player player, String[] args) {
         if (hasEditCategoryNameEnoughArgs(player, args)
                 && !hasSameArgs(player, args, PluginConfig.EDIT_SHOP_CATEGORY_NAME_COMMAND)) {
-            if (!categoryExists(args, 0)) {
+            if (!doesCategoryExists(args, 0)) {
                 String categoryName = args[0];
                 player.sendMessage(ChatColor.RED + "Nie znaleziono kategorii " + categoryName);
             } else {
@@ -71,7 +71,7 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
     public boolean isEditCategoryItemStackValid(Player player, String[] args) {
         if (hasEditCategoryItemStackEnoughArgs(player, args)
                 && isArgumentMaterial(player, args, 1)) {
-            if (!categoryExists(args, 0)) {
+            if (!doesCategoryExists(args, 0)) {
                 String categoryName = args[0];
                 player.sendMessage(ChatColor.RED + "Nie znaleziono kategorii " + categoryName);
             } else {
@@ -89,7 +89,7 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
                 && canArgumentBeParsedToDouble(player, args, 3)
                 && isDoubleParsedValueGreaterThanZero(player, args, 2)
                 && isDoubleParsedValueGreaterThanZero(player, args, 3)) {
-            if (!categoryExists(args, 0)) {
+            if (!doesCategoryExists(args, 0)) {
                 String categoryName = args[0];
                 player.sendMessage(ChatColor.RED + "Nie znaleziono kategorii " + categoryName);
             } else {
@@ -106,7 +106,7 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
                 && canArgumentBeParsedToDouble(player, args, 2)
                 && isDoubleParsedValueGreaterThanZero(player, args, 1)
                 && isDoubleParsedValueGreaterThanZero(player, args, 2)) {
-            if (!categoryExists(args, 0)) {
+            if (!doesCategoryExists(args, 0)) {
                 String categoryName = args[0];
                 player.sendMessage(ChatColor.RED + "Nie znaleziono kategorii " + categoryName);
             } else {
@@ -134,6 +134,26 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
                 && isItemWithPassedIdExisting(player, args, 0);
     }
 
+    @Override
+    public boolean isRemoveItemFromCategoryValid(Player player, String[] args) {
+        return hasRemoveItemCorrectArgsQuantity(player, args)
+                && doesCategoryExists(args, 0)
+                && canArgumentBeParsedToInteger(player, args, 1)
+                && isItemWithPassedIdExisting(player, args, 1);
+    }
+
+
+
+    private boolean hasRemoveItemCorrectArgsQuantity(Player player, String[] args){
+        if(args.length == 2){
+            return true;
+        }
+
+        player.sendMessage(ChatColor.RED + "Musisz podać dokładnie 2 argumenty "
+                + "/%s <nazwa kategorii> <item id>".formatted(PluginConfig.REMOVE_ITEM_COMMAND));
+        return false;
+    }
+
     private boolean isDoubleParsedValueGreaterThanZero(Player player,String[] args, int doubleIndex){
         double value = Double.parseDouble(args[doubleIndex]);
 
@@ -151,7 +171,7 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
         }
 
         player.sendMessage(ChatColor.RED + "Musisz podać dokładnie 2 argumenty "
-                + "/%s <id przedmiotu> <cena sprzedaży>".formatted(PluginConfig.EDIT_ITEM_SELL_PRICE));
+                + "/%s <id przedmiotu> <cena sprzedaży>".formatted(PluginConfig.EDIT_ITEM_SELL_PRICE_COMMAND));
         return false;
     }
 
@@ -161,7 +181,7 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
         }
 
         player.sendMessage(ChatColor.RED + "Musisz podać dokładnie 2 argumenty "
-                + "/%s <id przedmiotu> <cena kupna>".formatted(PluginConfig.EDIT_ITEM_BUY_PRICE));
+                + "/%s <id przedmiotu> <cena kupna>".formatted(PluginConfig.EDIT_ITEM_BUY_PRICE_COMMAND));
         return false;
     }
 
@@ -184,7 +204,7 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
 
         player.sendMessage(ChatColor.RED + "Musisz podać dokładnie 3 argumenty "
                 + "/%s <nazwa kategorii> <cena sprzedaży> <cena kupna>"
-                .formatted(PluginConfig.ADD_ITEM_FROM_HAND_TO_CATEGORY));
+                .formatted(PluginConfig.ADD_ITEM_FROM_HAND_TO_CATEGORY_COMMAND));
         return false;
     }
 
@@ -198,8 +218,8 @@ public class ShopCommandsValidation implements IShopCommandsValidation {
         return false;
     }
 
-    private boolean categoryExists(String[] args,
-                                   int argumentIndex) {
+    private boolean doesCategoryExists(String[] args,
+                                       int argumentIndex) {
         String categoryName = args[argumentIndex];
         Optional<Category> optionalCategory = shopController.findCategoryByName(shop, categoryName);
 

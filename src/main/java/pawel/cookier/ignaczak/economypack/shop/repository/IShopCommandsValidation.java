@@ -19,4 +19,6 @@ public interface IShopCommandsValidation {
     boolean isEditItemSellPriceValid(Player player, String[] args);
 
     boolean isEditItemBuyPriceValid(Player player, String[] args);
+
+    boolean isRemoveItemFromCategoryValid(Player player, String[] args);
 }

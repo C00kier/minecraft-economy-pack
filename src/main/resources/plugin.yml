@@ -24,6 +24,9 @@ commands:
   add_item_from_hand:
     description: Adds item from hand to category
     permission: EconomyPack.add_item_from_hand
+  remove_item:
+    description: Removes item from shop
+    permission: EconomyPack.remove_item
   edit_item_sell_price:
     description: Changes item sell price
     permission: EconomyPack.edit_item_sell_price

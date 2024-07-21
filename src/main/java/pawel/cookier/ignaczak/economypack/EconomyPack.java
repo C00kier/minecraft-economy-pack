@@ -119,9 +119,10 @@ public final class EconomyPack extends JavaPlugin {
         registerCommandWithTabCompleter(PluginConfig.EDIT_SHOP_CATEGORY_NAME_COMMAND, shopCommands);
         registerCommandWithTabCompleter(PluginConfig.EDIT_SHOP_CATEGORY_ICON_COMMAND, shopCommands);
         registerCommandWithTabCompleter(PluginConfig.ADD_SHOP_ITEM_COMMAND, shopCommands);
-        registerCommandWithTabCompleter(PluginConfig.ADD_ITEM_FROM_HAND_TO_CATEGORY, shopCommands);
-        registerCommandWithTabCompleter(PluginConfig.EDIT_ITEM_SELL_PRICE, shopCommands);
-        registerCommandWithTabCompleter(PluginConfig.EDIT_ITEM_BUY_PRICE, shopCommands);
+        registerCommandWithTabCompleter(PluginConfig.ADD_ITEM_FROM_HAND_TO_CATEGORY_COMMAND, shopCommands);
+        registerCommandWithTabCompleter(PluginConfig.REMOVE_ITEM_COMMAND, shopCommands);
+        registerCommandWithTabCompleter(PluginConfig.EDIT_ITEM_SELL_PRICE_COMMAND, shopCommands);
+        registerCommandWithTabCompleter(PluginConfig.EDIT_ITEM_BUY_PRICE_COMMAND, shopCommands);
     }
 
     private void registerCommandWithTabCompleter(String commandName, CommandExecutor executor) {

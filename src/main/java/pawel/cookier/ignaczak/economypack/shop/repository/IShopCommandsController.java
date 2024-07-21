@@ -21,6 +21,8 @@ public interface IShopCommandsController {
 
     void addItemFromHandToCategory(JavaPlugin plugin, Player player, String[] args);
 
+    void removeItemFromCategory(JavaPlugin plugin, Player player, String[] args);
+
     void editItemSellPrice(JavaPlugin plugin, Player player, String[] args);
 
     void editItemBuyPrice(JavaPlugin plugin, Player player, String[] args);
