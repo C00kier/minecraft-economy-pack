@@ -91,6 +91,36 @@ public class ShopEvents implements Listener {
         }
     }
 
+    @EventHandler
+    public void openBuyItemMenu(InventoryClickEvent event){
+        Inventory inventory = event.getInventory();
+
+        if (shopEventsController.doesShopContainExistingCategoryByInventory(shop, inventory)) {
+            event.setCancelled(true);
+            ItemStack clickedItem = event.getCurrentItem();
+
+            if (clickedItem != null
+                    && event.getClick() == ClickType.LEFT) {
+                shopEventsController.openBuyItemMenu(event, clickedItem);
+            }
+        }
+    }
+
+    @EventHandler
+    public void openSellItemMenu(InventoryClickEvent event){
+        Inventory inventory = event.getInventory();
+
+        if (shopEventsController.doesShopContainExistingCategoryByInventory(shop, inventory)) {
+            event.setCancelled(true);
+            ItemStack clickedItem = event.getCurrentItem();
+
+            if (clickedItem != null
+                    && event.getClick() == ClickType.RIGHT) {
+                shopEventsController.openSellItemMenu(event, clickedItem);
+            }
+        }
+    }
+
     //selling items
     @EventHandler
     public void sellAllItemsOfCertainType(InventoryClickEvent event) {

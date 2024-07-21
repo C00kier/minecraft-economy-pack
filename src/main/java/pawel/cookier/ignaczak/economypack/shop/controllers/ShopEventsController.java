@@ -1,5 +1,6 @@
 package pawel.cookier.ignaczak.economypack.shop.controllers;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -131,6 +132,27 @@ public class ShopEventsController implements IShopEventsController {
         Player player = (Player) event.getWhoClicked();
         shopCommandsController.openInventory(player, shop.getInventory());
     }
+
+    @Override
+    public void openBuyItemMenu(InventoryClickEvent event, ItemStack itemStack) {
+        Player player = (Player) event.getWhoClicked();
+        player.closeInventory();
+
+        player.openInventory(createItemOperationsInventory(itemStack, "Buy item"));
+    }
+
+    @Override
+    public void openSellItemMenu(InventoryClickEvent event, ItemStack itemStack) {
+        Player player = (Player) event.getWhoClicked();
+        player.closeInventory();
+
+        player.openInventory(createItemOperationsInventory(itemStack, "Sell item"));
+    }
+
+    private Inventory createItemOperationsInventory(ItemStack itemStack, String inventoryTitle){
+        return Bukkit.createInventory(null, PluginConfig.SHOP_INVENTORY_SIZE, inventoryTitle);
+    }
+
 
     private void switchToCategoryInventory(Player player,
                                            Category category) {
