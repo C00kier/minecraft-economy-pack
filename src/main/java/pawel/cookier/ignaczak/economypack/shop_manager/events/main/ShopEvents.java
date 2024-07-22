@@ -9,22 +9,22 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.shop_manager.events.controller.ShopEventsController;
+import pawel.cookier.ignaczak.economypack.shop_manager.events.validation.ShopEventsValidation;
 import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.model.Shop;
-
-import java.util.Objects;
 
 public class ShopEvents implements Listener {
 
     private final Shop shop;
     private final ShopEventsController shopEventsController;
     private final JavaPlugin plugin;
+    private final ShopEventsValidation shopEventsValidation;
 
     public ShopEvents(Shop shop, ShopEventsController shopEventsController, JavaPlugin plugin) {
         this.shop = shop;
         this.shopEventsController = shopEventsController;
         this.plugin = plugin;
+        this.shopEventsValidation = new ShopEventsValidation();
     }
 
     //menu navigation
@@ -51,48 +51,42 @@ public class ShopEvents implements Listener {
             event.setCancelled(true);
             ItemStack clickedItem = event.getCurrentItem();
 
-            if (clickedItem != null
-                    && clickedItem.getType() == PluginConfig.SHOP_NAVBAR_NEXT_BUTTON_MATERIAL
-                    && Objects.requireNonNull(clickedItem.getItemMeta()).getDisplayName().equals("Następna Strona")) {
+            if (clickedItem != null && shopEventsValidation.isClickedItemNextPageButtonIcon(clickedItem)) {
                 shopEventsController.nextButtonClickEvent(shop, event);
             }
         }
     }
 
     @EventHandler
-    public void previousPageButton(InventoryClickEvent event){
+    public void previousPageButton(InventoryClickEvent event) {
         Inventory inventory = event.getInventory();
 
         if (shopEventsController.doesShopContainExistingCategoryByInventory(shop, inventory)) {
             event.setCancelled(true);
             ItemStack clickedItem = event.getCurrentItem();
 
-            if (clickedItem != null
-                    && clickedItem.getType() == PluginConfig.SHOP_NAVBAR_PREVIOUS_BUTTON_MATERIAL
-                    && Objects.requireNonNull(clickedItem.getItemMeta()).getDisplayName().equals("Poprzednia Strona")) {
+            if (clickedItem != null && shopEventsValidation.isClickedItemPreviousPageButtonIcon(clickedItem)) {
                 shopEventsController.previousButtonClickEvent(shop, event);
             }
         }
     }
 
     @EventHandler
-    public void returnToShopButton(InventoryClickEvent event){
+    public void returnToShopButton(InventoryClickEvent event) {
         Inventory inventory = event.getInventory();
 
         if (shopEventsController.doesShopContainExistingCategoryByInventory(shop, inventory)) {
             event.setCancelled(true);
             ItemStack clickedItem = event.getCurrentItem();
 
-            if (clickedItem != null
-                    && clickedItem.getType() == Material.BARRIER
-                    && Objects.requireNonNull(clickedItem.getItemMeta()).getDisplayName().equals("Wróć")) {
+            if (clickedItem != null && shopEventsValidation.isClickedItemReturnIcon(clickedItem)) {
                 shopEventsController.backButtonClickEvent(shop, event);
             }
         }
     }
 
     @EventHandler
-    public void openBuyItemMenu(InventoryClickEvent event){
+    public void openBuyItemMenu(InventoryClickEvent event) {
         Inventory inventory = event.getInventory();
 
         if (shopEventsController.doesShopContainExistingCategoryByInventory(shop, inventory)) {
@@ -100,14 +94,15 @@ public class ShopEvents implements Listener {
             ItemStack clickedItem = event.getCurrentItem();
 
             if (clickedItem != null
-                    && event.getClick() == ClickType.LEFT) {
+                    && event.getClick() == ClickType.LEFT
+                    && !shopEventsValidation.isClickedItemElementOfNavbar(clickedItem)) {
                 shopEventsController.openBuyItemMenu(event, clickedItem);
             }
         }
     }
 
     @EventHandler
-    public void openSellItemMenu(InventoryClickEvent event){
+    public void openSellItemMenu(InventoryClickEvent event) {
         Inventory inventory = event.getInventory();
 
         if (shopEventsController.doesShopContainExistingCategoryByInventory(shop, inventory)) {
@@ -115,7 +110,8 @@ public class ShopEvents implements Listener {
             ItemStack clickedItem = event.getCurrentItem();
 
             if (clickedItem != null
-                    && event.getClick() == ClickType.RIGHT) {
+                    && event.getClick() == ClickType.RIGHT
+                    && !shopEventsValidation.isClickedItemElementOfNavbar(clickedItem)) {
                 shopEventsController.openSellItemMenu(event, clickedItem);
             }
         }
