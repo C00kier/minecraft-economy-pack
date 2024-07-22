@@ -27,14 +27,18 @@ public class ShopEventsController implements IShopEventsController {
     private final ShopController shopController;
     private final CategoryController categoryController;
     private final BalanceManager balanceManager;
+    private final ShopNavbarController shopNavbarController;
 
     public ShopEventsController(ShopCommandsController shopCommandsController,
                                 ShopController shopController,
-                                CategoryController categoryController, BalanceManager balanceManager) {
+                                CategoryController categoryController,
+                                BalanceManager balanceManager,
+                                ShopNavbarController shopNavbarController) {
         this.shopCommandsController = shopCommandsController;
         this.shopController = shopController;
         this.categoryController = categoryController;
         this.balanceManager = balanceManager;
+        this.shopNavbarController = shopNavbarController;
     }
 
     @Override
@@ -139,7 +143,7 @@ public class ShopEventsController implements IShopEventsController {
         Player player = (Player) event.getWhoClicked();
         player.closeInventory();
 
-        player.openInventory(createItemOperationsInventory(itemStack, "Buy item"));
+        player.openInventory(createItemOperationsInventory(player, itemStack, "Buy item"));
     }
 
     @Override
@@ -147,16 +151,19 @@ public class ShopEventsController implements IShopEventsController {
         Player player = (Player) event.getWhoClicked();
         player.closeInventory();
 
-        player.openInventory(createItemOperationsInventory(itemStack, "Sell item"));
+        player.openInventory(createItemOperationsInventory(player, itemStack, "Sell item"));
     }
 
-    private Inventory createItemOperationsInventory(ItemStack itemStack, String inventoryTitle){
+    private Inventory createItemOperationsInventory(Player player,
+                                                    ItemStack itemStack,
+                                                    String inventoryTitle){
         Inventory inventory = Bukkit.createInventory(null, PluginConfig.SHOP_INVENTORY_SIZE, inventoryTitle);
 
         setConfirmIconInInventory(inventory);
         setRemoveQuantityIconsInInventory(inventory);
         setItemIconInInventory(inventory, itemStack);
         setAddQuantityIconsInInventory(inventory);
+        shopNavbarController.addNavbarToItemInventory(player, balanceManager, inventory);
         
         return inventory;
     }

@@ -61,9 +61,10 @@ public final class EconomyPack extends JavaPlugin {
         );
 
         //shop
+        ShopNavbarController shopNavbarController = new ShopNavbarController();
         ShopController shopController = new ShopController();
         ItemController itemController = new ItemController();
-        CategoryController categoryController = new CategoryController();
+        CategoryController categoryController = new CategoryController(shopNavbarController);
         ShopCommandsValidation shopCommandsValidation = new ShopCommandsValidation(
                 shop,
                 shopController);
@@ -77,7 +78,7 @@ public final class EconomyPack extends JavaPlugin {
         ShopEventsController shopEventsController = new ShopEventsController(
                 shopCommandsController,
                 shopController,
-                categoryController, balanceManager);
+                categoryController, balanceManager, shopNavbarController);
 
         // Initialize events
         BalanceManagerEvents balanceManagerEvents = new BalanceManagerEvents(balanceManager);
