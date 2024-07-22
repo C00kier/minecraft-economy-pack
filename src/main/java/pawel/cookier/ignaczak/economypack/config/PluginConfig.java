@@ -51,7 +51,15 @@ public final class PluginConfig {
     public final static Material SHOP_NAVBAR_SEPARATOR_MATERIAL = Material.SMOOTH_STONE;
     public final static Material SHOP_NAVBAR_PREVIOUS_BUTTON_MATERIAL = Material.OAK_BUTTON;
 
-
+    //shop item operations
+    public final static int SHOP_OPERATIONS_CONFIRM_PLACE = 13;
+    public final static int SHOP_OPERATIONS_MINUS_64_PLACE = 19;
+    public final static int SHOP_OPERATIONS_MINUS_16_PLACE = 20;
+    public final static int SHOP_OPERATIONS_MINUS_1_PLACE = 21;
+    public final static int SHOP_OPERATIONS_ITEM_PLACE = 22;
+    public final static int SHOP_OPERATIONS_PLUS_1_PLACE = 23;
+    public final static int SHOP_OPERATIONS_PLUS_16_PLACE = 24;
+    public final static int SHOP_OPERATIONS_PLUS_64_PLACE = 25;
 
     //gamble
     public static final int GAMBLE_CHANCE = 50;

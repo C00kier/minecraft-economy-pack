@@ -2,6 +2,7 @@ package pawel.cookier.ignaczak.economypack.shop.controllers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -150,9 +151,58 @@ public class ShopEventsController implements IShopEventsController {
     }
 
     private Inventory createItemOperationsInventory(ItemStack itemStack, String inventoryTitle){
-        return Bukkit.createInventory(null, PluginConfig.SHOP_INVENTORY_SIZE, inventoryTitle);
+        Inventory inventory = Bukkit.createInventory(null, PluginConfig.SHOP_INVENTORY_SIZE, inventoryTitle);
+
+        setConfirmIconInInventory(inventory);
+        setRemoveQuantityIconsInInventory(inventory);
+        setItemIconInInventory(inventory, itemStack);
+        setAddQuantityIconsInInventory(inventory);
+        
+        return inventory;
     }
 
+    private void setConfirmIconInInventory(Inventory inventory){
+        ItemStack itemStack = IShopUtility.createItemStack(Material.PAPER, ChatColor.AQUA + "Potwierdź");
+        inventory.setItem(PluginConfig.SHOP_OPERATIONS_CONFIRM_PLACE, itemStack);
+    }
+
+    private void setRemoveQuantityIconsInInventory(Inventory inventory){
+        ItemStack remove1ItemStack =
+                IShopUtility.createItemStack(Material.RED_STAINED_GLASS_PANE, "Zmniejsz o 1");
+        ItemStack remove16ItemStack =
+                IShopUtility.createItemStack(Material.RED_STAINED_GLASS_PANE, "Zmniejsz o 16");
+        ItemStack remove64ItemStack =
+                IShopUtility.createItemStack(Material.RED_STAINED_GLASS_PANE, "Zmniejsz o 64");
+
+        remove1ItemStack.setAmount(1);
+        remove16ItemStack.setAmount(16);
+        remove64ItemStack.setAmount(64);
+
+        inventory.setItem(PluginConfig.SHOP_OPERATIONS_MINUS_1_PLACE, remove1ItemStack);
+        inventory.setItem(PluginConfig.SHOP_OPERATIONS_MINUS_16_PLACE, remove16ItemStack);
+        inventory.setItem(PluginConfig.SHOP_OPERATIONS_MINUS_64_PLACE, remove64ItemStack);
+    }
+
+    private void setItemIconInInventory(Inventory inventory, ItemStack itemStack){
+        inventory.setItem(PluginConfig.SHOP_OPERATIONS_ITEM_PLACE, itemStack);
+    }
+
+    private void setAddQuantityIconsInInventory(Inventory inventory){
+        ItemStack add1ItemStack =
+                IShopUtility.createItemStack(Material.LIME_STAINED_GLASS_PANE, "Zwiększ o 1");
+        ItemStack add16ItemStack =
+                IShopUtility.createItemStack(Material.LIME_STAINED_GLASS_PANE, "Zwiększ o 16");
+        ItemStack add64ItemStack =
+                IShopUtility.createItemStack(Material.LIME_STAINED_GLASS_PANE, "Zwiększ o 64");
+
+        add1ItemStack.setAmount(1);
+        add16ItemStack.setAmount(16);
+        add64ItemStack.setAmount(64);
+
+        inventory.setItem(PluginConfig.SHOP_OPERATIONS_PLUS_1_PLACE, add1ItemStack);
+        inventory.setItem(PluginConfig.SHOP_OPERATIONS_PLUS_16_PLACE, add16ItemStack);
+        inventory.setItem(PluginConfig.SHOP_OPERATIONS_PLUS_64_PLACE, add64ItemStack);
+    }
 
     private void switchToCategoryInventory(Player player,
                                            Category category) {
