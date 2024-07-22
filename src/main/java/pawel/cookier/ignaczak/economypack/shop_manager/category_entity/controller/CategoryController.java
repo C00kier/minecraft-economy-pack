@@ -53,13 +53,21 @@ public class CategoryController implements ICategoryController {
     }
 
     @Override
-    public void setCategoryInventoryByPage(BalanceManager balanceManager,
-                                           Player player,
-                                           Category category,
-                                           int pageToDisplay) {
+    public void displayCategoryInventoryBasedByPage(BalanceManager balanceManager,
+                                                    Player player,
+                                                    Category category,
+                                                    int pageToDisplay) {
         Inventory inventory = category.getInventory();
         inventory.clear();
 
+        populateInventoryWithItemsBasedOnCategoryPage(inventory, category, pageToDisplay);
+        shopNavbarController.addNavbarToCategoryInventory(player, balanceManager, inventory);
+        category.setCurrentPage(pageToDisplay);
+    }
+
+    private void populateInventoryWithItemsBasedOnCategoryPage(Inventory inventory,
+                                                               Category category,
+                                                               int pageToDisplay) {
         List<ItemStack> itemStacksList = category.getListOfItems().stream()
                 .map(Item::getItemStack)
                 .toList();
@@ -71,9 +79,6 @@ public class CategoryController implements ICategoryController {
         for (int i = start; i < end; i++) {
             inventory.setItem(i - start, itemStacksList.get(i));
         }
-
-        shopNavbarController.addNavbarToCategoryInventory(player, balanceManager, inventory);
-        category.setCurrentPage(pageToDisplay);
     }
 
 }

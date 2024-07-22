@@ -15,5 +15,5 @@ public interface ICategoryController {
 
     void editCategoryItemStackMaterial(Category category, ItemStack newItemStack);
 
-    void setCategoryInventoryByPage(BalanceManager balanceManager, Player player, Category category, int pageToDisplay);
+    void displayCategoryInventoryBasedByPage(BalanceManager balanceManager, Player player, Category category, int pageToDisplay);
 }

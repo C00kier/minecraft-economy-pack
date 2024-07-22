@@ -224,7 +224,7 @@ public class ShopEventsController implements IShopEventsController {
         int pageToOpen = category.getCurrentPage();
 
         if (pageToOpen <= totalPages) {
-            categoryController.setCategoryInventoryByPage(balanceManager, player, category, pageToOpen);
+            categoryController.displayCategoryInventoryBasedByPage(balanceManager, player, category, pageToOpen);
         }
 
         shopCommandsController.openInventory(player, category.getInventory());
