@@ -10,7 +10,7 @@ public final class PluginConfig {
     public static final String EXCHANGE_COMMAND = "exchange";
     public static final String PAY_COMMAND = "pay";
     public static final String TRANSLATION_COMMAND = "translation";
-    public static final String CALL_SHOP_COMMAND = "shop";
+    public static final String CALL_SHOP_COMMAND = "shop_manager";
     public static final String ADD_SHOP_CATEGORY_COMMAND = "add_shop_category";
     public static final String REMOVE_SHOP_CATEGORY_COMMAND = "remove_shop_category";
     public static final String EDIT_SHOP_CATEGORY_NAME_COMMAND = "edit_shop_category_name";
@@ -38,7 +38,7 @@ public final class PluginConfig {
     //money manager
     public static final Double PRICE_PER_GOLD_INGOT = 20d;
 
-    //shop
+    //shop_manager
     public final static int SHOP_INVENTORY_SIZE = 45;
     public final static int SHOP_INVENTORY_FIELDS_TO_FILL_UP = 36; //9 slots for navbar
     public final static int SHOP_NAVBAR_BALANCE_PLACE = 36;
@@ -51,7 +51,7 @@ public final class PluginConfig {
     public final static Material SHOP_NAVBAR_SEPARATOR_MATERIAL = Material.SMOOTH_STONE;
     public final static Material SHOP_NAVBAR_PREVIOUS_BUTTON_MATERIAL = Material.OAK_BUTTON;
 
-    //shop item operations
+    //shop_manager item_entity operations
     public final static int SHOP_OPERATIONS_CONFIRM_PLACE = 13;
     public final static int SHOP_OPERATIONS_MINUS_64_PLACE = 19;
     public final static int SHOP_OPERATIONS_MINUS_16_PLACE = 20;

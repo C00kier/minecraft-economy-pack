@@ -4,34 +4,34 @@ main: pawel.cookier.ignaczak.economypack.EconomyPack
 api-version: '1.20'
 commands:
   shop:
-    description: Opens shop
-    permission: EconomyPack.shop
+    description: Opens shop_manager
+    permission: EconomyPack.shop_manager
   add_shop_category:
-    description: Adds new category to shop
+    description: Adds new category_entity to shop_manager
     permission: EconomyPack.add_shop_category
   remove_shop_category:
-    description: Removes category from shop
+    description: Removes category_entity from shop_manager
     permission: EconomyPack.remove_shop_category
   edit_shop_category_name:
-    description: Changes category name
+    description: Changes category_entity name
     permission: EconomyPack.edit_shop_category_name
   edit_shop_category_icon:
-    description: Changes category icon
+    description: Changes category_entity icon
     permission: EconomyPack.edit_shop_category_icon
   add_shop_item:
-    description: Adding item to category
+    description: Adding item_entity to category_entity
     permission: EconomyPack.add_shop_item
   add_item_from_hand:
-    description: Adds item from hand to category
+    description: Adds item_entity from hand to category_entity
     permission: EconomyPack.add_item_from_hand
   remove_item:
-    description: Removes item from shop
+    description: Removes item_entity from shop_manager
     permission: EconomyPack.remove_item
   edit_item_sell_price:
-    description: Changes item sell price
+    description: Changes item_entity sell price
     permission: EconomyPack.edit_item_sell_price
   edit_item_buy_price:
-    description: Changes item buy price
+    description: Changes item_entity buy price
     permission: EconomyPack.edit_item_buy_price
   gamble:
     description: Play gamble game

@@ -12,11 +12,17 @@ import pawel.cookier.ignaczak.economypack.money_manager.controllers.MoneyManager
 import pawel.cookier.ignaczak.economypack.plugin_manager.controllers.PluginManagerController;
 import pawel.cookier.ignaczak.economypack.balance_manager.events.BalanceManagerEvents;
 import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceManager;
-import pawel.cookier.ignaczak.economypack.shop.commands.ShopCommands;
-import pawel.cookier.ignaczak.economypack.shop.controllers.*;
-import pawel.cookier.ignaczak.economypack.shop.events.ShopEvents;
-import pawel.cookier.ignaczak.economypack.shop.models.Shop;
-import pawel.cookier.ignaczak.economypack.shop.validation.ShopCommandsValidation;
+import pawel.cookier.ignaczak.economypack.shop_manager.category_entity.controller.CategoryController;
+import pawel.cookier.ignaczak.economypack.shop_manager.commands.main.ShopCommands;
+import pawel.cookier.ignaczak.economypack.shop_manager.commands.controller.ShopCommandsController;
+import pawel.cookier.ignaczak.economypack.shop_manager.commands.controller.ShopTabController;
+import pawel.cookier.ignaczak.economypack.shop_manager.events.main.ShopEvents;
+import pawel.cookier.ignaczak.economypack.shop_manager.events.controller.ShopEventsController;
+import pawel.cookier.ignaczak.economypack.shop_manager.item_entity.controller.ItemController;
+import pawel.cookier.ignaczak.economypack.shop_manager.navbar.controller.ShopNavbarController;
+import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.model.Shop;
+import pawel.cookier.ignaczak.economypack.shop_manager.commands.validation.ShopCommandsValidation;
+import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.controller.ShopController;
 import pawel.cookier.ignaczak.economypack.translation_manager.controllers.TranslationManager;
 import pawel.cookier.ignaczak.economypack.gambling.utility.GamblingUtility;
 
@@ -60,7 +66,7 @@ public final class EconomyPack extends JavaPlugin {
                 translationManager
         );
 
-        //shop
+        //shop_manager
         ShopNavbarController shopNavbarController = new ShopNavbarController();
         ShopController shopController = new ShopController();
         ItemController itemController = new ItemController();
