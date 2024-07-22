@@ -10,7 +10,7 @@ public final class PluginConfig {
     public static final String EXCHANGE_COMMAND = "exchange";
     public static final String PAY_COMMAND = "pay";
     public static final String TRANSLATION_COMMAND = "translation";
-    public static final String CALL_SHOP_COMMAND = "shop_manager";
+    public static final String CALL_SHOP_COMMAND = "shop";
     public static final String ADD_SHOP_CATEGORY_COMMAND = "add_shop_category";
     public static final String REMOVE_SHOP_CATEGORY_COMMAND = "remove_shop_category";
     public static final String EDIT_SHOP_CATEGORY_NAME_COMMAND = "edit_shop_category_name";
