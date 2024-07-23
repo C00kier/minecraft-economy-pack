@@ -14,7 +14,6 @@ import pawel.cookier.ignaczak.economypack.shop_manager.commands.controller.ItemC
 import pawel.cookier.ignaczak.economypack.shop_manager.commands.controller.ShopTabController;
 import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.model.Shop;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ShopCommands implements CommandExecutor, TabCompleter {
@@ -57,29 +56,8 @@ public class ShopCommands implements CommandExecutor, TabCompleter {
                                       @NotNull Command command,
                                       @NotNull String s,
                                       @NotNull String[] args) {
-        List<String> suggestions = new ArrayList<>();
         String commandName = command.getName();
-        switch (commandName) {
-            case PluginConfig.CALL_SHOP_COMMAND -> suggestions.add("");
-            case PluginConfig.ADD_SHOP_CATEGORY_COMMAND ->
-                    suggestions.addAll(shopTabController.addCategoryOnTabComplete(args));
-            case PluginConfig.EDIT_SHOP_CATEGORY_ICON_COMMAND ->
-                    suggestions.addAll(shopTabController.editCategoryItemStackTypeOnTabComplete(args));
-            case PluginConfig.EDIT_SHOP_CATEGORY_NAME_COMMAND,
-                    PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND ->
-                    suggestions.addAll(shopTabController.removeEditNameCategoryOnTabComplete(args));
-            case PluginConfig.ADD_SHOP_ITEM_COMMAND -> suggestions.addAll(shopTabController.addItemOnTabComplete(args));
-            case PluginConfig.ADD_ITEM_FROM_HAND_TO_CATEGORY_COMMAND ->
-                    suggestions.addAll(shopTabController.addItemFromHandOnTabComplete(args));
-            case PluginConfig.REMOVE_ITEM_COMMAND ->
-                    suggestions.addAll(shopTabController.removeItemOnTabComplete(args));
-            case PluginConfig.EDIT_ITEM_SELL_PRICE_COMMAND ->
-                    suggestions.addAll(shopTabController.editItemSellPriceOnTabComplete(args));
-            case PluginConfig.EDIT_ITEM_BUY_PRICE_COMMAND ->
-                    suggestions.addAll(shopTabController.editItemBuyPriceOnTabComplete(args));
-        }
-
-        return suggestions;
+        return shopTabController.getListOfSuggestionsForCommands(commandName, args);
     }
 
     private void registerOpenShopCommand(Player player, String commandName) {
@@ -87,4 +65,5 @@ public class ShopCommands implements CommandExecutor, TabCompleter {
             player.openInventory(shop.getInventory());
         }
     }
+
 }

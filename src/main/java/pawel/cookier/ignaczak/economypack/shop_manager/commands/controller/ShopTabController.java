@@ -1,6 +1,7 @@
 package pawel.cookier.ignaczak.economypack.shop_manager.commands.controller;
 
 import org.bukkit.Material;
+import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.model.Shop;
 import pawel.cookier.ignaczak.economypack.shop_manager.commands.repository.IShopTabController;
 import pawel.cookier.ignaczak.economypack.shop_manager.utility.IShopUtility;
@@ -17,7 +18,30 @@ public class ShopTabController implements IShopTabController {
     }
 
     @Override
-    public List<String> addCategoryOnTabComplete(String[] args) {
+    public List<String> getListOfSuggestionsForCommands(String commandName, String[] args) {
+        List<String> suggestions = new ArrayList<>();
+
+        switch (commandName) {
+            case PluginConfig.CALL_SHOP_COMMAND -> suggestions.add("");
+            case PluginConfig.ADD_SHOP_CATEGORY_COMMAND -> suggestions.addAll(getAddCategorySuggestions(args));
+            case PluginConfig.EDIT_SHOP_CATEGORY_ICON_COMMAND ->
+                    suggestions.addAll(getEditCategoryItemStackTypeSuggestions(args));
+            case PluginConfig.EDIT_SHOP_CATEGORY_NAME_COMMAND,
+                    PluginConfig.REMOVE_SHOP_CATEGORY_COMMAND ->
+                    suggestions.addAll(getRemoveEditNameCategorySuggestions(args));
+            case PluginConfig.ADD_SHOP_ITEM_COMMAND -> suggestions.addAll(getAddItemOnSuggestions(args));
+            case PluginConfig.ADD_ITEM_FROM_HAND_TO_CATEGORY_COMMAND ->
+                    suggestions.addAll(getAddItemFromHandSuggestions(args));
+            case PluginConfig.REMOVE_ITEM_COMMAND -> suggestions.addAll(getRemoveItemSuggestions(args));
+            case PluginConfig.EDIT_ITEM_SELL_PRICE_COMMAND -> suggestions.addAll(getEditItemSellPriceSuggestions(args));
+            case PluginConfig.EDIT_ITEM_BUY_PRICE_COMMAND -> suggestions.addAll(getEditItemBuyPriceSuggestions(args));
+        }
+
+        return suggestions;
+    }
+
+
+    private List<String> getAddCategorySuggestions(String[] args) {
         List<String> suggestions = new ArrayList<>();
         if (args.length == 1) {
             suggestions.add("<nazwa kategorii>");
@@ -27,8 +51,7 @@ public class ShopTabController implements IShopTabController {
         return suggestions;
     }
 
-    @Override
-    public List<String> editCategoryItemStackTypeOnTabComplete(String[] args) {
+    private List<String> getEditCategoryItemStackTypeSuggestions(String[] args) {
         List<String> suggestions = new ArrayList<>();
         if (args.length == 1) {
             suggestions.addAll(autocompleteWithCategoryDisplayName(0, args));
@@ -38,8 +61,7 @@ public class ShopTabController implements IShopTabController {
         return suggestions;
     }
 
-    @Override
-    public List<String> removeEditNameCategoryOnTabComplete(String[] args) {
+    private List<String> getRemoveEditNameCategorySuggestions(String[] args) {
         List<String> suggestions = new ArrayList<>();
         if (args.length == 1) {
             suggestions.addAll(autocompleteWithCategoryDisplayName(0, args));
@@ -50,8 +72,7 @@ public class ShopTabController implements IShopTabController {
         return suggestions;
     }
 
-    @Override
-    public List<String> addItemOnTabComplete(String[] args) {
+    private List<String> getAddItemOnSuggestions(String[] args) {
         List<String> suggestions = new ArrayList<>();
         if (args.length == 1) {
             suggestions.addAll(autocompleteWithCategoryDisplayName(0, args));
@@ -65,8 +86,7 @@ public class ShopTabController implements IShopTabController {
         return suggestions;
     }
 
-    @Override
-    public List<String> addItemFromHandOnTabComplete(String[] args) {
+    private List<String> getAddItemFromHandSuggestions(String[] args) {
         List<String> suggestions = new ArrayList<>();
         if (args.length == 1) {
             suggestions.addAll(autocompleteWithCategoryDisplayName(0, args));
@@ -78,8 +98,7 @@ public class ShopTabController implements IShopTabController {
         return suggestions;
     }
 
-    @Override
-    public List<String> removeItemOnTabComplete(String[] args) {
+    private List<String> getRemoveItemSuggestions(String[] args) {
         List<String> suggestions = new ArrayList<>();
         if (args.length == 1) {
             suggestions.addAll(autocompleteWithCategoryDisplayName(0, args));
@@ -89,8 +108,7 @@ public class ShopTabController implements IShopTabController {
         return suggestions;
     }
 
-    @Override
-    public List<String> editItemSellPriceOnTabComplete(String[] args) {
+    private List<String> getEditItemSellPriceSuggestions(String[] args) {
         List<String> suggestions = new ArrayList<>();
         if (args.length == 1) {
             suggestions.add("<item_entity id>");
@@ -100,8 +118,7 @@ public class ShopTabController implements IShopTabController {
         return suggestions;
     }
 
-    @Override
-    public List<String> editItemBuyPriceOnTabComplete(String[] args) {
+    private List<String> getEditItemBuyPriceSuggestions(String[] args) {
         List<String> suggestions = new ArrayList<>();
         if (args.length == 1) {
             suggestions.add("<item_entity id>");
@@ -137,5 +154,4 @@ public class ShopTabController implements IShopTabController {
         }
         return suggestions;
     }
-
 }
