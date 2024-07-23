@@ -12,7 +12,7 @@ import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.shop_manager.category_entity.controller.CategoryController;
 import pawel.cookier.ignaczak.economypack.shop_manager.category_entity.model.Category;
 import pawel.cookier.ignaczak.economypack.shop_manager.commands.repository.IItemCommandsController;
-import pawel.cookier.ignaczak.economypack.shop_manager.commands.validation.ShopCommandsValidation;
+import pawel.cookier.ignaczak.economypack.shop_manager.commands.validation.ItemCommandsValidation;
 import pawel.cookier.ignaczak.economypack.shop_manager.item_entity.controller.ItemController;
 import pawel.cookier.ignaczak.economypack.shop_manager.item_entity.model.Item;
 import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.controller.ShopController;
@@ -24,21 +24,20 @@ import java.util.Optional;
 public class ItemCommandsController implements IItemCommandsController {
 
     private final Shop shop;
-    private final ShopCommandsValidation validation;
+    private final ItemCommandsValidation validation;
     private final CategoryController categoryController;
     private final ShopController shopController;
     private final ItemController itemController;
 
     public ItemCommandsController(Shop shop,
-                                  ShopCommandsValidation validation,
                                   CategoryController categoryController,
                                   ShopController shopController,
                                   ItemController itemController) {
         this.shop = shop;
-        this.validation = validation;
         this.categoryController = categoryController;
         this.shopController = shopController;
         this.itemController = itemController;
+        this.validation = new ItemCommandsValidation(shop, shopController);
     }
 
     @Override

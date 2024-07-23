@@ -22,7 +22,6 @@ import pawel.cookier.ignaczak.economypack.shop_manager.events.controller.ShopEve
 import pawel.cookier.ignaczak.economypack.shop_manager.item_entity.controller.ItemController;
 import pawel.cookier.ignaczak.economypack.shop_manager.navbar.controller.ShopNavbarController;
 import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.model.Shop;
-import pawel.cookier.ignaczak.economypack.shop_manager.commands.validation.ShopCommandsValidation;
 import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.controller.ShopController;
 import pawel.cookier.ignaczak.economypack.translation_manager.controllers.TranslationManager;
 import pawel.cookier.ignaczak.economypack.gambling.utility.GamblingUtility;
@@ -72,17 +71,12 @@ public final class EconomyPack extends JavaPlugin {
         ShopController shopController = new ShopController();
         ItemController itemController = new ItemController();
         CategoryController categoryController = new CategoryController(shopNavbarController);
-        ShopCommandsValidation shopCommandsValidation = new ShopCommandsValidation(
-                shop,
-                shopController);
         CategoryCommandsController categoryCommandsController = new CategoryCommandsController(
                 shop,
-                shopCommandsValidation,
                 categoryController,
                 shopController);
         ItemCommandsController itemCommandsController = new ItemCommandsController(
                 shop,
-                shopCommandsValidation,
                 categoryController,
                 shopController,
                 itemController

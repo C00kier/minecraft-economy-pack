@@ -8,25 +8,24 @@ import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.shop_manager.category_entity.controller.CategoryController;
 import pawel.cookier.ignaczak.economypack.shop_manager.category_entity.model.Category;
 import pawel.cookier.ignaczak.economypack.shop_manager.commands.repository.ICategoryCommandsController;
-import pawel.cookier.ignaczak.economypack.shop_manager.commands.validation.ShopCommandsValidation;
+import pawel.cookier.ignaczak.economypack.shop_manager.commands.validation.CategoryCommandsValidation;
 import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.controller.ShopController;
 import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.model.Shop;
 import pawel.cookier.ignaczak.economypack.shop_manager.utility.IShopUtility;
 
 public class CategoryCommandsController implements ICategoryCommandsController {
     private final Shop shop;
-    private final ShopCommandsValidation validation;
+    private final CategoryCommandsValidation validation;
     private final CategoryController categoryController;
     private final ShopController shopController;
 
     public CategoryCommandsController(Shop shop,
-                                      ShopCommandsValidation validation,
                                       CategoryController categoryController,
                                       ShopController shopController) {
         this.shop = shop;
-        this.validation = validation;
         this.categoryController = categoryController;
         this.shopController = shopController;
+        this.validation = new CategoryCommandsValidation(shop, shopController);
     }
 
     @Override
