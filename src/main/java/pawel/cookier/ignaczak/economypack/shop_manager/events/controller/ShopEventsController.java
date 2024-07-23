@@ -16,7 +16,7 @@ import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceMan
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.shop_manager.category_entity.controller.CategoryController;
 import pawel.cookier.ignaczak.economypack.shop_manager.category_entity.model.Category;
-import pawel.cookier.ignaczak.economypack.shop_manager.commands.controller.ShopCommandsController;
+import pawel.cookier.ignaczak.economypack.shop_manager.commands.controller.CategoryCommandsController;
 import pawel.cookier.ignaczak.economypack.shop_manager.events.repository.IShopEventsController;
 import pawel.cookier.ignaczak.economypack.shop_manager.navbar.controller.ShopNavbarController;
 import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.model.Shop;
@@ -27,18 +27,18 @@ import java.util.Objects;
 
 public class ShopEventsController implements IShopEventsController {
 
-    private final ShopCommandsController shopCommandsController;
+    private final CategoryCommandsController categoryCommandsController;
     private final ShopController shopController;
     private final CategoryController categoryController;
     private final BalanceManager balanceManager;
     private final ShopNavbarController shopNavbarController;
 
-    public ShopEventsController(ShopCommandsController shopCommandsController,
+    public ShopEventsController(CategoryCommandsController categoryCommandsController,
                                 ShopController shopController,
                                 CategoryController categoryController,
                                 BalanceManager balanceManager,
                                 ShopNavbarController shopNavbarController) {
-        this.shopCommandsController = shopCommandsController;
+        this.categoryCommandsController = categoryCommandsController;
         this.shopController = shopController;
         this.categoryController = categoryController;
         this.balanceManager = balanceManager;
@@ -139,7 +139,7 @@ public class ShopEventsController implements IShopEventsController {
     @Override
     public void backButtonClickEvent(Shop shop, InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        shopCommandsController.openInventory(player, shop.getInventory());
+        categoryCommandsController.openInventory(player, shop.getInventory());
     }
 
     @Override
@@ -227,7 +227,7 @@ public class ShopEventsController implements IShopEventsController {
             categoryController.displayCategoryInventoryBasedByPage(balanceManager, player, category, pageToOpen);
         }
 
-        shopCommandsController.openInventory(player, category.getInventory());
+        categoryCommandsController.openInventory(player, category.getInventory());
     }
 
     private boolean isShopItemStackSameAsInventoryItemStack(ItemStack shopItemStack, ItemStack inventoryItemStack) {

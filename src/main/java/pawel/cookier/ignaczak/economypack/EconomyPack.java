@@ -13,8 +13,9 @@ import pawel.cookier.ignaczak.economypack.plugin_manager.controllers.PluginManag
 import pawel.cookier.ignaczak.economypack.balance_manager.events.BalanceManagerEvents;
 import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceManager;
 import pawel.cookier.ignaczak.economypack.shop_manager.category_entity.controller.CategoryController;
+import pawel.cookier.ignaczak.economypack.shop_manager.commands.controller.ItemCommandsController;
 import pawel.cookier.ignaczak.economypack.shop_manager.commands.main.ShopCommands;
-import pawel.cookier.ignaczak.economypack.shop_manager.commands.controller.ShopCommandsController;
+import pawel.cookier.ignaczak.economypack.shop_manager.commands.controller.CategoryCommandsController;
 import pawel.cookier.ignaczak.economypack.shop_manager.commands.controller.ShopTabController;
 import pawel.cookier.ignaczak.economypack.shop_manager.events.main.ShopEvents;
 import pawel.cookier.ignaczak.economypack.shop_manager.events.controller.ShopEventsController;
@@ -74,15 +75,21 @@ public final class EconomyPack extends JavaPlugin {
         ShopCommandsValidation shopCommandsValidation = new ShopCommandsValidation(
                 shop,
                 shopController);
-        ShopCommandsController shopCommandsController = new ShopCommandsController(
+        CategoryCommandsController categoryCommandsController = new CategoryCommandsController(
                 shop,
                 shopCommandsValidation,
-                itemController,
                 categoryController,
                 shopController);
+        ItemCommandsController itemCommandsController = new ItemCommandsController(
+                shop,
+                shopCommandsValidation,
+                categoryController,
+                shopController,
+                itemController
+        );
         ShopTabController shopTabController = new ShopTabController(shop);
         ShopEventsController shopEventsController = new ShopEventsController(
-                shopCommandsController,
+                categoryCommandsController,
                 shopController,
                 categoryController, balanceManager, shopNavbarController);
 
@@ -96,7 +103,7 @@ public final class EconomyPack extends JavaPlugin {
         this.moneyManagerCommands = new MoneyManagerCommands(moneyManagerController);
         this.gamblingCommands = new GamblingCommands(gamblingController);
         this.pluginManagerCommands = new PluginManagerCommands(pluginManagerController);
-        this.shopCommands = new ShopCommands(this, shop, shopCommandsController, shopTabController);
+        this.shopCommands = new ShopCommands(this, shop, categoryCommandsController, itemCommandsController, shopTabController);
 
         // Register commands
         registerCommands();
