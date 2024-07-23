@@ -89,9 +89,10 @@ public final class EconomyPack extends JavaPlugin {
         );
         ShopTabController shopTabController = new ShopTabController(shop);
         ShopEventsController shopEventsController = new ShopEventsController(
-                categoryCommandsController,
                 shopController,
-                categoryController, balanceManager, shopNavbarController);
+                categoryController,
+                balanceManager,
+                shopNavbarController);
 
         // Initialize events
         BalanceManagerEvents balanceManagerEvents = new BalanceManagerEvents(balanceManager);
@@ -103,7 +104,11 @@ public final class EconomyPack extends JavaPlugin {
         this.moneyManagerCommands = new MoneyManagerCommands(moneyManagerController);
         this.gamblingCommands = new GamblingCommands(gamblingController);
         this.pluginManagerCommands = new PluginManagerCommands(pluginManagerController);
-        this.shopCommands = new ShopCommands(this, shop, categoryCommandsController, itemCommandsController, shopTabController);
+        this.shopCommands = new ShopCommands(this,
+                shop,
+                categoryCommandsController,
+                itemCommandsController,
+                shopTabController);
 
         // Register commands
         registerCommands();
