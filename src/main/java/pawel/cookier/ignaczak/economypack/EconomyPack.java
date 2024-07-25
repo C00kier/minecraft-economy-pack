@@ -18,7 +18,7 @@ import pawel.cookier.ignaczak.economypack.shop_manager.commands.main.ShopCommand
 import pawel.cookier.ignaczak.economypack.shop_manager.commands.controller.CategoryCommandsController;
 import pawel.cookier.ignaczak.economypack.shop_manager.commands.controller.ShopTabController;
 import pawel.cookier.ignaczak.economypack.shop_manager.events.main.ShopEvents;
-import pawel.cookier.ignaczak.economypack.shop_manager.events.controller.ShopEventsController;
+import pawel.cookier.ignaczak.economypack.shop_manager.events.controller.ShopInventoryInventoryEventsController;
 import pawel.cookier.ignaczak.economypack.shop_manager.item_entity.controller.ItemController;
 import pawel.cookier.ignaczak.economypack.shop_manager.navbar.controller.ShopNavbarController;
 import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.model.Shop;
@@ -82,15 +82,15 @@ public final class EconomyPack extends JavaPlugin {
                 itemController
         );
         ShopTabController shopTabController = new ShopTabController(shop);
-        ShopEventsController shopEventsController = new ShopEventsController(
+        ShopInventoryInventoryEventsController shopInventoryEventsController = new ShopInventoryInventoryEventsController(
                 shopController,
                 categoryController,
                 balanceManager,
-                shopNavbarController);
+                shopNavbarController, shop, validation);
 
         // Initialize events
         BalanceManagerEvents balanceManagerEvents = new BalanceManagerEvents(balanceManager);
-        ShopEvents shopEvents = new ShopEvents(shop, shopEventsController, this);
+        ShopEvents shopEvents = new ShopEvents(shop, shopInventoryEventsController, this);
         getServer().getPluginManager().registerEvents(balanceManagerEvents, this);
         getServer().getPluginManager().registerEvents(shopEvents, this);
 

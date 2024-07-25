@@ -14,52 +14,84 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceManager;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
-import pawel.cookier.ignaczak.economypack.shop_manager.category_entity.controller.CategoryController;
-import pawel.cookier.ignaczak.economypack.shop_manager.category_entity.model.Category;
-import pawel.cookier.ignaczak.economypack.shop_manager.events.repository.IShopEventsController;
+import pawel.cookier.ignaczak.economypack.shop_manager.events.repository.ICategoryInventoryEventsController;
+import pawel.cookier.ignaczak.economypack.shop_manager.events.validation.ShopEventsValidation;
 import pawel.cookier.ignaczak.economypack.shop_manager.navbar.controller.ShopNavbarController;
 import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.model.Shop;
-import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.controller.ShopController;
 import pawel.cookier.ignaczak.economypack.shop_manager.utility.IShopUtility;
 
-import java.util.Objects;
+public class CategoryInventoryEventsController implements ICategoryInventoryEventsController {
 
-public class ShopEventsController implements IShopEventsController {
-
-    private final ShopController shopController;
-    private final CategoryController categoryController;
+    private final ShopEventsUtility utility;
+    private final ShopEventsValidation validation;
     private final BalanceManager balanceManager;
+    private final JavaPlugin plugin;
     private final ShopNavbarController shopNavbarController;
+    private final Shop shop;
 
-    public ShopEventsController(ShopController shopController,
-                                CategoryController categoryController,
-                                BalanceManager balanceManager,
-                                ShopNavbarController shopNavbarController) {
-        this.shopController = shopController;
-        this.categoryController = categoryController;
+    public CategoryInventoryEventsController(ShopEventsUtility utility,
+                                             ShopEventsValidation validation,
+                                             BalanceManager balanceManager,
+                                             JavaPlugin plugin,
+                                             ShopNavbarController shopNavbarController,
+                                             Shop shop) {
+        this.utility = utility;
+        this.validation = validation;
         this.balanceManager = balanceManager;
+        this.plugin = plugin;
         this.shopNavbarController = shopNavbarController;
+        this.shop = shop;
     }
 
     @Override
-    public boolean isItemStackInCurrentlyOpenInventory(Inventory inventory, ItemStack itemStack) {
-        return inventory.contains(itemStack);
+    public void openBuyItemMenuLeftClickEvent(InventoryClickEvent event) {
+        Inventory inventory = event.getInventory();
+
+        if (utility.doesShopContainExistingCategoryByInventory(shop, inventory)) {
+            event.setCancelled(true);
+            ItemStack clickedItem = event.getCurrentItem();
+
+            if (clickedItem != null
+                    && event.getClick() == ClickType.LEFT
+                    && !validation.isClickedItemElementOfNavbar(clickedItem)) {
+                openBuyItemMenu(event, clickedItem);
+            }
+        }
     }
 
     @Override
-    public boolean isShiftMouseClick(InventoryClickEvent event) {
-        return event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.SHIFT_RIGHT;
+    public void openSellItemMenuRightClickEvent(InventoryClickEvent event) {
+        Inventory inventory = event.getInventory();
+
+        if (utility.doesShopContainExistingCategoryByInventory(shop, inventory)) {
+            event.setCancelled(true);
+            ItemStack clickedItem = event.getCurrentItem();
+
+            if (clickedItem != null
+                    && event.getClick() == ClickType.RIGHT
+                    && !validation.isClickedItemElementOfNavbar(clickedItem)) {
+                openSellItemMenu(event, clickedItem);
+            }
+        }
     }
 
     @Override
-    public boolean doesShopContainExistingCategoryByInventory(Shop shop, Inventory inventory) {
-        return shop.getCategoryList()
-                .stream()
-                .anyMatch(category -> category.getInventory().equals(inventory));
+    public void sellAllItemsOfCertainTypeShiftRightClickEvent(InventoryClickEvent event) {
+        Inventory inventory = event.getInventory();
+
+        if (utility.doesShopContainExistingCategoryByInventory(shop, inventory)) {
+            event.setCancelled(true);
+            ItemStack clickedItem = event.getCurrentItem();
+
+            if (isItemStackInCurrentlyOpenInventory(inventory, clickedItem)
+                    && event.getClick() == ClickType.SHIFT_RIGHT) {
+                Player player = (Player) event.getWhoClicked();
+                exchangeAllItemStacksOfSameTypeForMoney(plugin, player, clickedItem);
+            }
+        }
     }
 
-    @Override
-    public void exchangeAllItemStacksOfSameTypeForMoney(JavaPlugin plugin, Player player, ItemStack itemStack) {
+    private void exchangeAllItemStacksOfSameTypeForMoney(JavaPlugin plugin, Player player, ItemStack itemStack) {
         Inventory inventory = player.getInventory();
         int amountOfItemInInventory = 0;
         ItemMeta meta = itemStack.getItemMeta();
@@ -91,63 +123,33 @@ public class ShopEventsController implements IShopEventsController {
         }
     }
 
-    @Override
-    public void clickCategoryEvent(Shop shop, InventoryClickEvent event, ItemStack itemStack) {
-        String categoryName = Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName();
+    private boolean isShopItemStackSameAsInventoryItemStack(ItemStack shopItemStack, ItemStack inventoryItemStack) {
+        if (shopItemStack == null || inventoryItemStack == null) {
+            return false;
+        }
 
-        shopController.findCategoryByName(shop, categoryName).ifPresent(category -> {
-            category.setCurrentPage(1);
-            Player player = (Player) event.getWhoClicked();
-            switchToCategoryInventory(player, category);
-        });
+        ItemMeta shopMeta = shopItemStack.getItemMeta();
+        ItemMeta inventoryMeta = inventoryItemStack.getItemMeta();
+
+        if (shopMeta == null || inventoryMeta == null) {
+            return false;
+        }
+
+        boolean isDisplayNameEqual = shopMeta.getDisplayName().equals(inventoryMeta.getDisplayName());
+        boolean isTypeEqual = shopItemStack.getType() == inventoryItemStack.getType();
+        boolean hasSameEnchants = shopMeta.getEnchants().equals(inventoryMeta.getEnchants());
+
+        return isDisplayNameEqual && isTypeEqual && hasSameEnchants;
     }
 
-    @Override
-    public void nextButtonClickEvent(Shop shop, InventoryClickEvent event) {
-        Inventory inventory = event.getInventory();
-        shopController.findCategoryByInventory(shop, inventory).ifPresent(category -> {
-            int itemsInCategory = category.getListOfItems().size();
-            int totalPages = (int) Math.ceil((double) itemsInCategory / PluginConfig.SHOP_INVENTORY_FIELDS_TO_FILL_UP);
-            int currentPage = category.getCurrentPage();
-
-            if (currentPage < totalPages) {
-                category.setCurrentPage(currentPage + 1);
-                Player player = (Player) event.getWhoClicked();
-                switchToCategoryInventory(player, category);
-            }
-        });
-    }
-
-    @Override
-    public void previousButtonClickEvent(Shop shop, InventoryClickEvent event) {
-        Inventory inventory = event.getInventory();
-        shopController.findCategoryByInventory(shop, inventory).ifPresent(category -> {
-            int currentPage = category.getCurrentPage();
-
-            if (currentPage > 1) {
-                category.setCurrentPage(currentPage - 1);
-                Player player = (Player) event.getWhoClicked();
-                switchToCategoryInventory(player, category);
-            }
-        });
-    }
-
-    @Override
-    public void backButtonClickEvent(Shop shop, InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        player.openInventory(shop.getInventory());
-    }
-
-    @Override
-    public void openBuyItemMenu(InventoryClickEvent event, ItemStack itemStack) {
+    private void openBuyItemMenu(InventoryClickEvent event, ItemStack itemStack) {
         Player player = (Player) event.getWhoClicked();
         player.closeInventory();
 
         player.openInventory(createItemOperationsInventory(player, itemStack, "Buy item_entity"));
     }
 
-    @Override
-    public void openSellItemMenu(InventoryClickEvent event, ItemStack itemStack) {
+    private void openSellItemMenu(InventoryClickEvent event, ItemStack itemStack) {
         Player player = (Player) event.getWhoClicked();
         player.closeInventory();
 
@@ -164,7 +166,7 @@ public class ShopEventsController implements IShopEventsController {
         setItemIconInInventory(inventory, itemStack);
         setAddQuantityIconsInInventory(inventory);
         shopNavbarController.addNavbarToItemInventory(player, balanceManager, inventory);
-        
+
         return inventory;
     }
 
@@ -211,38 +213,7 @@ public class ShopEventsController implements IShopEventsController {
         inventory.setItem(PluginConfig.SHOP_OPERATIONS_PLUS_64_PLACE, add64ItemStack);
     }
 
-    private void switchToCategoryInventory(Player player,
-                                           Category category) {
-        player.closeInventory();
-
-        int itemsInCategory = category.getListOfItems().size();
-        int totalPages = (int) Math.ceil((double) itemsInCategory / PluginConfig.SHOP_INVENTORY_FIELDS_TO_FILL_UP);
-        int pageToOpen = category.getCurrentPage();
-
-        if (pageToOpen <= totalPages) {
-            categoryController.displayCategoryInventoryBasedByPage(balanceManager, player, category, pageToOpen);
-        }
-
-        player.openInventory(category.getInventory());
+    private boolean isItemStackInCurrentlyOpenInventory(Inventory inventory, ItemStack itemStack) {
+        return inventory.contains(itemStack);
     }
-
-    private boolean isShopItemStackSameAsInventoryItemStack(ItemStack shopItemStack, ItemStack inventoryItemStack) {
-        if (shopItemStack == null || inventoryItemStack == null) {
-            return false;
-        }
-
-        ItemMeta shopMeta = shopItemStack.getItemMeta();
-        ItemMeta inventoryMeta = inventoryItemStack.getItemMeta();
-
-        if (shopMeta == null || inventoryMeta == null) {
-            return false;
-        }
-
-        boolean isDisplayNameEqual = shopMeta.getDisplayName().equals(inventoryMeta.getDisplayName());
-        boolean isTypeEqual = shopItemStack.getType() == inventoryItemStack.getType();
-        boolean hasSameEnchants = shopMeta.getEnchants().equals(inventoryMeta.getEnchants());
-
-        return isDisplayNameEqual && isTypeEqual && hasSameEnchants;
-    }
-
 }
