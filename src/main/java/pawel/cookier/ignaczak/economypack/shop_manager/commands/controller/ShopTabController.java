@@ -1,14 +1,17 @@
 package pawel.cookier.ignaczak.economypack.shop_manager.commands.controller;
 
 import org.bukkit.Material;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.model.Shop;
 import pawel.cookier.ignaczak.economypack.shop_manager.commands.repository.IShopTabController;
-import pawel.cookier.ignaczak.economypack.shop_manager.utility.IShopUtility;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class ShopTabController implements IShopTabController {
     private final Shop shop;
@@ -130,7 +133,7 @@ public class ShopTabController implements IShopTabController {
 
     private List<String> autocompleteWithCategoryDisplayName(int argIndex, String[] args) {
         List<String> suggestions = new ArrayList<>(
-                IShopUtility.getItemNamesFromInventory(shop.getInventory()));
+                getItemNamesFromInventory(shop.getInventory()));
 
         if (!args[argIndex].isEmpty()) {
             return suggestions.stream()
@@ -153,5 +156,15 @@ public class ShopTabController implements IShopTabController {
                     .toList();
         }
         return suggestions;
+    }
+
+
+    private List<String> getItemNamesFromInventory(Inventory inventory){
+        return Arrays.stream(inventory.getContents())
+                .filter(Objects::nonNull)
+                .map(ItemStack::getItemMeta)
+                .filter(Objects::nonNull)
+                .map(ItemMeta::getDisplayName)
+                .toList();
     }
 }

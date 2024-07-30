@@ -97,7 +97,7 @@ public class CategoryInventoryEventsController implements ICategoryInventoryEven
         ItemMeta meta = itemStack.getItemMeta();
 
         if (meta != null) {
-            String itemName = IShopUtility.formatMaterialName(itemStack.getType().name());
+            String itemName = formatMaterialName(itemStack.getType().name());
             NamespacedKey key = new NamespacedKey(plugin, "sellPrice");
             Double sellPrice = meta.getPersistentDataContainer().get(key, PersistentDataType.DOUBLE);
             if (sellPrice != null) {
@@ -215,5 +215,14 @@ public class CategoryInventoryEventsController implements ICategoryInventoryEven
 
     private boolean isItemStackInCurrentlyOpenInventory(Inventory inventory, ItemStack itemStack) {
         return inventory.contains(itemStack);
+    }
+
+    private String formatMaterialName(String materialName) {
+        String[] words = materialName.split("_");
+        StringBuilder formattedName = new StringBuilder();
+        for (String word : words) {
+            formattedName.append(word.charAt(0)).append(word.substring(1).toLowerCase()).append(" ");
+        }
+        return formattedName.toString().trim();
     }
 }
