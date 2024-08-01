@@ -49,6 +49,15 @@ public class ShopController implements IShopController {
     }
 
     @Override
+    public Optional<Category> findCategoryByItemId(Shop shop, int itemId) {
+        return shop.getCategoryList().stream()
+                .filter(category ->
+                        category.getListOfItems().stream()
+                                .anyMatch(item -> item.getId() == itemId))
+                .findFirst();
+    }
+
+    @Override
     public void updateShopInventory(Shop shop) {
         shop.getInventory().clear();
         shop.getInventory().setContents(

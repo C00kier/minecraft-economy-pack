@@ -146,14 +146,14 @@ public class CategoryInventoryEventsController implements ICategoryInventoryEven
         Player player = (Player) event.getWhoClicked();
         player.closeInventory();
 
-        player.openInventory(createItemOperationsInventory(player, itemStack, "Buy item_entity"));
+        player.openInventory(createItemOperationsInventory(player, itemStack, "Kup przedmiot"));
     }
 
     private void openSellItemMenu(InventoryClickEvent event, ItemStack itemStack) {
         Player player = (Player) event.getWhoClicked();
         player.closeInventory();
 
-        player.openInventory(createItemOperationsInventory(player, itemStack, "Sell item_entity"));
+        player.openInventory(createItemOperationsInventory(player, itemStack, "Sprzedaj przedmiot"));
     }
 
     private Inventory createItemOperationsInventory(Player player,

@@ -16,6 +16,8 @@ public interface IShopController {
 
     Optional<Category> findCategoryByInventory(Shop shop, Inventory inventory);
 
+    Optional<Category> findCategoryByItemId(Shop shop, int itemId);
+
     void updateShopInventory(Shop shop);
 
     Optional<Item> findItemByItemId(Shop shop, int itemId);

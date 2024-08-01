@@ -3,10 +3,13 @@ package pawel.cookier.ignaczak.economypack.shop_manager.events.controller;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.shop_manager.events.repository.INavbarEventsController;
 import pawel.cookier.ignaczak.economypack.shop_manager.events.validation.ShopEventsValidation;
+import pawel.cookier.ignaczak.economypack.shop_manager.item_entity.controller.ItemController;
 import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.controller.ShopController;
 import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.model.Shop;
 
@@ -15,16 +18,22 @@ public class NavbarEventsController implements INavbarEventsController {
     private final Shop shop;
     private final ShopEventsUtility utility;
     private final ShopEventsValidation validation;
+    private final JavaPlugin plugin;
     private final ShopController shopController;
+    private final ItemController itemController;
 
     public NavbarEventsController(Shop shop,
                                   ShopEventsUtility utility,
                                   ShopEventsValidation validation,
-                                  ShopController shopController) {
+                                  JavaPlugin plugin,
+                                  ShopController shopController,
+                                  ItemController itemController) {
         this.shop = shop;
         this.utility = utility;
         this.validation = validation;
+        this.plugin = plugin;
         this.shopController = shopController;
+        this.itemController = itemController;
     }
 
     @Override
@@ -36,7 +45,7 @@ public class NavbarEventsController implements INavbarEventsController {
             ItemStack clickedItem = event.getCurrentItem();
 
             if (clickedItem != null && validation.isClickedItemNextPageButtonIcon(clickedItem)) {
-                nextButtonClickEvent(shop, event);
+                nextButtonClickEvent(event);
             }
         }
     }
@@ -50,7 +59,7 @@ public class NavbarEventsController implements INavbarEventsController {
             ItemStack clickedItem = event.getCurrentItem();
 
             if (clickedItem != null && validation.isClickedItemPreviousPageButtonIcon(clickedItem)) {
-                previousButtonClickEvent(shop, event);
+                previousButtonClickEvent(event);
             }
         }
     }
@@ -64,12 +73,28 @@ public class NavbarEventsController implements INavbarEventsController {
             ItemStack clickedItem = event.getCurrentItem();
 
             if (clickedItem != null && validation.isClickedItemReturnIcon(clickedItem)) {
-                backButtonClickEvent(shop, event);
+                backToShopButtonClickEvent(event);
             }
         }
     }
 
-    private void nextButtonClickEvent(Shop shop, InventoryClickEvent event) {
+    @Override
+    public void returnToCategoryButtonLeftClickEvent(InventoryClickEvent event) {
+        InventoryView view = event.getView();
+        String inventoryTitle = view.getTitle();
+
+        if (inventoryTitle.equalsIgnoreCase("Kup przedmiot")
+                || inventoryTitle.equalsIgnoreCase("Sprzedaj przedmiot")) {
+            event.setCancelled(true);
+            ItemStack clickedItem = event.getCurrentItem();
+
+            if (clickedItem != null && validation.isClickedItemReturnIcon(clickedItem)) {
+                backToCategoryInventory(event);
+            }
+        }
+    }
+
+    private void nextButtonClickEvent(InventoryClickEvent event) {
         Inventory inventory = event.getInventory();
         shopController.findCategoryByInventory(shop, inventory).ifPresent(category -> {
             int itemsInCategory = category.getListOfItems().size();
@@ -84,7 +109,7 @@ public class NavbarEventsController implements INavbarEventsController {
         });
     }
 
-    private void previousButtonClickEvent(Shop shop, InventoryClickEvent event) {
+    private void previousButtonClickEvent(InventoryClickEvent event) {
         Inventory inventory = event.getInventory();
         shopController.findCategoryByInventory(shop, inventory).ifPresent(category -> {
             int currentPage = category.getCurrentPage();
@@ -97,9 +122,24 @@ public class NavbarEventsController implements INavbarEventsController {
         });
     }
 
-    private void backButtonClickEvent(Shop shop, InventoryClickEvent event) {
+    private void backToShopButtonClickEvent(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         player.openInventory(shop.getInventory());
     }
+
+    private void backToCategoryInventory(InventoryClickEvent event) {
+        Inventory inventory = event.getInventory();
+
+        ItemStack itemStack = inventory.getItem(PluginConfig.SHOP_OPERATIONS_ITEM_PLACE);
+        Integer itemId = itemController.getItemIdByItemStack(plugin, itemStack);
+
+        if (itemId != null) {
+            shopController.findCategoryByItemId(shop, itemId).ifPresent(category -> {
+                Player player = (Player) event.getWhoClicked();
+                utility.switchToCategoryInventory(player, category);
+            });
+        }
+    }
+
 
 }

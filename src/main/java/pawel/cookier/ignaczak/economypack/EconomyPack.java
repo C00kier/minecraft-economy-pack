@@ -89,6 +89,7 @@ public final class EconomyPack extends JavaPlugin {
                 shop,
                 shopController,
                 categoryController,
+                itemController,
                 shopNavbarController,
                 balanceManager);
         getServer().getPluginManager().registerEvents(balanceManagerEvents, this);

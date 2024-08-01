@@ -2,11 +2,9 @@ package pawel.cookier.ignaczak.economypack.shop_manager.commands.controller;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.shop_manager.category_entity.controller.CategoryController;
@@ -18,7 +16,6 @@ import pawel.cookier.ignaczak.economypack.shop_manager.item_entity.model.Item;
 import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.controller.ShopController;
 import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.model.Shop;
 
-import java.util.List;
 import java.util.Optional;
 
 public class ItemCommandsController implements IItemCommandsController {
@@ -65,7 +62,7 @@ public class ItemCommandsController implements IItemCommandsController {
                     double sellPrice = Double.parseDouble(args[2]);
                     double buyPrice = Double.parseDouble(args[3]);
                     ItemStack itemStack = new ItemStack(material);
-                    Item item = createItem(plugin, itemStack, sellPrice, buyPrice);
+                    Item item = itemController.createItem(plugin, itemStack, sellPrice, buyPrice);
 
                     categoryController.addItemToCategory(category, item);
                     player.sendMessage(
@@ -85,7 +82,7 @@ public class ItemCommandsController implements IItemCommandsController {
                 double sellPrice = Double.parseDouble(args[1]);
                 double buyPrice = Double.parseDouble(args[2]);
 
-                Item item = createItem(plugin, itemStack, sellPrice, buyPrice);
+                Item item = itemController.createItem(plugin, itemStack, sellPrice, buyPrice);
                 categoryController.addItemToCategory(category, item);
 
                 if (meta != null) {
@@ -141,42 +138,4 @@ public class ItemCommandsController implements IItemCommandsController {
         }
     }
 
-    private Item createItem(JavaPlugin plugin,
-                            ItemStack itemStack,
-                            double sellPrice,
-                            double buyPrice) {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-
-        assert itemMeta != null;
-        itemMeta.getPersistentDataContainer().set(
-                new NamespacedKey(plugin, "sellPrice"), PersistentDataType.DOUBLE, sellPrice);
-        itemMeta.getPersistentDataContainer().set(
-                new NamespacedKey(plugin, "buyPrice"), PersistentDataType.DOUBLE, buyPrice);
-
-        itemMeta.setLore(List.of(
-                ChatColor.GREEN + "Buy price: %s$".formatted(buyPrice),
-                ChatColor.RED + "Sell price: %s$".formatted(sellPrice)
-        ));
-
-        itemStack.setItemMeta(itemMeta);
-
-        Item item = new Item(itemStack, sellPrice, buyPrice);
-        makeItemStackToDisplayItemId(item);
-
-        return item;
-    }
-
-    private void makeItemStackToDisplayItemId(Item item) {
-        ItemStack itemStack = item.getItemStack();
-        ItemMeta meta = itemStack.getItemMeta();
-
-        if (meta != null) {
-            List<String> loreList = meta.getLore();
-            if (loreList != null) {
-                loreList.add(ChatColor.GRAY + "Item id: %s".formatted(item.getId()));
-                meta.setLore(loreList);
-                itemStack.setItemMeta(meta);
-            }
-        }
-    }
 }

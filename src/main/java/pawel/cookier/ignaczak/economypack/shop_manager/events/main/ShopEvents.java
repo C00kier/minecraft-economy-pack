@@ -8,6 +8,7 @@ import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceMan
 import pawel.cookier.ignaczak.economypack.shop_manager.category_entity.controller.CategoryController;
 import pawel.cookier.ignaczak.economypack.shop_manager.events.controller.*;
 import pawel.cookier.ignaczak.economypack.shop_manager.events.validation.ShopEventsValidation;
+import pawel.cookier.ignaczak.economypack.shop_manager.item_entity.controller.ItemController;
 import pawel.cookier.ignaczak.economypack.shop_manager.navbar.controller.ShopNavbarController;
 import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.controller.ShopController;
 import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.model.Shop;
@@ -23,6 +24,7 @@ public class ShopEvents implements Listener {
                       Shop shop,
                       ShopController shopController,
                       CategoryController categoryController,
+                      ItemController itemController,
                       ShopNavbarController shopNavbarController,
                       BalanceManager balanceManager) {
         ShopEventsValidation shopEventsValidation = new ShopEventsValidation();
@@ -44,7 +46,9 @@ public class ShopEvents implements Listener {
                 shop,
                 shopEventsUtility,
                 shopEventsValidation,
-                shopController);
+                javaPlugin,
+                shopController,
+                itemController);
     }
 
     //menu navigation
@@ -69,6 +73,11 @@ public class ShopEvents implements Listener {
     }
 
     @EventHandler
+    public void returnToCategoryButton(InventoryClickEvent event){
+        navbarEventsController.returnToCategoryButtonLeftClickEvent(event);
+    }
+
+    @EventHandler
     public void openBuyItemMenu(InventoryClickEvent event) {
         categoryInventoryEventsController.openBuyItemMenuLeftClickEvent(event);
     }
@@ -83,4 +92,6 @@ public class ShopEvents implements Listener {
     public void sellAllItemsOfCertainType(InventoryClickEvent event) {
         categoryInventoryEventsController.sellAllItemsOfCertainTypeShiftRightClickEvent(event);
     }
+
+
 }

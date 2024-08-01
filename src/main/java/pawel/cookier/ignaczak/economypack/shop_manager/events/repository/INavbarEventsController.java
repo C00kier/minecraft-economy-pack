@@ -8,4 +8,6 @@ public interface INavbarEventsController {
     void previousPageButtonLeftClickEvent(InventoryClickEvent event);
 
     void returnToShopButtonLeftClickEvent(InventoryClickEvent event);
+
+    void returnToCategoryButtonLeftClickEvent(InventoryClickEvent event);
 }
