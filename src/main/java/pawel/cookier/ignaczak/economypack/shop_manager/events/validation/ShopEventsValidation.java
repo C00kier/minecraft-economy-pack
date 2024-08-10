@@ -36,6 +36,29 @@ public class ShopEventsValidation implements IShopEventsValidation {
         return doesItemStackContainsMaterialAndDisplayName(clickedItem, Material.BARRIER, "Wróć");
     }
 
+    @Override
+    public boolean isClickedItemQuantityButton(ItemStack clickedItem, String buttonName, Material material, int amount) {
+        return isCorrectButtonName(clickedItem, buttonName)
+                && isCorrectItemMaterial(clickedItem, material)
+                && isClickedItemAmountCorrect(clickedItem, amount);
+    }
+
+    private boolean isCorrectButtonName(ItemStack clickedItem, String buttonName){
+        ItemMeta meta = clickedItem.getItemMeta();
+        if(meta == null){
+            return false;
+        }
+        return clickedItem.getItemMeta().getDisplayName().equalsIgnoreCase(buttonName);
+    }
+
+    private boolean isCorrectItemMaterial(ItemStack clickedItem, Material material){
+        return clickedItem.getType() == material;
+    }
+
+    private boolean isClickedItemAmountCorrect(ItemStack clickedItem, int amount){
+        return clickedItem.getAmount() == amount;
+    }
+
     private boolean isClickedItemBalanceIcon(ItemStack clickedItem) {
         return doesItemStackContainsMaterialAndDisplayName(clickedItem, Material.PLAYER_HEAD, "Stan konta");
     }

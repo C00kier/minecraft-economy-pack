@@ -41,7 +41,7 @@ public class ShopEvents implements Listener {
                 javaPlugin,
                 shopNavbarController,
                 shop);
-        this.itemInventoryEventsController = new ItemInventoryEventsController();
+        this.itemInventoryEventsController = new ItemInventoryEventsController(javaPlugin, shopEventsValidation);
         this.navbarEventsController = new NavbarEventsController(
                 shop,
                 shopEventsUtility,
@@ -73,7 +73,7 @@ public class ShopEvents implements Listener {
     }
 
     @EventHandler
-    public void returnToCategoryButton(InventoryClickEvent event){
+    public void returnToCategoryButton(InventoryClickEvent event) {
         navbarEventsController.returnToCategoryButtonLeftClickEvent(event);
     }
 
@@ -85,6 +85,37 @@ public class ShopEvents implements Listener {
     @EventHandler
     public void openSellItemMenu(InventoryClickEvent event) {
         categoryInventoryEventsController.openSellItemMenuRightClickEvent(event);
+    }
+
+    //item inventory button events
+    @EventHandler
+    public void minusItemQuantity64Button(InventoryClickEvent event) {
+        itemInventoryEventsController.minusItemQuantity64ButtonEvent(event);
+    }
+
+    @EventHandler
+    public void minusItemQuantity16Button(InventoryClickEvent event) {
+        itemInventoryEventsController.minusItemQuantity16ButtonEvent(event);
+    }
+
+    @EventHandler
+    public void minusItemQuantity1Button(InventoryClickEvent event) {
+        itemInventoryEventsController.minusItemQuantity1ButtonEvent(event);
+    }
+
+    @EventHandler
+    public void plusItemQuantity64Button(InventoryClickEvent event) {
+        itemInventoryEventsController.plusItemQuantity64ButtonEvent(event);
+    }
+
+    @EventHandler
+    public void plusItemQuantity16Button(InventoryClickEvent event) {
+        itemInventoryEventsController.plusItemQuantity16ButtonEvent(event);
+    }
+
+    @EventHandler
+    public void plusItemQuantity1Button(InventoryClickEvent event) {
+        itemInventoryEventsController.plusItemQuantity1ButtonEvent(event);
     }
 
     //selling items
