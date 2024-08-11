@@ -29,11 +29,11 @@ public class ItemInventoryEventsController implements IItemInventoryEventsContro
     public void minusItemQuantity64ButtonEvent(InventoryClickEvent event) {
         ItemStack clickedItem = event.getCurrentItem();
 
-        if(validation.isClickedItemQuantityButton(
+        if (validation.isClickedItemQuantityButton(
                 clickedItem,
                 "Zmniejsz o 64",
                 Material.RED_STAINED_GLASS_PANE,
-                64 )){
+                64)) {
             updateItemStackQuantity(event, -64);
         }
     }
@@ -42,11 +42,11 @@ public class ItemInventoryEventsController implements IItemInventoryEventsContro
     public void minusItemQuantity16ButtonEvent(InventoryClickEvent event) {
         ItemStack clickedItem = event.getCurrentItem();
 
-        if(validation.isClickedItemQuantityButton(
+        if (validation.isClickedItemQuantityButton(
                 clickedItem,
                 "Zmniejsz o 16",
                 Material.RED_STAINED_GLASS_PANE,
-                16 )){
+                16)) {
             updateItemStackQuantity(event, -16);
         }
     }
@@ -55,11 +55,11 @@ public class ItemInventoryEventsController implements IItemInventoryEventsContro
     public void minusItemQuantity1ButtonEvent(InventoryClickEvent event) {
         ItemStack clickedItem = event.getCurrentItem();
 
-        if(validation.isClickedItemQuantityButton(
+        if (validation.isClickedItemQuantityButton(
                 clickedItem,
                 "Zmniejsz o 1",
                 Material.RED_STAINED_GLASS_PANE,
-                1 )){
+                1)) {
             updateItemStackQuantity(event, -1);
         }
     }
@@ -68,11 +68,11 @@ public class ItemInventoryEventsController implements IItemInventoryEventsContro
     public void plusItemQuantity64ButtonEvent(InventoryClickEvent event) {
         ItemStack clickedItem = event.getCurrentItem();
 
-        if(validation.isClickedItemQuantityButton(
+        if (validation.isClickedItemQuantityButton(
                 clickedItem,
                 "Zwiększ o 64",
                 Material.LIME_STAINED_GLASS_PANE,
-                64 )){
+                64)) {
             updateItemStackQuantity(event, 64);
         }
     }
@@ -81,11 +81,11 @@ public class ItemInventoryEventsController implements IItemInventoryEventsContro
     public void plusItemQuantity16ButtonEvent(InventoryClickEvent event) {
         ItemStack clickedItem = event.getCurrentItem();
 
-        if(validation.isClickedItemQuantityButton(
+        if (validation.isClickedItemQuantityButton(
                 clickedItem,
                 "Zwiększ o 16",
                 Material.LIME_STAINED_GLASS_PANE,
-                16 )){
+                16)) {
             updateItemStackQuantity(event, 16);
         }
     }
@@ -94,11 +94,11 @@ public class ItemInventoryEventsController implements IItemInventoryEventsContro
     public void plusItemQuantity1ButtonEvent(InventoryClickEvent event) {
         ItemStack clickedItem = event.getCurrentItem();
 
-        if(validation.isClickedItemQuantityButton(
+        if (validation.isClickedItemQuantityButton(
                 clickedItem,
                 "Zwiększ o 1",
                 Material.LIME_STAINED_GLASS_PANE,
-                1 )){
+                1)) {
             updateItemStackQuantity(event, 1);
         }
     }
@@ -123,8 +123,7 @@ public class ItemInventoryEventsController implements IItemInventoryEventsContro
     private void updateItemStackPrice(InventoryClickEvent event, ItemStack itemStack, int newQuantity) {
         String inventoryName = event.getView().getTitle();
 
-        if (inventoryName.equalsIgnoreCase("Kup przedmiot")
-                || inventoryName.equalsIgnoreCase("Sprzedaj przedmiot")) {
+        if (inventoryName.equalsIgnoreCase("Kup / Sprzedaj")) {
             updatePrice(itemStack, newQuantity);
         }
     }
@@ -139,7 +138,7 @@ public class ItemInventoryEventsController implements IItemInventoryEventsContro
             Double buyPrice = meta.getPersistentDataContainer().get(
                     new NamespacedKey(plugin, "buyPrice"), PersistentDataType.DOUBLE);
 
-            if(meta.getLore() != null && sellPrice != null && buyPrice != null){
+            if (meta.getLore() != null && sellPrice != null && buyPrice != null) {
                 List<String> lore = meta.getLore();
                 lore.set(0, ChatColor.GREEN + "Buy price: " + buyPrice * newQuantity + "$");
                 lore.set(1, ChatColor.RED + "Sell price: " + sellPrice * newQuantity + "$");

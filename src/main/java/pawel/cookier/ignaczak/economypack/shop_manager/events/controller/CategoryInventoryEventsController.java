@@ -44,7 +44,7 @@ public class CategoryInventoryEventsController implements ICategoryInventoryEven
     }
 
     @Override
-    public void openBuyItemMenuLeftClickEvent(InventoryClickEvent event) {
+    public void openItemMenuLeftClickEvent(InventoryClickEvent event) {
         Inventory inventory = event.getInventory();
 
         if (utility.doesShopContainExistingCategoryByInventory(shop, inventory)) {
@@ -54,23 +54,7 @@ public class CategoryInventoryEventsController implements ICategoryInventoryEven
             if (clickedItem != null
                     && event.getClick() == ClickType.LEFT
                     && !validation.isClickedItemElementOfNavbar(clickedItem)) {
-                openBuyItemMenu(event, clickedItem);
-            }
-        }
-    }
-
-    @Override
-    public void openSellItemMenuRightClickEvent(InventoryClickEvent event) {
-        Inventory inventory = event.getInventory();
-
-        if (utility.doesShopContainExistingCategoryByInventory(shop, inventory)) {
-            event.setCancelled(true);
-            ItemStack clickedItem = event.getCurrentItem();
-
-            if (clickedItem != null
-                    && event.getClick() == ClickType.RIGHT
-                    && !validation.isClickedItemElementOfNavbar(clickedItem)) {
-                openSellItemMenu(event, clickedItem);
+                openItemMenu(event, clickedItem);
             }
         }
     }
@@ -142,18 +126,11 @@ public class CategoryInventoryEventsController implements ICategoryInventoryEven
         return isDisplayNameEqual && isTypeEqual && hasSameEnchants;
     }
 
-    private void openBuyItemMenu(InventoryClickEvent event, ItemStack itemStack) {
+    private void openItemMenu(InventoryClickEvent event, ItemStack itemStack) {
         Player player = (Player) event.getWhoClicked();
         player.closeInventory();
 
-        player.openInventory(createItemOperationsInventory(player, itemStack, "Kup przedmiot"));
-    }
-
-    private void openSellItemMenu(InventoryClickEvent event, ItemStack itemStack) {
-        Player player = (Player) event.getWhoClicked();
-        player.closeInventory();
-
-        player.openInventory(createItemOperationsInventory(player, itemStack, "Sprzedaj przedmiot"));
+        player.openInventory(createItemOperationsInventory(player, itemStack, "Kup / Sprzedaj"));
     }
 
     private Inventory createItemOperationsInventory(Player player,
@@ -161,7 +138,7 @@ public class CategoryInventoryEventsController implements ICategoryInventoryEven
                                                     String inventoryTitle){
         Inventory inventory = Bukkit.createInventory(null, PluginConfig.SHOP_INVENTORY_SIZE, inventoryTitle);
 
-        setConfirmIconInInventory(inventory);
+        setOperationsIconInInventory(inventory);
         setRemoveQuantityIconsInInventory(inventory);
         setItemIconInInventory(inventory, itemStack);
         setAddQuantityIconsInInventory(inventory);
@@ -170,9 +147,12 @@ public class CategoryInventoryEventsController implements ICategoryInventoryEven
         return inventory;
     }
 
-    private void setConfirmIconInInventory(Inventory inventory){
-        ItemStack itemStack = IShopUtility.createItemStack(Material.PAPER, ChatColor.AQUA + "Potwierdź");
-        inventory.setItem(PluginConfig.SHOP_OPERATIONS_CONFIRM_PLACE, itemStack);
+    private void setOperationsIconInInventory(Inventory inventory){
+        ItemStack buyButton = IShopUtility.createItemStack(Material.PAPER, ChatColor.GREEN + "Kup");
+        inventory.setItem(PluginConfig.SHOP_OPERATIONS_BUY_BUTTON_PLACE, buyButton);
+
+        ItemStack sellButton = IShopUtility.createItemStack(Material.PAPER, ChatColor.RED + "Sprzedaj");
+        inventory.setItem(PluginConfig.SHOP_OPERATIONS_SELL_BUTTON_PLACE, sellButton);
     }
 
     private void setRemoveQuantityIconsInInventory(Inventory inventory){

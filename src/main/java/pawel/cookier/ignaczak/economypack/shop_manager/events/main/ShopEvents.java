@@ -78,13 +78,9 @@ public class ShopEvents implements Listener {
     }
 
     @EventHandler
-    public void openBuyItemMenu(InventoryClickEvent event) {
-        categoryInventoryEventsController.openBuyItemMenuLeftClickEvent(event);
-    }
-
-    @EventHandler
-    public void openSellItemMenu(InventoryClickEvent event) {
-        categoryInventoryEventsController.openSellItemMenuRightClickEvent(event);
+    public void openItemMenu(InventoryClickEvent event) {
+        categoryInventoryEventsController.openItemMenuLeftClickEvent(event);
+        event.setCancelled(true);
     }
 
     //item inventory button events

@@ -10,12 +10,10 @@ public interface IItemController {
 
     void updateItemBuyPrice(JavaPlugin plugin, Player player, Item item, Double buyPrice);
 
-    Item createItem(JavaPlugin plugin,
-                    ItemStack itemStack,
-                    double sellPrice,
-                    double buyPrice);
-
-    void makeItemStackToDisplayItemId(JavaPlugin plugin, Item item);
+    Item createItemInCategory(JavaPlugin plugin,
+                              ItemStack itemStack,
+                              double sellPrice,
+                              double buyPrice);
 
     Integer getItemIdByItemStack(JavaPlugin plugin, ItemStack itemStack);
 }

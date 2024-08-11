@@ -83,8 +83,7 @@ public class NavbarEventsController implements INavbarEventsController {
         InventoryView view = event.getView();
         String inventoryTitle = view.getTitle();
 
-        if (inventoryTitle.equalsIgnoreCase("Kup przedmiot")
-                || inventoryTitle.equalsIgnoreCase("Sprzedaj przedmiot")) {
+        if (inventoryTitle.equalsIgnoreCase("Kup / Sprzedaj")) {
             event.setCancelled(true);
             ItemStack clickedItem = event.getCurrentItem();
 

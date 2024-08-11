@@ -62,8 +62,7 @@ public class ItemCommandsController implements IItemCommandsController {
                     double sellPrice = Double.parseDouble(args[2]);
                     double buyPrice = Double.parseDouble(args[3]);
                     ItemStack itemStack = new ItemStack(material);
-                    Item item = itemController.createItem(plugin, itemStack, sellPrice, buyPrice);
-
+                    Item item = itemController.createItemInCategory(plugin, itemStack, sellPrice, buyPrice);
                     categoryController.addItemToCategory(category, item);
                     player.sendMessage(
                             ChatColor.GREEN + "Dodano %s do kategorii %s".formatted(args[1], categoryName));
@@ -82,7 +81,7 @@ public class ItemCommandsController implements IItemCommandsController {
                 double sellPrice = Double.parseDouble(args[1]);
                 double buyPrice = Double.parseDouble(args[2]);
 
-                Item item = itemController.createItem(plugin, itemStack, sellPrice, buyPrice);
+                Item item = itemController.createItemInCategory(plugin, itemStack, sellPrice, buyPrice);
                 categoryController.addItemToCategory(category, item);
 
                 if (meta != null) {

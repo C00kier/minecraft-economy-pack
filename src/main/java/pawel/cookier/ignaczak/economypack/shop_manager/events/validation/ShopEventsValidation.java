@@ -10,6 +10,7 @@ public class ShopEventsValidation implements IShopEventsValidation {
 
     @Override
     public boolean isClickedItemElementOfNavbar(ItemStack clickedItem) {
+        if(clickedItem == null) return false;
         return isClickedItemBalanceIcon(clickedItem)
                 || isClickedItemPreviousPageButtonIcon(clickedItem)
                 || isClickedItemSeparatorIcon(clickedItem)
@@ -19,6 +20,7 @@ public class ShopEventsValidation implements IShopEventsValidation {
 
     @Override
     public boolean isClickedItemPreviousPageButtonIcon(ItemStack clickedItem) {
+        if(clickedItem == null) return false;
         return doesItemStackContainsMaterialAndDisplayName(clickedItem,
                 PluginConfig.SHOP_NAVBAR_PREVIOUS_BUTTON_MATERIAL,
                 "Poprzednia Strona");
@@ -26,6 +28,7 @@ public class ShopEventsValidation implements IShopEventsValidation {
 
     @Override
     public boolean isClickedItemNextPageButtonIcon(ItemStack clickedItem) {
+        if(clickedItem == null) return false;
         return doesItemStackContainsMaterialAndDisplayName(clickedItem,
                 PluginConfig.SHOP_NAVBAR_NEXT_BUTTON_MATERIAL,
                 "Następna Strona");
@@ -33,11 +36,13 @@ public class ShopEventsValidation implements IShopEventsValidation {
 
     @Override
     public boolean isClickedItemReturnIcon(ItemStack clickedItem) {
+        if(clickedItem == null) return false;
         return doesItemStackContainsMaterialAndDisplayName(clickedItem, Material.BARRIER, "Wróć");
     }
 
     @Override
     public boolean isClickedItemQuantityButton(ItemStack clickedItem, String buttonName, Material material, int amount) {
+        if(clickedItem == null) return false;
         return isCorrectButtonName(clickedItem, buttonName)
                 && isCorrectItemMaterial(clickedItem, material)
                 && isClickedItemAmountCorrect(clickedItem, amount);

@@ -52,7 +52,6 @@ public final class PluginConfig {
     public final static Material SHOP_NAVBAR_PREVIOUS_BUTTON_MATERIAL = Material.OAK_BUTTON;
 
     //shop_manager item_entity operations
-    public final static int SHOP_OPERATIONS_CONFIRM_PLACE = 13;
     public final static int SHOP_OPERATIONS_MINUS_64_PLACE = 19;
     public final static int SHOP_OPERATIONS_MINUS_16_PLACE = 20;
     public final static int SHOP_OPERATIONS_MINUS_1_PLACE = 21;
@@ -60,6 +59,8 @@ public final class PluginConfig {
     public final static int SHOP_OPERATIONS_PLUS_1_PLACE = 23;
     public final static int SHOP_OPERATIONS_PLUS_16_PLACE = 24;
     public final static int SHOP_OPERATIONS_PLUS_64_PLACE = 25;
+    public final static int SHOP_OPERATIONS_BUY_BUTTON_PLACE = 30;
+    public final static int SHOP_OPERATIONS_SELL_BUTTON_PLACE = 32;
 
     //gamble
     public static final int GAMBLE_CHANCE = 50;

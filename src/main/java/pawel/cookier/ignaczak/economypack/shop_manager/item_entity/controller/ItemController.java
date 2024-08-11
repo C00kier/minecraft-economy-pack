@@ -58,10 +58,10 @@ public class ItemController implements IItemController {
     }
 
     @Override
-    public Item createItem(JavaPlugin plugin,
-                           ItemStack itemStack,
-                           double sellPrice,
-                           double buyPrice) {
+    public Item createItemInCategory(JavaPlugin plugin,
+                                     ItemStack itemStack,
+                                     double sellPrice,
+                                     double buyPrice) {
         ItemMeta itemMeta = itemStack.getItemMeta();
 
         assert itemMeta != null;
@@ -83,8 +83,7 @@ public class ItemController implements IItemController {
         return item;
     }
 
-    @Override
-    public void makeItemStackToDisplayItemId(JavaPlugin plugin, Item item) {
+    private void makeItemStackToDisplayItemId(JavaPlugin plugin, Item item) {
         ItemStack itemStack = item.getItemStack();
         ItemMeta meta = itemStack.getItemMeta();
 
