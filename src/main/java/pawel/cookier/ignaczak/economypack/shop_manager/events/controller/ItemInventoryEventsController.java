@@ -114,6 +114,8 @@ public class ItemInventoryEventsController implements IItemInventoryEventsContro
 
         ItemStack clickedItem = event.getCurrentItem();
 
+        if (clickedItem == null) return;
+
         if (validation.isClickedItemQuantityButton(
                 clickedItem,
                 ChatColor.GREEN + "Kup",
@@ -148,9 +150,9 @@ public class ItemInventoryEventsController implements IItemInventoryEventsContro
             Player player = (Player) event.getWhoClicked();
 
             if (event.getClick() == ClickType.SHIFT_RIGHT) {
-                itemController.exchangeItemsForMoney(plugin, player, itemStack, true);
+                itemController.sellItemsForMoney(plugin, player, itemStack, true);
             } else if (event.getClick() == ClickType.LEFT) {
-                itemController.exchangeItemsForMoney(plugin, player, itemStack, false);
+                itemController.sellItemsForMoney(plugin, player, itemStack, false);
             }
         }
     }

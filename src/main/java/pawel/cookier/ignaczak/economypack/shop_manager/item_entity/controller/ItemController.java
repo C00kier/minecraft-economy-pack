@@ -93,7 +93,7 @@ public class ItemController implements IItemController {
     }
 
     @Override
-    public void exchangeItemsForMoney(JavaPlugin plugin, Player player, ItemStack itemStack, boolean exchangeAll) {
+    public void sellItemsForMoney(JavaPlugin plugin, Player player, ItemStack itemStack, boolean exchangeAll) {
         Inventory inventory = player.getInventory();
         ItemMeta meta = itemStack.getItemMeta();
 
@@ -108,7 +108,11 @@ public class ItemController implements IItemController {
         int totalAmount = 0;
         int amountToExchange = itemStack.getAmount();
 
-        for (ItemStack inventoryItem : inventory.getContents()) {
+        for (int i = 0; i < inventory.getSize(); i++) {
+            // Skip armor slots and off-hand slot
+            if (i >= 36 && i <= 40) continue;
+
+            ItemStack inventoryItem = inventory.getItem(i);
             if (inventoryItem == null || !isShopItemStackSameAsInventoryItemStack(itemStack, inventoryItem)) continue;
 
             int slotItemAmount = inventoryItem.getAmount();
@@ -116,7 +120,7 @@ public class ItemController implements IItemController {
             if (exchangeAll || slotItemAmount <= amountToExchange) {
                 totalAmount += slotItemAmount;
                 amountToExchange -= slotItemAmount;
-                inventory.remove(inventoryItem);
+                inventory.setItem(i, null);
             } else {
                 inventoryItem.setAmount(slotItemAmount - amountToExchange);
                 totalAmount += amountToExchange;
@@ -129,6 +133,32 @@ public class ItemController implements IItemController {
         exchangeItemQuantityForMoney(player, itemName, totalAmount, sellPrice);
     }
 
+    @Override
+    public void buyItemsForMoney(JavaPlugin plugin, Player player, ItemStack itemStack, boolean buyMax) {
+        Inventory inventory = player.getInventory();
+
+    }
+
+    @Override
+    public Integer getItemIdByItemStack(JavaPlugin plugin, ItemStack itemStack) {
+        if (itemStack == null) {
+            return null;
+        }
+
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta == null) {
+            return null;
+        }
+
+        PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+        NamespacedKey key = new NamespacedKey(plugin, "itemId");
+
+        if (dataContainer.has(key, PersistentDataType.INTEGER)) {
+            return dataContainer.get(key, PersistentDataType.INTEGER);
+        } else {
+            return null;
+        }
+    }
 
     private void exchangeItemQuantityForMoney(Player player,
                                               String itemName,
@@ -191,24 +221,4 @@ public class ItemController implements IItemController {
         }
     }
 
-    @Override
-    public Integer getItemIdByItemStack(JavaPlugin plugin, ItemStack itemStack) {
-        if (itemStack == null) {
-            return null;
-        }
-
-        ItemMeta meta = itemStack.getItemMeta();
-        if (meta == null) {
-            return null;
-        }
-
-        PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-        NamespacedKey key = new NamespacedKey(plugin, "itemId");
-
-        if (dataContainer.has(key, PersistentDataType.INTEGER)) {
-            return dataContainer.get(key, PersistentDataType.INTEGER);
-        } else {
-            return null;
-        }
-    }
 }

@@ -70,7 +70,7 @@ public class CategoryInventoryEventsController implements ICategoryInventoryEven
             if (isItemStackInCurrentlyOpenInventory(inventory, clickedItem)
                     && event.getClick() == ClickType.SHIFT_RIGHT) {
                 Player player = (Player) event.getWhoClicked();
-                itemController.exchangeItemsForMoney(plugin, player, clickedItem, true);
+                itemController.sellItemsForMoney(plugin, player, clickedItem, true);
             }
         }
     }

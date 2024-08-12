@@ -15,7 +15,9 @@ public interface IItemController {
                               double sellPrice,
                               double buyPrice);
 
-    void exchangeItemsForMoney(JavaPlugin plugin, Player player, ItemStack itemStack, boolean exchangeAll);
+    void sellItemsForMoney(JavaPlugin plugin, Player player, ItemStack itemStack, boolean exchangeAll);
+
+    void buyItemsForMoney(JavaPlugin plugin, Player player, ItemStack itemStack, boolean buyMax);
 
     Integer getItemIdByItemStack(JavaPlugin plugin, ItemStack itemStack);
 }
