@@ -68,7 +68,7 @@ public final class EconomyPack extends JavaPlugin {
         //shop_manager
         ShopNavbarController shopNavbarController = new ShopNavbarController();
         ShopController shopController = new ShopController();
-        ItemController itemController = new ItemController();
+        ItemController itemController = new ItemController(balanceManager);
         CategoryController categoryController = new CategoryController(shopNavbarController);
         CategoryCommandsController categoryCommandsController = new CategoryCommandsController(
                 shop,

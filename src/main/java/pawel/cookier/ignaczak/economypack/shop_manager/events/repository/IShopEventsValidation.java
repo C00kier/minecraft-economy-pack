@@ -1,6 +1,7 @@
 package pawel.cookier.ignaczak.economypack.shop_manager.events.repository;
 
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 public interface IShopEventsValidation {
@@ -13,4 +14,6 @@ public interface IShopEventsValidation {
     boolean isClickedItemReturnIcon(ItemStack clickedItem);
 
     boolean isClickedItemQuantityButton(ItemStack clickedItem, String buttonName, Material material, int amount);
+
+    boolean isBuySellItemMenu(InventoryClickEvent event);
 }

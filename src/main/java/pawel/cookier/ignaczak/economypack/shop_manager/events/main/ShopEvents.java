@@ -40,8 +40,8 @@ public class ShopEvents implements Listener {
                 balanceManager,
                 javaPlugin,
                 shopNavbarController,
-                shop);
-        this.itemInventoryEventsController = new ItemInventoryEventsController(javaPlugin, shopEventsValidation);
+                shop, itemController);
+        this.itemInventoryEventsController = new ItemInventoryEventsController(javaPlugin, shopEventsValidation, itemController);
         this.navbarEventsController = new NavbarEventsController(
                 shop,
                 shopEventsUtility,
@@ -80,7 +80,6 @@ public class ShopEvents implements Listener {
     @EventHandler
     public void openItemMenu(InventoryClickEvent event) {
         categoryInventoryEventsController.openItemMenuLeftClickEvent(event);
-        event.setCancelled(true);
     }
 
     //item inventory button events
@@ -114,7 +113,17 @@ public class ShopEvents implements Listener {
         itemInventoryEventsController.plusItemQuantity1ButtonEvent(event);
     }
 
-    //selling items
+    //operations
+    @EventHandler
+    public void buyItemButton(InventoryClickEvent event){
+        itemInventoryEventsController.buyButtonEvent(event);
+    }
+
+    @EventHandler
+    public void sellItemButton(InventoryClickEvent event){
+        itemInventoryEventsController.sellButtonEvent(event);
+    }
+
     @EventHandler
     public void sellAllItemsOfCertainType(InventoryClickEvent event) {
         categoryInventoryEventsController.sellAllItemsOfCertainTypeShiftRightClickEvent(event);

@@ -14,4 +14,8 @@ public interface IItemInventoryEventsController {
     void plusItemQuantity16ButtonEvent(InventoryClickEvent event);
 
     void plusItemQuantity1ButtonEvent(InventoryClickEvent event);
+
+    void buyButtonEvent(InventoryClickEvent event);
+
+    void sellButtonEvent(InventoryClickEvent event);
 }

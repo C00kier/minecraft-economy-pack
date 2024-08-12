@@ -3,6 +3,8 @@ package pawel.cookier.ignaczak.economypack.shop_manager.events.controller;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -12,6 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.shop_manager.events.repository.IItemInventoryEventsController;
 import pawel.cookier.ignaczak.economypack.shop_manager.events.validation.ShopEventsValidation;
+import pawel.cookier.ignaczak.economypack.shop_manager.item_entity.controller.ItemController;
 
 import java.util.List;
 
@@ -19,10 +22,12 @@ public class ItemInventoryEventsController implements IItemInventoryEventsContro
 
     private final JavaPlugin plugin;
     private final ShopEventsValidation validation;
+    private final ItemController itemController;
 
-    public ItemInventoryEventsController(JavaPlugin plugin, ShopEventsValidation validation) {
+    public ItemInventoryEventsController(JavaPlugin plugin, ShopEventsValidation validation, ItemController itemController) {
         this.plugin = plugin;
         this.validation = validation;
+        this.itemController = itemController;
     }
 
     @Override
@@ -102,6 +107,54 @@ public class ItemInventoryEventsController implements IItemInventoryEventsContro
             updateItemStackQuantity(event, 1);
         }
     }
+
+    @Override
+    public void buyButtonEvent(InventoryClickEvent event) {
+        if (!validation.isBuySellItemMenu(event)) return;
+
+        ItemStack clickedItem = event.getCurrentItem();
+
+        if (validation.isClickedItemQuantityButton(
+                clickedItem,
+                ChatColor.GREEN + "Kup",
+                Material.PAPER,
+                1)) {
+
+            if (event.getClick() == ClickType.SHIFT_RIGHT) {
+
+            } else if (event.getClick() == ClickType.LEFT) {
+
+            }
+        }
+    }
+
+    @Override
+    public void sellButtonEvent(InventoryClickEvent event) {
+        if (!validation.isBuySellItemMenu(event)) return;
+
+        ItemStack clickedItem = event.getCurrentItem();
+
+        if (clickedItem == null) return;
+
+        if (validation.isClickedItemQuantityButton(
+                clickedItem,
+                ChatColor.RED + "Sprzedaj",
+                Material.PAPER,
+                1)) {
+
+            ItemStack itemStack = event.getInventory().getItem(PluginConfig.SHOP_OPERATIONS_ITEM_PLACE);
+            if (itemStack == null) return;
+
+            Player player = (Player) event.getWhoClicked();
+
+            if (event.getClick() == ClickType.SHIFT_RIGHT) {
+                itemController.exchangeItemsForMoney(plugin, player, itemStack, true);
+            } else if (event.getClick() == ClickType.LEFT) {
+                itemController.exchangeItemsForMoney(plugin, player, itemStack, false);
+            }
+        }
+    }
+
 
     private void updateItemStackQuantity(InventoryClickEvent event, int amount) {
         Inventory inventory = event.getInventory();

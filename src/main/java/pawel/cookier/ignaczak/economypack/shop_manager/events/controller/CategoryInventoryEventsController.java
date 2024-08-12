@@ -3,19 +3,17 @@ package pawel.cookier.ignaczak.economypack.shop_manager.events.controller;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import pawel.cookier.ignaczak.economypack.balance_manager.controllers.BalanceManager;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
 import pawel.cookier.ignaczak.economypack.shop_manager.events.repository.ICategoryInventoryEventsController;
 import pawel.cookier.ignaczak.economypack.shop_manager.events.validation.ShopEventsValidation;
+import pawel.cookier.ignaczak.economypack.shop_manager.item_entity.controller.ItemController;
 import pawel.cookier.ignaczak.economypack.shop_manager.navbar.controller.ShopNavbarController;
 import pawel.cookier.ignaczak.economypack.shop_manager.shop_entity.model.Shop;
 import pawel.cookier.ignaczak.economypack.shop_manager.utility.IShopUtility;
@@ -28,19 +26,21 @@ public class CategoryInventoryEventsController implements ICategoryInventoryEven
     private final JavaPlugin plugin;
     private final ShopNavbarController shopNavbarController;
     private final Shop shop;
+    private final ItemController itemController;
 
     public CategoryInventoryEventsController(ShopEventsUtility utility,
                                              ShopEventsValidation validation,
                                              BalanceManager balanceManager,
                                              JavaPlugin plugin,
                                              ShopNavbarController shopNavbarController,
-                                             Shop shop) {
+                                             Shop shop, ItemController itemController) {
         this.utility = utility;
         this.validation = validation;
         this.balanceManager = balanceManager;
         this.plugin = plugin;
         this.shopNavbarController = shopNavbarController;
         this.shop = shop;
+        this.itemController = itemController;
     }
 
     @Override
@@ -70,61 +70,11 @@ public class CategoryInventoryEventsController implements ICategoryInventoryEven
             if (isItemStackInCurrentlyOpenInventory(inventory, clickedItem)
                     && event.getClick() == ClickType.SHIFT_RIGHT) {
                 Player player = (Player) event.getWhoClicked();
-                exchangeAllItemStacksOfSameTypeForMoney(plugin, player, clickedItem);
+                itemController.exchangeItemsForMoney(plugin, player, clickedItem, true);
             }
         }
     }
 
-    private void exchangeAllItemStacksOfSameTypeForMoney(JavaPlugin plugin, Player player, ItemStack itemStack) {
-        Inventory inventory = player.getInventory();
-        int amountOfItemInInventory = 0;
-        ItemMeta meta = itemStack.getItemMeta();
-
-        if (meta != null) {
-            String itemName = formatMaterialName(itemStack.getType().name());
-            NamespacedKey key = new NamespacedKey(plugin, "sellPrice");
-            Double sellPrice = meta.getPersistentDataContainer().get(key, PersistentDataType.DOUBLE);
-            if (sellPrice != null) {
-                for (int i = 0; i < inventory.getSize(); i++) {
-                    ItemStack inventoryItemStack = inventory.getItem(i);
-                    if (inventoryItemStack != null
-                            && isShopItemStackSameAsInventoryItemStack(itemStack, inventoryItemStack)) {
-                        amountOfItemInInventory += inventoryItemStack.getAmount();
-                        inventory.setItem(i, null);
-                    }
-                }
-                double moneyToAdd = amountOfItemInInventory * sellPrice;
-                balanceManager.addMoneyToPlayer(moneyToAdd, player.getUniqueId());
-
-                if (amountOfItemInInventory != 0) {
-                    player.sendMessage(ChatColor.GREEN +
-                            "Sprzedałeś %s x [%s] za %s$".formatted(
-                                    amountOfItemInInventory,
-                                    itemName,
-                                    moneyToAdd));
-                }
-            }
-        }
-    }
-
-    private boolean isShopItemStackSameAsInventoryItemStack(ItemStack shopItemStack, ItemStack inventoryItemStack) {
-        if (shopItemStack == null || inventoryItemStack == null) {
-            return false;
-        }
-
-        ItemMeta shopMeta = shopItemStack.getItemMeta();
-        ItemMeta inventoryMeta = inventoryItemStack.getItemMeta();
-
-        if (shopMeta == null || inventoryMeta == null) {
-            return false;
-        }
-
-        boolean isDisplayNameEqual = shopMeta.getDisplayName().equals(inventoryMeta.getDisplayName());
-        boolean isTypeEqual = shopItemStack.getType() == inventoryItemStack.getType();
-        boolean hasSameEnchants = shopMeta.getEnchants().equals(inventoryMeta.getEnchants());
-
-        return isDisplayNameEqual && isTypeEqual && hasSameEnchants;
-    }
 
     private void openItemMenu(InventoryClickEvent event, ItemStack itemStack) {
         Player player = (Player) event.getWhoClicked();
@@ -197,12 +147,4 @@ public class CategoryInventoryEventsController implements ICategoryInventoryEven
         return inventory.contains(itemStack);
     }
 
-    private String formatMaterialName(String materialName) {
-        String[] words = materialName.split("_");
-        StringBuilder formattedName = new StringBuilder();
-        for (String word : words) {
-            formattedName.append(word.charAt(0)).append(word.substring(1).toLowerCase()).append(" ");
-        }
-        return formattedName.toString().trim();
-    }
 }

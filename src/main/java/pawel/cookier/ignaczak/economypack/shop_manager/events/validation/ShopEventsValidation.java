@@ -1,6 +1,7 @@
 package pawel.cookier.ignaczak.economypack.shop_manager.events.validation;
 
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import pawel.cookier.ignaczak.economypack.config.PluginConfig;
@@ -46,6 +47,11 @@ public class ShopEventsValidation implements IShopEventsValidation {
         return isCorrectButtonName(clickedItem, buttonName)
                 && isCorrectItemMaterial(clickedItem, material)
                 && isClickedItemAmountCorrect(clickedItem, amount);
+    }
+
+    @Override
+    public boolean isBuySellItemMenu(InventoryClickEvent event) {
+        return event.getView().getTitle().equalsIgnoreCase("Kup / Sprzedaj");
     }
 
     private boolean isCorrectButtonName(ItemStack clickedItem, String buttonName){
