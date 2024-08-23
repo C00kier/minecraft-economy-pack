@@ -14,6 +14,7 @@ import pawel.cookier.ignaczak.economypack.shop_manager.item_entity.repository.II
 import pawel.cookier.ignaczak.economypack.shop_manager.item_entity.model.Item;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ItemController implements IItemController {
 
@@ -130,13 +131,52 @@ public class ItemController implements IItemController {
             if (!exchangeAll && amountToExchange == 0) break;
         }
 
-        exchangeItemQuantityForMoney(player, itemName, totalAmount, sellPrice);
+        sellItemQuantity(player, itemName, totalAmount, sellPrice);
     }
 
     @Override
     public void buyItemsForMoney(JavaPlugin plugin, Player player, ItemStack itemStack, boolean buyMax) {
         Inventory inventory = player.getInventory();
+        ItemMeta meta = itemStack.getItemMeta();
 
+        if (meta == null) return;
+
+        Double buyPrice = getBuyPrice(plugin, itemStack);
+        UUID playerId = player.getUniqueId();
+        double playerBalance = balanceManager.getBalance(playerId);
+
+        int totalAmountBought = 0;
+        double totalCost = 0.0;
+        int amountToBuy = buyMax ? Integer.MAX_VALUE : itemStack.getAmount();
+
+        for (int i = 0; i < inventory.getSize(); i++) {
+            if (isExcludedSlot(i)) continue;
+
+            ItemStack inventoryItem = inventory.getItem(i);
+            if (inventoryItem == null || isShopItemStackSameAsInventoryItemStack(itemStack, inventoryItem)) {
+                int spaceAvailable = getAvailableSpace(inventoryItem, itemStack);
+                int affordableAmount = (int) Math.min(Math.min(spaceAvailable, amountToBuy), playerBalance / buyPrice);
+
+                if (affordableAmount > 0) {
+                    totalAmountBought += affordableAmount;
+                    totalCost += buyPrice * affordableAmount;
+
+                    addItemToInventory(inventory, i, itemStack, inventoryItem, affordableAmount);
+
+                    amountToBuy -= affordableAmount;
+                    playerBalance -= buyPrice * affordableAmount;
+
+                    if (amountToBuy <= 0 && !buyMax) break;
+                }
+            }
+        }
+
+        if (totalAmountBought > 0) {
+            balanceManager.removeMoneyFromPlayer(totalCost, playerId);
+            String itemName = formatMaterialName(itemStack.getType().name());
+            player.sendMessage(ChatColor.GREEN + "Kupiłeś %s x [%s] za %s$"
+                    .formatted(totalAmountBought, itemName, totalCost));
+        }
     }
 
     @Override
@@ -160,10 +200,42 @@ public class ItemController implements IItemController {
         }
     }
 
-    private void exchangeItemQuantityForMoney(Player player,
-                                              String itemName,
-                                              int amountOfItem,
-                                              double sellPrice) {
+    private Double getBuyPrice(JavaPlugin plugin, ItemStack itemStack) {
+        if (itemStack == null) {
+            return null;
+        }
+
+        ItemMeta meta = itemStack.getItemMeta();
+
+        if(meta == null){
+            return null;
+        }
+
+        NamespacedKey key = new NamespacedKey(plugin, "buyPrice");
+        return meta.getPersistentDataContainer().get(key, PersistentDataType.DOUBLE);
+    }
+
+
+    private boolean isExcludedSlot(int slotIndex) {
+        return slotIndex >= 36 && slotIndex <= 40;
+    }
+
+    private int getAvailableSpace(ItemStack inventoryItem, ItemStack itemStack) {
+        return inventoryItem == null ? itemStack.getMaxStackSize() : inventoryItem.getMaxStackSize() - inventoryItem.getAmount();
+    }
+
+    private void addItemToInventory(Inventory inventory, int slotIndex, ItemStack itemStack, ItemStack inventoryItem, int amountToAdd) {
+        if (inventoryItem == null) {
+            inventory.setItem(slotIndex, new ItemStack(itemStack.getType(), amountToAdd));
+        } else {
+            inventoryItem.setAmount(inventoryItem.getAmount() + amountToAdd);
+        }
+    }
+
+    private void sellItemQuantity(Player player,
+                                  String itemName,
+                                  int amountOfItem,
+                                  double sellPrice) {
         double moneyToAdd = amountOfItem * sellPrice;
         balanceManager.addMoneyToPlayer(moneyToAdd, player.getUniqueId());
 

@@ -122,10 +122,15 @@ public class ItemInventoryEventsController implements IItemInventoryEventsContro
                 Material.PAPER,
                 1)) {
 
+            ItemStack itemStack = event.getInventory().getItem(PluginConfig.SHOP_OPERATIONS_ITEM_PLACE);
+            if (itemStack == null) return;
+
+            Player player = (Player) event.getWhoClicked();
+
             if (event.getClick() == ClickType.SHIFT_RIGHT) {
-
+                itemController.buyItemsForMoney(plugin, player, itemStack, true);
             } else if (event.getClick() == ClickType.LEFT) {
-
+                itemController.buyItemsForMoney(plugin, player, itemStack, false);
             }
         }
     }
